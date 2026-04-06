@@ -1400,7 +1400,89 @@
     });
   }
 
+  // ─── Boot Sequence ──────────────────────────────────
+  function runBootSequence() {
+    const bootScreen = document.getElementById("boot-screen");
+    const app = document.getElementById("app");
+
+    // Skip boot if already seen this session
+    if (sessionStorage.getItem("ai-lab-booted")) {
+      bootScreen.classList.add("hidden");
+      app.style.display = "";
+      init();
+      return;
+    }
+
+    const lines = [
+      "NEURAL INTERFACE v2.0.4",
+      "Verbinding maken met AI-netwerk...",
+      "Taalmodellen laden: GPT-4o, Claude Sonnet, Gemini Pro",
+      "Beveiligingsprotocol activeren...",
+      "Kennisbank synchroniseren... 847.291 bronnen",
+      "Agent-sandbox initialiseren...",
+      "Gebruiker identificeren... Marjolein van Erp",
+      "Toegangsniveau: EXPLORER",
+      "",
+      "WAARSCHUWING: AI-systemen kunnen hallucineren.",
+      "Controleer altijd de output.",
+      "",
+      "Systeem gereed. Welkom bij AI Lab."
+    ];
+
+    const bootText = document.getElementById("boot-text");
+    const progressFill = document.getElementById("boot-progress-fill");
+    const bootStatus = document.getElementById("boot-status");
+
+    let lineIdx = 0;
+    let charIdx = 0;
+    let currentHTML = "";
+
+    function typeBoot() {
+      if (lineIdx >= lines.length) {
+        progressFill.style.width = "100%";
+        bootStatus.textContent = "GEREED";
+        bootStatus.style.color = "#00d4ff";
+        setTimeout(() => {
+          bootScreen.classList.add("fade-out");
+          app.style.display = "";
+          sessionStorage.setItem("ai-lab-booted", "1");
+          setTimeout(() => {
+            bootScreen.classList.add("hidden");
+            init();
+          }, 800);
+        }, 600);
+        return;
+      }
+
+      const line = lines[lineIdx];
+      if (charIdx === 0 && line === "") {
+        currentHTML += "<br>";
+        bootText.innerHTML = currentHTML;
+        lineIdx++;
+        setTimeout(typeBoot, 100);
+        return;
+      }
+
+      if (charIdx < line.length) {
+        charIdx++;
+        const partial = line.slice(0, charIdx);
+        bootText.innerHTML = currentHTML + partial + '<span class="cursor" style="color:#00d4ff">|</span>';
+        progressFill.style.width = ((lineIdx / lines.length) * 100) + "%";
+        setTimeout(typeBoot, 15 + Math.random() * 25);
+      } else {
+        currentHTML += line + "<br>";
+        bootText.innerHTML = currentHTML;
+        lineIdx++;
+        charIdx = 0;
+        const delay = line.includes("...") ? 400 + Math.random() * 300 : 100;
+        setTimeout(typeBoot, delay);
+      }
+    }
+
+    setTimeout(typeBoot, 500);
+  }
+
   document.readyState === "loading"
-    ? document.addEventListener("DOMContentLoaded", init)
-    : init();
+    ? document.addEventListener("DOMContentLoaded", runBootSequence)
+    : runBootSequence();
 })();
