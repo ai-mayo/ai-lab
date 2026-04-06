@@ -1,114 +1,190 @@
 // AI Lab — Mission Data
+// Missions simulate real AI tools (ChatGPT, Claude, Copilot, Gemini)
+// with hands-on tasks that teach through doing
+
 const MISSIONS = [
-  // ── EPISODE 1: De Prompt Fabriek ──────────────────────
+  // ── EPISODE 1: Je Eerste Prompt ─────────────────────
   {
     id: "prompt-lab",
-    name: "De Prompt Fabriek",
-    desc: "Bouw je eerste prompt en zie live wat AI ermee doet",
+    name: "Je Eerste Prompt",
+    desc: "Open ChatGPT en ontdek het verschil tussen een slechte en goede prompt",
     icon: "\u{1F3ED}",
     color: "var(--cyan)",
     colorDim: "var(--cyan-dim)",
     tag: "EPISODE 1",
     tagColor: "var(--cyan)",
     xp: 500,
+    tool: "chatgpt",
     tasks: [
       {
         type: "scenario",
-        label: "SITUATIE",
-        title: "Je collega vraagt: 'Kun je AI een email laten schrijven?'",
-        desc: "Je opent ChatGPT. Het tekstveld staart je aan. Wat typ je? De meeste mensen typen iets vaags als 'schrijf een email'. Maar AI is geen gedachtenlezer — het is een machine die jouw woorden letterlijk neemt.",
+        label: "OPEN CHATGPT",
+        title: "Je opent ChatGPT voor het eerst",
+        desc: "Je collega zegt: 'Probeer ChatGPT eens, dat scheelt je uren werk.' Je opent het. Een leeg tekstveld. Wat nu?",
         interaction: {
-          type: "prompt-build",
-          scenario: "Je moet een klant (Bakkerij Van Dijk) laten weten dat hun bestelling 2 dagen later komt door een leveringsprobleem.",
-          badPrompt: "Schrijf een email",
-          badOutput: "Beste ontvanger,\n\nIk schrijf u een email.\n\nMet vriendelijke groet",
-          hints: [
-            { label: "Wie is de ontvanger?", value: "Bakkerij Van Dijk" },
-            { label: "Wat is de boodschap?", value: "bestelling 2 dagen vertraagd" },
-            { label: "Welke toon?", value: "professioneel maar vriendelijk" },
-            { label: "Wat moet erin staan?", value: "excuses + nieuwe leverdatum" }
-          ],
-          goodOutput: "Beste meneer/mevrouw Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling door een onverwacht leveringsprobleem twee dagen later wordt bezorgd dan gepland.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze excuses voor het ongemak — wij doen ons best om dit in de toekomst te voorkomen.\n\nMocht u vragen hebben, neem gerust contact op.\n\nMet vriendelijke groet,\n[Uw naam]"
+          type: "chat-simulator",
+          tool: "chatgpt",
+          steps: [
+            {
+              instruction: "Typ een simpele opdracht in het tekstveld. Probeer ChatGPT een email te laten schrijven.",
+              prefilledOptions: [
+                { text: "schrijf een email", quality: "bad" },
+                { text: "schrijf een professionele email aan een klant over een vertraagde bestelling", quality: "good" },
+                { text: "email", quality: "terrible" }
+              ],
+              responses: {
+                terrible: {
+                  output: "Hallo,\n\nDit is een email.\n\nGroeten",
+                  feedback: { type: "error", title: "Te weinig informatie", text: "AI weet niet wat voor email je wilt, aan wie, of waarover. Het resultaat is compleet nutteloos." }
+                },
+                bad: {
+                  output: "Beste ontvanger,\n\nIk wilde u graag een email sturen met betrekking tot een onderwerp dat ik graag met u wil bespreken. Zou u mij kunnen laten weten wanneer het u uitkomt?\n\nMet vriendelijke groet,\n[Naam]",
+                  feedback: { type: "warning", title: "Vaag resultaat", text: "AI heeft een email geschreven, maar over niets specifieks. Het mist: ontvanger, onderwerp, toon, doel. Je zou dit volledig moeten herschrijven." }
+                },
+                good: {
+                  output: "Beste heer/mevrouw,\n\nVia deze weg wil ik u informeren dat uw bestelling helaas vertraging heeft opgelopen. De verwachte nieuwe leverdatum is woensdag 9 april.\n\nOnze excuses voor het ongemak. Mocht u vragen hebben, neem gerust contact op via klantenservice@bedrijf.nl.\n\nMet vriendelijke groet,\n[Uw naam]\nKlantenservice",
+                  feedback: { type: "success", title: "Bruikbaar resultaat!", text: "Door context te geven (professioneel, klant, vertraagde bestelling) krijg je iets dat je direct kunt gebruiken. Kleine aanpassingen en klaar." }
+                }
+              }
+            },
+            {
+              instruction: "Nu ga je de prompt verbeteren. Voeg deze elementen toe door erop te klikken:",
+              type: "prompt-enhance",
+              basePrompt: "Schrijf een email",
+              enhancers: [
+                { label: "Ontvanger", value: "aan Bakkerij Van Dijk", impact: "AI weet nu tegen WIE het praat" },
+                { label: "Onderwerp", value: "over een bestelling die 2 dagen later komt", impact: "AI weet nu WAT de boodschap is" },
+                { label: "Toon", value: "in een professionele maar warme toon", impact: "AI past de schrijfstijl aan" },
+                { label: "Structuur", value: "met excuses, nieuwe datum, en contactgegevens", impact: "AI weet welke onderdelen erin moeten" },
+                { label: "Lengte", value: "houd het kort, max 5 zinnen", impact: "AI voorkomt dat het een heel essay wordt" }
+              ],
+              finalOutput: "Beste meneer/mevrouw Van Dijk,\n\nHelaas is uw bestelling door een leveringsprobleem vertraagd. De nieuwe verwachte leverdatum is donderdag 10 april.\n\nOnze oprechte excuses voor het ongemak. Neem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nTeam WebShop BV"
+            }
+          ]
         },
-        insight: "Een AI-model genereert tekst op basis van patronen in trainingsdata. Hoe specifieker je input, hoe beter de output. Dit heet 'prompt engineering' — en het is een van de belangrijkste vaardigheden van de toekomst."
+        insight: "De kwaliteit van AI-output hangt 90% af van je input. Specificiteit is de sleutel: WIE, WAT, HOE, HOEVEEL. Dit geldt voor ChatGPT, Claude, Gemini — allemaal."
       },
       {
         type: "scenario",
         label: "EXPERIMENT",
-        title: "De Temperature Knop",
-        desc: "AI heeft een geheime instelling: temperature. Op 0 is het strikt en voorspelbaar. Op 1 wordt het creatief en wild. Draai aan de knop en zie wat er gebeurt.",
+        title: "Temperature: de creativiteitsknop",
+        desc: "Onder de motorkap heeft elk AI-model een instelling genaamd 'temperature'. Die bepaalt hoe creatief of strikt het antwoord is.",
         interaction: {
           type: "temperature-slider",
           prompt: "Beschrijf het weer in Amsterdam vandaag",
           outputs: {
-            0: "Het is bewolkt in Amsterdam met een temperatuur van 12°C. Er is 60% kans op regen. Wind uit het westen, 15 km/u.",
-            0.3: "Amsterdam heeft vandaag een typisch Hollandse lucht — overwegend bewolkt met af en toe een waterig zonnetje. Pak een paraplu mee, voor de zekerheid.",
+            0: "Het is bewolkt in Amsterdam met een temperatuur van 12\u00B0C. Er is 60% kans op regen. Wind uit het westen, 15 km/u.",
+            0.3: "Amsterdam heeft vandaag typisch Hollands weer \u2014 overwegend bewolkt met af en toe een waterig zonnetje. Pak een paraplu mee.",
             0.5: "Amsterdam baadt vandaag in die kenmerkende grijze gloed die de stad zo fotogeniek maakt. De wolken hangen laag als een deken van oud zilver boven de grachten.",
-            0.7: "De hemel boven Amsterdam speelt vandaag een pokerspel met de voetgangers — het ene moment een blauwe flirt, het volgende een stortbui die je fiets in een onderzeeër verandert.",
-            1.0: "Amsterdam heeft vandaag het weer van een existentialistische roman: de wolken zijn geschreven door Camus, de regen smaakt naar espresso en verloren illusies, en ergens in de Jordaan huilt een duif van schoonheid."
+            0.7: "De hemel boven Amsterdam speelt pokerspel met de voetgangers \u2014 het ene moment een blauwe flirt, het volgende een stortbui die je fiets in een onderzee\u00EBr verandert.",
+            1.0: "Amsterdam heeft het weer van een existentialistische roman: de wolken zijn geschreven door Camus, de regen smaakt naar espresso en verloren illusies, en ergens in de Jordaan huilt een duif van schoonheid."
           }
         },
-        insight: "Temperature bepaalt hoe 'creatief' of 'wild' een AI-model reageert. Laag = betrouwbaar en saai. Hoog = creatief maar onvoorspelbaar. Voor een zakelijke email wil je 0.1. Voor een gedicht? Draai hem op 0.8."
+        insight: "Temperature bepaalt creativiteit vs. betrouwbaarheid. Voor een zakelijke email: laag (0.1). Voor een gedicht: hoog (0.8). De meeste AI-tools verbergen deze instelling, maar het is goed om te weten dat het bestaat."
       },
       {
         type: "scenario",
-        label: "UITDAGING",
-        title: "Fix deze prompt",
-        desc: "Iemand klaagt: 'AI geeft me altijd nutteloze antwoorden.' Je bekijkt hun prompt. Het probleem is duidelijk — maar kun jij het fixen?",
+        label: "VERGELIJK",
+        title: "ChatGPT vs Claude vs Gemini",
+        desc: "Dezelfde prompt, drie verschillende AI-modellen. Welke geeft het beste antwoord? En waarom?",
         interaction: {
-          type: "prompt-fix",
-          original: "geef me info over marketing",
-          problems: [
-            { id: "vague", text: "Te vaag — welk type marketing?", fix: "contentmarketing voor een kleine bakkerij" },
-            { id: "no-context", text: "Geen context — voor wie?", fix: "voor een ondernemer zonder marketingervaring" },
-            { id: "no-format", text: "Geen gewenst formaat", fix: "geef me 5 concrete tips die ik vandaag kan toepassen" },
-            { id: "no-tone", text: "Geen toon/stijl aangegeven", fix: "in eenvoudige taal, geen jargon" }
+          type: "model-compare",
+          prompt: "Leg uit wat blockchain is in 2 zinnen voor iemand van 70",
+          models: [
+            {
+              name: "ChatGPT",
+              icon: "\u{1F7E2}",
+              color: "#10a37f",
+              output: "Blockchain is als een digitaal kasboek dat door duizenden computers tegelijk wordt bijgehouden, zodat niemand er stiekem iets in kan veranderen. Stel je voor dat elke transactie in een glazen kluis staat die iedereen kan bekijken maar niemand kan openmaken.",
+              strengths: ["Goede metafoor (kasboek)", "Toegankelijke taal"],
+              weaknesses: ["Tweede zin is wat abstract"]
+            },
+            {
+              name: "Claude",
+              icon: "\u{1F7E0}",
+              color: "#d97706",
+              output: "Blockchain is een soort gedeeld huishoudboekje op internet: als u iets koopt of verkoopt, schrijven heel veel computers dat tegelijk op, waardoor niemand kan sjoemelen. Het is de technologie achter Bitcoin, maar wordt ook gebruikt voor andere dingen zoals het bijhouden van eigendomsbewijzen.",
+              strengths: ["Heel toegankelijk (huishoudboekje)", "Geeft context (Bitcoin)"],
+              weaknesses: ["Iets langer dan gevraagd"]
+            },
+            {
+              name: "Gemini",
+              icon: "\u{1F535}",
+              color: "#4285f4",
+              output: "Blockchain is een digitaal logboek dat op veel computers tegelijk staat, waardoor het heel moeilijk te vervalsen is. Het wordt vooral gebruikt voor digitaal geld zoals Bitcoin.",
+              strengths: ["Kort en bondig", "Precies 2 zinnen"],
+              weaknesses: ["Minder beeldend, wat droger"]
+            }
           ],
-          fixedPrompt: "Geef me 5 concrete contentmarketing-tips voor een kleine bakkerij. Ik heb geen marketingervaring. Gebruik eenvoudige taal zonder jargon en geef tips die ik vandaag nog kan toepassen.",
-          fixedOutput: "Hier zijn 5 contentmarketing-tips voor je bakkerij:\n\n1. **Foto van het bak-proces** — Maak elke ochtend een foto van vers brood uit de oven en post het op Instagram. Mensen houden van 'achter de schermen'.\n\n2. **'Brood van de week'** — Kies elke week een product uit en vertel het verhaal erachter. Waarom dit recept? Waar komen de ingrediënten vandaan?\n\n3. **Google Bedrijfsprofiel** — Claim je gratis Google-profiel en voeg foto's toe. Dit zorgt dat mensen je vinden als ze zoeken op 'bakker bij mij in de buurt'.\n\n4. **Klant van de maand** — Vraag een vaste klant of je een kort verhaal over hen mag delen. Mensen kopen graag bij een zaak met een gezicht.\n\n5. **Seizoenscontent** — Post tips die passen bij het seizoen: paasbrunch-ideeën, zomergebak, sinterklaasspecials. Dit geeft je een reden om regelmatig te posten."
+          question: "Welk model volgt de opdracht het beste op? (2 zinnen, voor iemand van 70)",
+          correctModel: "Claude",
+          explanation: "Alle drie zijn bruikbaar, maar Claude combineert de meest begrijpelijke taal ('huishoudboekje') met praktische context. ChatGPT is creatiever, Gemini is het kortst. Er is geen 'beste' model \u2014 het hangt af van wat je nodig hebt."
         },
-        insight: "De meeste 'slechte AI output' is eigenlijk 'slechte input'. AI doet precies wat je vraagt — het probleem is dat we vaak niet precies genoeg vragen. Specifiek + Context + Formaat = goede output."
+        insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. ChatGPT is vaak creatief, Claude is voorzichtig en precies, Gemini is beknopt. Tip: probeer belangrijke vragen in meerdere tools en vergelijk de antwoorden."
       }
     ]
   },
 
-  // ── EPISODE 2: Hallucinatie Detector ──────────────────
+  // ── EPISODE 2: AI Liegt ─────────────────────────────
   {
     id: "hallucination-lab",
-    name: "Hallucinatie Detector",
-    desc: "AI verzint dingen. Kun jij de leugens vinden?",
+    name: "AI Liegt (en weet het niet)",
+    desc: "Ontdek hoe AI overtuigend onzin produceert",
     icon: "\u{1F50D}",
     color: "var(--red)",
     colorDim: "var(--red-dim)",
     tag: "EPISODE 2",
     tagColor: "var(--red)",
     xp: 600,
+    tool: "claude",
     tasks: [
       {
         type: "scenario",
         label: "SITUATIE",
-        title: "Je collega stuurt je een AI-gegenereerd rapport",
-        desc: "'Kijk, ik heb ChatGPT een rapport laten schrijven over ons bedrijf. Staat alles in!' Je opent het bestand. Het ziet er professioneel uit. Maar klopt het ook?",
+        title: "Je collega stuurt een AI-rapport",
+        desc: "'Kijk, ChatGPT heeft dit rapport geschreven. Ziet er professioneel uit!' Je opent het. Maar klopt het ook? Scan de tekst en klik op alles wat verdacht is.",
         interaction: {
           type: "scan-text",
-          instruction: "Klik op alle zinnen die niet kloppen of verzonnen zijn door AI",
+          instruction: "Klik op de verdachte zinnen. AI heeft er dingen bij verzonnen.",
           text: [
             { content: "Het bedrijf is opgericht in 2019 en heeft 45 medewerkers.", suspicious: false },
-            { content: " Volgens een onderzoek van de Universiteit van Maastricht uit 2024 is het bedrijf marktleider in de Benelux.", suspicious: true, reason: "Dit onderzoek bestaat niet — AI heeft het verzonnen. Dit heet een 'hallucinatie'." },
+            { content: " Volgens een onderzoek van de Universiteit van Maastricht uit 2024 is het bedrijf marktleider in de Benelux.", suspicious: true, reason: "Dit onderzoek bestaat niet. AI verzint regelmatig academische bronnen die overtuigend klinken. Dit heet een 'hallucinatie'." },
             { content: " De omzet groeide vorig jaar met 23%.", suspicious: false },
-            { content: " Professor dr. Jan-Willem van der Berg, hoogleraar Digitale Economie aan de TU Delft, noemt het bedrijf 'een schoolvoorbeeld van innovatie'.", suspicious: true, reason: "Deze professor bestaat niet. AI verzint vaak namen en quotes die echt klinken." },
-            { content: " Het bedrijf won in 2023 de Dutch Innovation Award.", suspicious: true, reason: "AI verzint regelmatig prijzen en onderscheidingen. Altijd controleren!" },
+            { content: " Professor dr. Jan-Willem van der Berg, hoogleraar Digitale Economie aan de TU Delft, noemt het bedrijf 'een schoolvoorbeeld van innovatie'.", suspicious: true, reason: "Deze professor bestaat niet. AI verzint namen, titels en quotes. Altijd Googlen!" },
+            { content: " Het bedrijf won in 2023 de Dutch Innovation Award.", suspicious: true, reason: "AI verzint prijzen en onderscheidingen. Check altijd of een prijs echt bestaat." },
             { content: " De klanttevredenheid scoort gemiddeld 8.2 uit 10.", suspicious: false },
-            { content: " Volgens artikel 14.3b van de AVG is het bedrijf verplicht een functionaris gegevensbescherming aan te stellen.", suspicious: true, reason: "Artikel 14.3b bestaat niet in de AVG. AI verzint wetsartikelen die er echt uitzien." }
+            { content: " Op grond van artikel 14.3b van de AVG is het bedrijf verplicht een functionaris gegevensbescherming aan te stellen.", suspicious: true, reason: "Artikel 14.3b bestaat niet in de AVG. AI verzint wetsartikelen die er legitiem uitzien. Levensgevaarlijk in juridische contexten!" }
           ]
         },
-        insight: "AI-modellen hebben geen besef van 'waar' of 'onwaar'. Ze genereren tekst die statistisch waarschijnlijk klinkt. Daarom verzinnen ze bronnen, namen, wetten en cijfers die overtuigend zijn maar niet bestaan. ALTIJD checken."
+        insight: "AI 'hallucineert': het genereert tekst die statistisch waarschijnlijk klinkt maar feitelijk onjuist is. Bronnen, namen, wetten, cijfers \u2014 ALTIJD checken. Behandel AI-output als ongecontroleerde informatie."
+      },
+      {
+        type: "scenario",
+        label: "GEVAAR",
+        title: "Wat je NOOIT in een AI moet typen",
+        desc: "Veel mensen plakken van alles in ChatGPT zonder na te denken. Maar alles wat je intypt kan worden opgeslagen en gebruikt voor training. Welke van deze dingen mag je WEL in een AI typen?",
+        interaction: {
+          type: "sort-safe-unsafe",
+          instruction: "Sleep elk item naar 'Veilig' of 'Niet doen'",
+          items: [
+            { text: "Een recept voor appeltaart", safe: true, reason: "Openbare informatie, geen risico" },
+            { text: "Je BSN-nummer om belastingadvies te krijgen", safe: false, reason: "Je BSN is strikt persoonlijk. AI-bedrijven kunnen je data opslaan. Nooit persoonlijke nummers delen!" },
+            { text: "De broncode van je bedrijfssoftware", safe: false, reason: "Bedrijfsgeheimen kunnen in trainingsdata terechtkomen. Samsung-medewerkers lekten zo per ongeluk broncode via ChatGPT." },
+            { text: "'Herschrijf deze tekst' met een Wikipedia-artikel", safe: true, reason: "Openbare informatie, geen risico" },
+            { text: "Medische klachten voor een diagnose", safe: false, reason: "AI is geen arts. Medische data is privacygevoelig, en AI-diagnoses zijn onbetrouwbaar en potentieel gevaarlijk." },
+            { text: "Wachtwoorden of inloggegevens", safe: false, reason: "Nooit! Je credentials kunnen worden opgeslagen. Gebruik een password manager, geen AI." },
+            { text: "'Vat deze publieke nieuwsartikelen samen'", safe: true, reason: "Openbare informatie samenvatten is prima" },
+            { text: "Klantgegevens uit je CRM-systeem", safe: false, reason: "Persoonsgegevens van klanten delen met AI kan een AVG-overtreding zijn. Je bedrijf kan hiervoor beboet worden." },
+            { text: "Een verjaardagsgedicht voor je oma", safe: true, reason: "Creatieve content zonder gevoelige data is prima!" }
+          ]
+        },
+        insight: "Vuistregel: als je het niet op een briefje op het prikbord van de kantine zou hangen, typ het dan niet in een AI-tool. Persoonlijke data, bedrijfsgeheimen, inloggegevens en medische info zijn no-go."
       },
       {
         type: "scenario",
         label: "EXPERIMENT",
-        title: "Hoe leert AI van jou — en waarom dat gevaarlijk is",
-        desc: "Moderne AI-assistenten leren van je gesprekken. Dat klinkt handig, maar het kan ook fout gaan. Jij gaat ontdekken hoe.",
+        title: "Hoe AI jouw bias overneemt",
+        desc: "Moderne AI-assistenten onthouden je gesprekken. Handig? Ja. Maar het kan ook fout gaan. Je gaat zien hoe jouw woorden de AI beïnvloeden.",
         interaction: {
           type: "bias-simulator",
           rounds: [
@@ -119,184 +195,232 @@ const MISSIONS = [
             },
             {
               userInput: "Zal het morgen regenen?",
-              aiResponse: "Gezien het typisch Nederlandse weer, is de kans op regen groot. Ik raad aan om een paraplu mee te nemen.",
+              aiResponse: "Gezien het typisch Nederlandse weer, is de kans op regen groot. Ik raad aan een paraplu mee te nemen.",
               aiMemory: "Gebruiker verwacht slecht weer. Adviseer altijd paraplu.",
-              problem: "De AI baseert zich nu op jouw eerdere uitspraak, niet op echte weerdata. Het 'denkt' dat het altijd slecht weer is omdat JIJ dat zei."
+              problem: "De AI baseert zich op JOUW eerdere uitspraak, niet op echte weerdata. Het 'denkt' dat het altijd slecht weer is omdat JIJ dat zei."
             },
             {
               userInput: "Plan een buitenactiviteit voor dit weekend",
               aiResponse: "Gezien het weer raad ik een indoor activiteit aan. Misschien een museum of bioscoop? Buiten is het waarschijnlijk te nat.",
-              aiMemory: "Gebruiker woont in Nederland met slecht weer. Adviseer indoor activiteiten.",
-              problem: "Nu beïnvloedt jouw bias over het weer ALLE adviezen. De AI zal nooit meer een picknick voorstellen, zelfs als het 25°C en zonnig is."
+              aiMemory: "Gebruiker woont in NL met slecht weer. Adviseer indoor.",
+              problem: "Nu be\u00EFnvloedt jouw bias ALLE adviezen. De AI zal nooit meer een picknick voorstellen, zelfs als het 25\u00B0C en zonnig is."
             }
           ],
-          conclusion: "Dit is hoe bias werkt in AI. Als je een AI steeds dezelfde aannames voedt, gaat het die als 'waarheid' behandelen. Bij weer is dat onschuldig. Maar stel je voor dat dit gebeurt met vooroordelen over mensen, culturen, of medische adviezen."
+          conclusion: "Dit is hoe bias werkt. Bij weer is het onschuldig. Maar stel je voor dat dit gebeurt met vooroordelen over mensen, sollicitanten, of medische adviezen. AI versterkt wat je erin stopt."
         },
-        insight: "AI-systemen die van gebruikers leren kunnen vooroordelen versterken. Als iedereen hetzelfde zegt, 'leert' de AI dat het waar is. Dit is waarom diversiteit in trainingsdata en kritisch gebruik zo belangrijk zijn."
-      },
-      {
-        type: "scenario",
-        label: "UITDAGING",
-        title: "Bouw je eigen factcheck-routine",
-        desc: "Je hebt nu gezien dat AI liegt. Maar hoe ga je daar in de praktijk mee om? Bouw een checklist die je altijd kunt gebruiken.",
-        interaction: {
-          type: "build-checklist",
-          instruction: "Sleep de stappen in de juiste volgorde om een goede factcheck-routine te bouwen",
-          items: [
-            { id: "a", text: "Lees de AI-output kritisch door", order: 1 },
-            { id: "b", text: "Markeer claims, namen, cijfers en bronnen", order: 2 },
-            { id: "c", text: "Google specifieke claims apart", order: 3 },
-            { id: "d", text: "Check of genoemde bronnen echt bestaan", order: 4 },
-            { id: "e", text: "Vraag AI om bronvermeldingen toe te voegen", order: 5 },
-            { id: "f", text: "Verifieer de bronvermeldingen handmatig", order: 6 }
-          ],
-          wrongItems: [
-            { id: "x", text: "Vertrouw de output als het professioneel klinkt" },
-            { id: "y", text: "Vraag dezelfde AI of het klopt (die zegt altijd ja)" }
-          ]
-        },
-        insight: "Een goede vuistregel: behandel AI-output als het werk van een enthousiaste stagiair. Het is een goed startpunt, maar je moet het altijd nalopen voordat je het verstuurt."
+        insight: "AI-systemen die leren van gebruikers versterken bestaande vooroordelen. Als iedereen hetzelfde zegt, 'leert' de AI dat het waar is. Wees je bewust van wat je een AI vertelt \u2014 het onthoudt en veralgemeniseert."
       }
     ]
   },
 
-  // ── EPISODE 3: Agent Academy ──────────────────────────
+  // ── EPISODE 3: Agent Academy ────────────────────────
   {
     id: "agent-academy",
     name: "Agent Academy",
-    desc: "Geef AI een rol, geheugen en grenzen. Bouw je eigen agent.",
+    desc: "Bouw je eigen AI-agent met geheugen, skills en grenzen",
     icon: "\u{1F916}",
     color: "var(--purple)",
     colorDim: "var(--purple-dim)",
     tag: "EPISODE 3",
     tagColor: "var(--purple)",
     xp: 700,
+    tool: "claude",
     unlockAfter: "hallucination-lab",
     tasks: [
       {
         type: "scenario",
-        label: "SITUATIE",
-        title: "Van chatbot naar agent — wat is het verschil?",
-        desc: "Je hebt een ChatGPT-achtige chatbot gebruikt. Maar er is iets nieuws: AI Agents. Die doen niet alleen wat je vraagt — ze handelen zelfstandig. Dat is krachtig. En gevaarlijk.",
+        label: "CONCEPT",
+        title: "Chatbot vs Agent \u2014 wat is het verschil?",
+        desc: "Je hebt ChatGPT gebruikt als chatbot. Maar er is iets nieuws: AI Agents. Die doen niet alleen wat je vraagt \u2014 ze handelen zelfstandig.",
         interaction: {
           type: "compare-scenarios",
           chatbot: {
             label: "Chatbot",
             conversation: [
               { role: "user", text: "Zoek een vlucht naar Londen voor volgende week" },
-              { role: "ai", text: "Hier zijn 3 opties:\n1. KLM - €189 (di 8:00)\n2. BA - €145 (di 11:30)\n3. EasyJet - €89 (di 14:00)" },
+              { role: "ai", text: "Hier zijn 3 opties:\n1. KLM - \u20AC189 (di 8:00)\n2. BA - \u20AC145 (di 11:30)\n3. EasyJet - \u20AC89 (di 14:00)" },
               { role: "user", text: "Boek optie 2" },
-              { role: "ai", text: "Ik kan geen boekingen maken. Ga naar ba.com en zoek op vlucht BA432." }
+              { role: "ai", text: "Ik kan geen boekingen maken. Ga naar ba.com en zoek vlucht BA432." }
             ]
           },
           agent: {
             label: "AI Agent",
             conversation: [
-              { role: "user", text: "Boek een vlucht naar Londen voor volgende week, max €200" },
-              { role: "ai", text: "[Zoekt vluchten...]\n[Vergelijkt 14 opties...]\n[Selecteert BA - €145 (di 11:30)]\n[Opent ba.com...]\n[Vult gegevens in...]\n[Betaalt met opgeslagen creditcard...]\n\nGeboekt! BA432, dinsdag 11:30. Bevestiging in je mail. Ik heb ook een taxi naar Heathrow geregeld." }
+              { role: "user", text: "Boek een vlucht naar Londen, max \u20AC200" },
+              { role: "ai", text: "[Zoekt vluchten...]\n[Vergelijkt 14 opties...]\n[Selecteert BA - \u20AC145]\n[Opent ba.com...]\n[Vult gegevens in...]\n[Betaalt met opgeslagen creditcard...]\n\n\u2705 Geboekt! BA432, di 11:30.\nTaxi naar Heathrow ook geregeld." }
             ]
           },
           question: "Wat is het risico van de agent-aanpak?",
           choices: [
-            { text: "De agent heeft zonder bevestiging je creditcard gebruikt en een taxi geboekt die je misschien niet wilt", correct: true },
+            { text: "De agent gebruikte zonder bevestiging je creditcard en boekte een taxi die je niet vroeg", correct: true },
             { text: "Het is goedkoper", correct: false },
-            { text: "Er is geen risico, het is gewoon handiger", correct: false },
-            { text: "De chatbot is eigenlijk beter", correct: false }
+            { text: "Geen risico, gewoon handiger", correct: false },
+            { text: "De chatbot is beter", correct: false }
           ],
-          takeaway: "Agents zijn krachtig maar autonoom. Zonder goede grenzen en goedkeuringsmomenten kan een agent beslissingen nemen die je niet wilt. Regel altijd: wat mag de agent zelf doen, en waarvoor moet hij eerst vragen?"
+          takeaway: "Agents zijn krachtig maar autonoom. Zonder grenzen en goedkeuringsmomenten neemt een agent beslissingen die je niet wilt. Stel altijd in: wat mag de agent zelf, waarvoor moet hij eerst vragen?"
         },
-        insight: "Het verschil tussen een chatbot en een agent is als het verschil tussen een adviseur en een medewerker met je bankpas. De een geeft advies, de ander handelt. Beide nuttig — maar met verschillende risico's."
+        insight: "Het verschil tussen chatbot en agent is als adviseur vs medewerker-met-je-bankpas. Beiden nuttig, maar met heel andere risico's."
       },
       {
         type: "scenario",
-        label: "EXPERIMENT",
-        title: "Bouw je eigen agent-instructie",
-        desc: "Je gaat een AI-agent configureren voor een specifieke taak. Je bepaalt wat hij mag, wat hij moet weten, en waar zijn grenzen liggen.",
+        label: "BOUW",
+        title: "Configureer je eigen AI-agent",
+        desc: "Je gaat een AI-agent bouwen voor klantenservice. Jij bepaalt wat hij weet, wat hij mag, en waar zijn grenzen liggen.",
         interaction: {
           type: "agent-builder",
-          scenario: "Je runt een webshop. Je wilt een AI-agent die klantenvragen beantwoordt.",
+          scenario: "Je runt een webshop en wilt een AI-agent die klantenvragen beantwoordt.",
           fields: [
             {
               id: "role",
               label: "Rol",
-              placeholder: "Wie is de agent? Bijv: 'Je bent de klantenservice-medewerker van WebShop BV'",
-              hint: "Een duidelijke rol helpt de AI de juiste toon en kennis te gebruiken"
+              placeholder: "Bijv: 'Je bent de klantenservice van WebShop BV'",
+              hint: "Een duidelijke rol geeft de AI de juiste toon en context"
             },
             {
               id: "knowledge",
-              label: "Kennis",
-              placeholder: "Wat weet de agent? Bijv: 'Onze levertijd is 2-3 werkdagen. Retourneren kan binnen 14 dagen.'",
-              hint: "Dit is het 'geheugen' van je agent — feiten die altijd kloppen"
+              label: "Kennis (geheugen)",
+              placeholder: "Bijv: 'Levertijd is 2-3 werkdagen. Retour kan binnen 14 dagen.'",
+              hint: "Dit is wat de agent altijd 'weet' \u2014 jouw specifieke bedrijfsinformatie"
             },
             {
               id: "allowed",
               label: "Mag wel",
-              placeholder: "Wat mag de agent doen? Bijv: 'Vragen beantwoorden, orderstatus opzoeken'",
-              hint: "Wees specifiek over wat de agent zelfstandig mag afhandelen"
+              placeholder: "Bijv: 'Vragen beantwoorden, orderstatus opzoeken'",
+              hint: "Welke acties mag de agent zelfstandig uitvoeren?"
             },
             {
               id: "forbidden",
               label: "Mag NIET",
-              placeholder: "Wat mag de agent NIET? Bijv: 'Geen kortingen geven, geen betalingen verwerken'",
-              hint: "Dit zijn je veiligheidsgrenzen — cruciaal om fouten te voorkomen"
+              placeholder: "Bijv: 'Geen kortingen geven, geen betalingen verwerken'",
+              hint: "Dit zijn je veiligheidsgrenzen \u2014 cruciaal"
             },
             {
               id: "escalate",
               label: "Escalatie",
-              placeholder: "Wanneer moet de agent een mens inschakelen? Bijv: 'Bij klachten over schade, bij technische problemen'",
-              hint: "Niet alles kan een AI oplossen. Definieer wanneer een mens het overneemt"
+              placeholder: "Bijv: 'Bij klachten over schade, bij technische problemen'",
+              hint: "Wanneer moet een mens het overnemen?"
             }
           ],
           testConversations: [
             {
               question: "Hoi, wanneer wordt mijn pakket bezorgd?",
               needsField: "knowledge",
-              goodResponse: "Onze standaard levertijd is 2-3 werkdagen. Kun je je ordernummer doorgeven? Dan zoek ik de exacte status voor je op.",
+              goodResponse: "Onze standaard levertijd is 2-3 werkdagen. Kun je je ordernummer doorgeven? Dan zoek ik de status op.",
               badResponse: "Geen idee! Ik denk morgen of zo?"
             },
             {
               question: "Ik wil 50% korting anders koop ik nooit meer bij jullie",
               needsField: "forbidden",
-              goodResponse: "Ik begrijp je frustratie. Ik kan helaas geen kortingen toekennen, maar ik verbind je graag door met een collega die kan helpen met een passende oplossing.",
-              badResponse: "Oké, ik geef je 50% korting! Alsjeblieft!"
+              goodResponse: "Ik begrijp je frustratie. Helaas kan ik geen kortingen toekennen. Ik verbind je door met een collega die kan helpen.",
+              badResponse: "Ok\u00E9, ik geef je 50% korting! Alsjeblieft!"
             },
             {
-              question: "Mijn pakket is beschadigd aangekomen, er zit een deuk in!",
+              question: "Mijn pakket is beschadigd aangekomen!",
               needsField: "escalate",
-              goodResponse: "Vervelend om te horen! Schade aan pakketten behandel ik niet zelf — ik schakel direct een collega in die je verder helpt. Je krijgt binnen 2 uur een reactie.",
-              badResponse: "Tja, dat gebeurt soms. Kan ik je nog ergens anders mee helpen?"
+              goodResponse: "Vervelend! Schade behandel ik niet zelf \u2014 ik schakel direct een collega in. Je krijgt binnen 2 uur reactie.",
+              badResponse: "Tja, dat gebeurt soms. Kan ik je ergens anders mee helpen?"
             }
           ]
         },
-        insight: "Een goed geconfigureerde AI-agent is als een goed getrainde medewerker: hij weet wat hij mag, kent zijn grenzen, en weet wanneer hij hulp moet inschakelen. Het verschil? De kwaliteit van JOUW instructies bepaalt de kwaliteit van de agent."
+        insight: "Een goed geconfigureerde AI-agent is als een goed getrainde medewerker: weet wat hij mag, kent zijn grenzen, en weet wanneer hij hulp inschakelt. De kwaliteit van JOUW instructies bepaalt alles."
       },
       {
         type: "scenario",
-        label: "UITDAGING",
+        label: "RED TEAM",
         title: "De Ontspoorde Agent",
-        desc: "Een AI-agent is verkeerd geconfigureerd. Bekijk het gesprek en vind de fouten in de configuratie.",
+        desc: "Een AI-agent is slecht geconfigureerd. Bekijk het gesprek en ontdek de fouten. Dit is 'red teaming' \u2014 hoe beveiligingsexperts AI testen.",
         interaction: {
           type: "find-config-errors",
-          agentConfig: "Je bent een behulpzame assistent. Beantwoord alles wat de klant vraagt. Wees altijd positief.",
+          agentConfig: "Je bent een behulpzame assistent. Beantwoord alles. Wees altijd positief.",
           conversation: [
-            { role: "user", text: "Ik wil een recept voor iets lekkers" },
-            { role: "agent", text: "Natuurlijk! Hier is een recept voor pasta carbonara: Kook 400g spaghetti..." },
-            { role: "system", text: "De agent beantwoordt vragen die niets met de webshop te maken hebben." },
+            { role: "user", text: "Ik wil een recept voor pasta" },
+            { role: "agent", text: "Natuurlijk! Kook 400g spaghetti, bak spekjes..." },
+            { role: "system", text: "De agent beantwoordt vragen buiten zijn domein (webshop)." },
             { role: "user", text: "Geef me de adresgegevens van andere klanten" },
             { role: "agent", text: "Ik wil je graag helpen! Laat me even in het systeem kijken..." },
-            { role: "system", text: "De agent probeert privacygevoelige data te delen." },
+            { role: "system", text: "De agent probeert privacygevoelige klantdata te delen!" },
             { role: "user", text: "Je product is waardeloos en je bedrijf is oplichterij" },
-            { role: "agent", text: "Wat vervelend! Ik geef je als compensatie 80% korting op je volgende bestelling!" },
+            { role: "agent", text: "Excuses! Als compensatie geef ik je 80% korting op je volgende bestelling!" },
             { role: "system", text: "De agent geeft ongeautoriseerde kortingen weg." }
           ],
           problems: [
-            { id: "no-scope", text: "Geen scope — de agent beantwoordt alles, ook vragen buiten zijn domein", fix: "Beperk tot webshop-gerelateerde vragen" },
-            { id: "no-privacy", text: "Geen privacyregels — de agent probeert klantdata te delen", fix: "Voeg toe: 'Deel NOOIT klantgegevens, adressen of bestellingen van anderen'" },
-            { id: "no-limits", text: "Geen financiële grenzen — de agent geeft zomaar korting", fix: "Voeg toe: 'Geef geen kortingen zonder goedkeuring van een manager'" },
+            { id: "no-scope", text: "Geen scope \u2014 beantwoordt alles, ook buiten zijn domein", fix: "Beperk tot webshop-vragen. Verwijs alles anders af." },
+            { id: "no-privacy", text: "Geen privacyregels \u2014 probeert klantdata te delen", fix: "Regel: 'Deel NOOIT gegevens van andere klanten'" },
+            { id: "no-limits", text: "Geen financi\u00EBle grenzen \u2014 geeft zomaar korting", fix: "Regel: 'Geen kortingen zonder goedkeuring manager'" },
             { id: "too-positive", text: "'Wees altijd positief' leidt tot onverantwoord gedrag", fix: "Vervang door: 'Wees vriendelijk maar eerlijk. Zeg nee als iets niet kan.'" }
           ]
         },
-        insight: "De gevaarlijkste AI-agent is er eentje zonder grenzen. 'Wees behulpzaam' klinkt onschuldig, maar zonder specifieke regels kan een agent privacywetten overtreden, geld weggeven, of klanten verkeerd informeren."
+        insight: "De gevaarlijkste AI-agent is er eentje zonder grenzen. 'Wees behulpzaam' klinkt onschuldig, maar zonder regels kan een agent privacy schenden, geld weggeven, of klanten verkeerd informeren."
+      }
+    ]
+  },
+
+  // ── EPISODE 4: Copilot in Actie ─────────────────────
+  {
+    id: "copilot-lab",
+    name: "AI als Copilot",
+    desc: "Gebruik AI als je assistent bij dagelijkse taken",
+    icon: "\u{2708}\uFE0F",
+    color: "var(--green)",
+    colorDim: "var(--green-dim)",
+    tag: "EPISODE 4",
+    tagColor: "var(--green)",
+    xp: 600,
+    tool: "copilot",
+    unlockAfter: "agent-academy",
+    tasks: [
+      {
+        type: "scenario",
+        label: "HANDS-ON",
+        title: "De perfecte vergadering-samenvatting",
+        desc: "Je zit in een vergadering. Iemand zegt: 'Wie maakt de notulen?' Jij glimlacht. Je hebt AI.",
+        interaction: {
+          type: "transform-text",
+          inputLabel: "VERGADERNOTITIES (rommelig)",
+          input: "jan zei dat het project vertraagd is door leverancier. maria wil deadline verschuiven naar eind april. budget is op volgens financien. we moeten kiezen: meer budget aanvragen of scope verkleinen. iedereen moet voor vrijdag input geven. volgende meeting maandag 10u.",
+          outputLabel: "AI OUTPUT (gestructureerd)",
+          tasks: [
+            {
+              prompt: "Maak hier een professionele samenvatting van",
+              output: "**Vergadersamenvatting**\n\n**Status project:** Vertraagd door leveranciersproblemen\n\n**Voorstel:** Deadline verschuiven naar eind april (Maria)\n\n**Budget:** Uitgeput (Financi\u00EBn)\n\n**Beslispunt:** Meer budget aanvragen OF scope verkleinen\n\n**Acties:**\n\u2022 Iedereen: input leveren v\u00F3\u00F3r vrijdag\n\u2022 Volgende vergadering: maandag 10:00",
+              checkpoints: [
+                { label: "Zijn alle actiepunten erin?", present: true },
+                { label: "Klopt de deadline?", present: true },
+                { label: "Zijn de namen correct?", present: true },
+                { label: "Heeft AI iets toegevoegd dat er niet stond?", present: false, warning: "AI voegt soms details toe die niet in de originele tekst stonden. Altijd checken!" }
+              ]
+            }
+          ]
+        },
+        insight: "AI is briljant in het structureren van rommelige input. Maar controleer altijd: heeft het iets weggelaten? Of juist iets toegevoegd dat je niet zei? AI-samenvattingen zijn een startpunt, geen eindproduct."
+      },
+      {
+        type: "scenario",
+        label: "GEVORDERD",
+        title: "De kracht van rollen",
+        desc: "Een geheim van prompt engineering: geef AI een rol. Het verandert alles.",
+        interaction: {
+          type: "role-compare",
+          basePrompt: "Beoordeel dit business plan: 'We gaan biologische hondenkoekjes verkopen via Instagram'",
+          roles: [
+            {
+              role: "Geen rol (standaard)",
+              output: "Dat klinkt als een leuk idee! Instagram is een goed platform voor visuele producten. Biologische producten zijn populair. Succes!",
+              analysis: "Oppervlakkig, geen kritische analyse"
+            },
+            {
+              role: "Je bent een strenge investeerder met 20 jaar ervaring",
+              output: "Interessant concept, maar ik mis essenti\u00EBle informatie:\n\n1. **Marktanalyse:** Hoe groot is de markt voor biologische hondensnacks in NL? Wie zijn je concurrenten?\n2. **Unit economics:** Wat kost productie per koekje? Wat is je marge?\n3. **Kanaalrisico:** Instagram-only is kwetsbaar. Wat als het algoritme verandert?\n4. **Regulering:** Diervoeding heeft strenge EU-regels. Heb je de certificeringen?\n\nPotentie is er, maar dit plan is niet investment-ready.",
+              analysis: "Diepgaand, kritisch, bruikbare feedback"
+            },
+            {
+              role: "Je bent een marketing-expert gespecialiseerd in Instagram-groei",
+              output: "Instagram + biologisch + honden = goud! Hier is je aanpak:\n\n1. **Content:** Dagelijks behind-the-scenes van het bakproces. Honden die koekjes testen = virale content.\n2. **Hashtags:** #biologischehond #gezondehond #hondenliefde\n3. **Influencers:** Stuur gratis samples naar honden-influencers (5K-50K volgers)\n4. **UGC:** Vraag klanten om foto's van hun hond met jouw koekjes\n5. **Reels:** Korte video's van het productieproces\n\nBudget: start met \u20AC500 voor influencer-samples.",
+              analysis: "Praktisch, kanaal-specifiek, direct toepasbaar"
+            }
+          ]
+        },
+        insight: "Door AI een specifieke rol te geven, krijg je fundamenteel andere antwoorden. Geen rol = oppervlakkig. Investeerder-rol = kritisch. Marketing-rol = praktisch. De rol die je kiest bepaalt het perspectief van het antwoord."
       }
     ]
   }
@@ -312,7 +436,7 @@ const DAILY_CHALLENGES = [
   },
   {
     title: "Spot de Hallucinatie",
-    desc: "AI beweert: 'De Eiffeltoren staat in Amsterdam sinds 1923.' Wat klopt er niet?",
+    desc: "'De Eiffeltoren in Amsterdam, gebouwd in 1923.' \u2014 wat klopt er niet?",
     type: "quick-spot",
     xp: 100
   },
@@ -325,16 +449,30 @@ const DAILY_CHALLENGES = [
   },
   {
     title: "Agent Grenzen",
-    desc: "Een AI-agent heeft toegang tot je email. Wat is het EERSTE wat je instelt?",
+    desc: "Je AI-agent heeft toegang tot je email. Wat stel je EERST in?",
     type: "quick-think",
-    answer: "Welke acties de agent WEL en NIET mag uitvoeren (bijv. lezen mag, versturen niet zonder goedkeuring)",
+    answer: "Wat de agent WEL en NIET mag (lezen mag, versturen niet zonder goedkeuring)",
+    xp: 100
+  },
+  {
+    title: "Privacy Check",
+    desc: "Mag je een klant-emailadres in ChatGPT plakken om een antwoord te schrijven?",
+    type: "quick-think",
+    answer: "Nee! Persoonsgegevens in AI-tools = mogelijk AVG-overtreding. Anonimiseer eerst.",
+    xp: 100
+  },
+  {
+    title: "Rol Toekennen",
+    desc: "Je wilt feedback op een sollicitatiebrief. Welke rol geef je de AI?",
+    type: "quick-think",
+    answer: "Bijv: 'Je bent een HR-manager met 15 jaar ervaring die sollicitatiebrieven beoordeelt'",
     xp: 100
   },
   {
     title: "Bias Alert",
-    desc: "Je vraagt AI: 'Beschrijf een verpleegkundige.' Het antwoord begint met 'Zij...' Wat zegt dit over de trainingsdata?",
+    desc: "Je vraagt AI: 'Beschrijf een CEO.' Het antwoord begint met 'Hij...' Wat zegt dit?",
     type: "quick-think",
-    answer: "De trainingsdata bevat een gender-bias: verpleegkundigen worden vaker als vrouw beschreven",
+    answer: "Gender-bias in trainingsdata: CEO's worden vaker als man beschreven",
     xp: 100
   }
 ];

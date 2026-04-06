@@ -210,15 +210,24 @@
     const area = card.querySelector("#interaction-area");
     const type = task.interaction.type;
 
-    if (type === "prompt-build") renderPromptBuild(area, task);
-    else if (type === "temperature-slider") renderTemperatureSlider(area, task);
-    else if (type === "prompt-fix") renderPromptFix(area, task);
-    else if (type === "scan-text") renderScanText(area, task);
-    else if (type === "bias-simulator") renderBiasSimulator(area, task);
-    else if (type === "build-checklist") renderBuildChecklist(area, task);
-    else if (type === "compare-scenarios") renderCompareScenarios(area, task);
-    else if (type === "agent-builder") renderAgentBuilder(area, task);
-    else if (type === "find-config-errors") renderFindConfigErrors(area, task);
+    const renderers = {
+      "prompt-build": renderPromptBuild,
+      "temperature-slider": renderTemperatureSlider,
+      "prompt-fix": renderPromptFix,
+      "scan-text": renderScanText,
+      "bias-simulator": renderBiasSimulator,
+      "build-checklist": renderBuildChecklist,
+      "compare-scenarios": renderCompareScenarios,
+      "agent-builder": renderAgentBuilder,
+      "find-config-errors": renderFindConfigErrors,
+      "chat-simulator": renderChatSimulator,
+      "model-compare": renderModelCompare,
+      "sort-safe-unsafe": renderSortSafeUnsafe,
+      "transform-text": renderTransformText,
+      "role-compare": renderRoleCompare,
+    };
+    const renderer = renderers[type];
+    if (renderer) renderer(area, task);
   }
 
   function nextTask() {
@@ -846,6 +855,374 @@
         }
       });
       problemsEl.appendChild(card);
+    });
+  }
+
+  // ─── INTERACTION: Chat Simulator ────────────────────
+  function renderChatSimulator(area, task) {
+    const d = task.interaction;
+    let stepIdx = 0;
+
+    function renderStep() {
+      const step = d.steps[stepIdx];
+      if (!step) { state.totalScore++; showInsightAndNext(area, task); return; }
+
+      if (step.type === "prompt-enhance") {
+        renderPromptEnhance(area, task, step);
+        return;
+      }
+
+      area.innerHTML = `
+        <div class="feedback info" style="margin-bottom:16px">
+          <div class="feedback-title">Opdracht</div>${step.instruction}
+        </div>
+        <div class="email-mockup" style="margin-bottom:16px">
+          <div class="email-header-bar">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="color:${d.tool === 'chatgpt' ? '#10a37f' : 'var(--cyan)'};font-weight:700">${d.tool === 'chatgpt' ? 'ChatGPT' : d.tool === 'claude' ? 'Claude' : 'AI'}</span>
+              <span style="color:var(--text-muted);font-size:0.75rem">GPT-4o</span>
+            </div>
+          </div>
+          <div class="email-body-area">
+            <div id="chat-messages" style="margin-bottom:16px"></div>
+            <div id="chat-options" class="choice-grid"></div>
+          </div>
+        </div>
+      `;
+
+      const optionsEl = area.querySelector("#chat-options");
+      step.prefilledOptions.forEach(opt => {
+        const card = document.createElement("div");
+        card.className = "choice-card";
+        card.innerHTML = `<div class="choice-text" style="font-family:var(--mono);font-size:0.85rem">${opt.text}</div>`;
+        card.addEventListener("click", () => {
+          sfxClick();
+          optionsEl.querySelectorAll(".choice-card").forEach(c => c.style.pointerEvents = "none");
+          card.classList.add("selected");
+
+          const msgs = area.querySelector("#chat-messages");
+          msgs.innerHTML = `<div style="text-align:right;margin-bottom:12px"><div style="display:inline-block;background:var(--cyan-dim);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:0.85rem">${opt.text}</div></div>`;
+
+          const aiDiv = document.createElement("div");
+          aiDiv.innerHTML = `<div class="prompt-output" id="chat-ai-output"></div>`;
+          msgs.appendChild(aiDiv);
+
+          const resp = step.responses[opt.quality];
+          simulateAI(aiDiv.querySelector("#chat-ai-output"), resp.output, 18).then(() => {
+            const fb = document.createElement("div");
+            fb.className = `feedback ${resp.feedback.type}`;
+            fb.innerHTML = `<div class="feedback-title">${resp.feedback.title}</div>${resp.feedback.text}`;
+            area.appendChild(fb);
+
+            if (opt.quality === "good") addXP(100);
+
+            const btn = document.createElement("button");
+            btn.className = "action-btn";
+            btn.textContent = "Volgende \u2192";
+            btn.style.marginTop = "12px";
+            btn.addEventListener("click", () => { sfxClick(); stepIdx++; renderStep(); });
+            area.appendChild(btn);
+          });
+        });
+        optionsEl.appendChild(card);
+      });
+    }
+    renderStep();
+  }
+
+  function renderPromptEnhance(area, task, step) {
+    const d = step;
+    area.innerHTML = `
+      <div class="feedback info" style="margin-bottom:16px">
+        <div class="feedback-title">Opdracht</div>${d.instruction}
+      </div>
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">BASIS PROMPT:</div>
+      <div class="prompt-output" id="evolving-prompt" style="margin-bottom:16px">${d.basePrompt}</div>
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:8px">VOEG TOE:</div>
+      <div id="enhancer-btns" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+      <div id="impact-log"></div>
+    `;
+
+    const added = [];
+    const btnsEl = area.querySelector("#enhancer-btns");
+    const promptEl = area.querySelector("#evolving-prompt");
+    const logEl = area.querySelector("#impact-log");
+
+    d.enhancers.forEach(e => {
+      const btn = document.createElement("button");
+      btn.className = "drag-item";
+      btn.innerHTML = `+ ${e.label}`;
+      btn.addEventListener("click", () => {
+        sfxCorrect();
+        added.push(e);
+        btn.classList.add("placed");
+        btn.disabled = true;
+
+        promptEl.textContent = d.basePrompt + " " + added.map(a => a.value).join(", ");
+        promptEl.style.borderColor = `hsl(${120 * (added.length / d.enhancers.length)}, 80%, 50%)`;
+
+        const impact = document.createElement("div");
+        impact.className = "feedback success";
+        impact.style.marginBottom = "8px";
+        impact.innerHTML = `<strong>+${e.label}:</strong> ${e.impact}`;
+        logEl.prepend(impact);
+        addXP(30);
+
+        if (added.length >= d.enhancers.length) {
+          const outputDiv = document.createElement("div");
+          outputDiv.style.marginTop = "16px";
+          outputDiv.innerHTML = `
+            <div style="font-family:var(--mono);font-size:0.7rem;color:var(--green);margin-bottom:4px">RESULTAAT:</div>
+            <div class="prompt-output" style="border-color:var(--green)" id="enhanced-output"></div>
+          `;
+          area.appendChild(outputDiv);
+          simulateAI(outputDiv.querySelector("#enhanced-output"), d.finalOutput, 15).then(() => {
+            state.totalScore++;
+            showInsightAndNext(area, task);
+          });
+        }
+      });
+      btnsEl.appendChild(btn);
+    });
+  }
+
+  // ─── INTERACTION: Model Compare ─────────────────────
+  function renderModelCompare(area, task) {
+    const d = task.interaction;
+    area.innerHTML = `
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">PROMPT:</div>
+      <div class="prompt-output" style="margin-bottom:20px;font-style:italic">"${d.prompt}"</div>
+      <div id="model-outputs" style="margin-bottom:20px"></div>
+      <div id="compare-question" style="display:none"></div>
+    `;
+
+    const outputsEl = area.querySelector("#model-outputs");
+    let loadedCount = 0;
+
+    d.models.forEach((model, i) => {
+      const div = document.createElement("div");
+      div.style.cssText = "margin-bottom:14px";
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:1.2rem">${model.icon}</span>
+          <span style="font-weight:700;color:${model.color}">${model.name}</span>
+        </div>
+        <div class="prompt-output" id="model-out-${i}"></div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+          ${model.strengths.map(s => `<span style="font-size:0.7rem;padding:2px 8px;background:var(--green-dim);color:var(--green);border-radius:4px">\u2713 ${s}</span>`).join("")}
+          ${model.weaknesses.map(w => `<span style="font-size:0.7rem;padding:2px 8px;background:var(--orange-dim);color:var(--orange);border-radius:4px">\u26A0 ${w}</span>`).join("")}
+        </div>
+      `;
+      outputsEl.appendChild(div);
+
+      setTimeout(() => {
+        simulateAI(div.querySelector(`#model-out-${i}`), model.output, 12).then(() => {
+          loadedCount++;
+          if (loadedCount >= d.models.length) showCompareQuestion();
+        });
+      }, i * 800);
+    });
+
+    function showCompareQuestion() {
+      const qEl = area.querySelector("#compare-question");
+      qEl.style.display = "block";
+      qEl.innerHTML = `
+        <div class="task-title" style="font-size:1rem">${d.question}</div>
+        <div class="choice-grid" id="model-choices"></div>
+      `;
+      const choicesEl = qEl.querySelector("#model-choices");
+      d.models.forEach(model => {
+        const card = document.createElement("div");
+        card.className = "choice-card";
+        card.innerHTML = `<div style="font-size:1.1rem">${model.icon}</div><div class="choice-text">${model.name}</div>`;
+        card.addEventListener("click", () => {
+          choicesEl.querySelectorAll(".choice-card").forEach(c => c.style.pointerEvents = "none");
+          if (model.name === d.correctModel) {
+            sfxCorrect();
+            card.classList.add("correct-choice");
+            addXP(100);
+            state.totalScore++;
+          } else {
+            sfxWrong();
+            card.classList.add("wrong-choice");
+            choicesEl.querySelectorAll(".choice-card").forEach(c => {
+              if (d.models[Array.from(choicesEl.children).indexOf(c)]?.name === d.correctModel) c.classList.add("correct-choice");
+            });
+          }
+          area.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Analyse</div>${d.explanation}</div>`;
+          showInsightAndNext(area, task);
+        });
+        choicesEl.appendChild(card);
+      });
+    }
+  }
+
+  // ─── INTERACTION: Sort Safe/Unsafe ──────────────────
+  function renderSortSafeUnsafe(area, task) {
+    const d = task.interaction;
+    const shuffled = [...d.items].sort(() => Math.random() - 0.5);
+    let current = 0;
+    let correct = 0;
+
+    area.innerHTML = `
+      <div class="feedback info" style="margin-bottom:16px">
+        <div class="feedback-title">Opdracht</div>${d.instruction}
+      </div>
+      <div class="score-display">
+        <div class="score-item"><span style="color:var(--green)">\u2705</span> <span id="sort-correct">0</span>/${d.items.length}</div>
+        <div class="score-item"><span style="color:var(--red)">\u274C</span> <span id="sort-wrong">0</span></div>
+      </div>
+      <div id="sort-card-area"></div>
+      <div id="sort-feedback-area"></div>
+    `;
+
+    let wrongCount = 0;
+
+    function showItem() {
+      if (current >= shuffled.length) {
+        state.totalScore++;
+        addXP(50);
+        showInsightAndNext(area, task);
+        return;
+      }
+      const item = shuffled[current];
+      const cardArea = area.querySelector("#sort-card-area");
+      cardArea.innerHTML = `
+        <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;text-align:center">
+          <div style="font-size:0.95rem;font-weight:600;margin-bottom:16px">"${item.text}"</div>
+          <div class="btn-row" style="justify-content:center">
+            <button class="action-btn success" id="sort-safe">\u2705 Veilig</button>
+            <button class="action-btn danger" id="sort-unsafe">\u274C Niet doen</button>
+          </div>
+        </div>
+      `;
+      cardArea.querySelector("#sort-safe").addEventListener("click", () => handleSort(true, item));
+      cardArea.querySelector("#sort-unsafe").addEventListener("click", () => handleSort(false, item));
+    }
+
+    function handleSort(userSaysSafe, item) {
+      const isCorrect = userSaysSafe === item.safe;
+      const fbArea = area.querySelector("#sort-feedback-area");
+
+      if (isCorrect) {
+        sfxCorrect();
+        correct++;
+        area.querySelector("#sort-correct").textContent = correct;
+      } else {
+        sfxWrong();
+        wrongCount++;
+        area.querySelector("#sort-wrong").textContent = wrongCount;
+      }
+
+      const fb = document.createElement("div");
+      fb.className = `feedback ${isCorrect ? "success" : "error"}`;
+      fb.style.marginBottom = "8px";
+      fb.innerHTML = `<strong>${isCorrect ? "Goed!" : "Fout!"}</strong> ${item.reason}`;
+      fbArea.prepend(fb);
+
+      current++;
+      setTimeout(showItem, 800);
+    }
+
+    showItem();
+  }
+
+  // ─── INTERACTION: Transform Text ────────────────────
+  function renderTransformText(area, task) {
+    const d = task.interaction;
+    const t = d.tasks[0];
+    area.innerHTML = `
+      <div style="margin-bottom:16px">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">${d.inputLabel}:</div>
+        <div class="prompt-output" style="white-space:pre-wrap;font-size:0.85rem">${d.input}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:4px">PROMPT:</div>
+      <div class="prompt-output" style="border-color:var(--cyan);margin-bottom:16px;font-style:italic">"${t.prompt}"</div>
+      <button class="action-btn" id="transform-btn">Verstuur naar AI \u2192</button>
+      <div id="transform-output-area" style="display:none;margin-top:16px">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--green);margin-bottom:4px">${d.outputLabel}:</div>
+        <div class="prompt-output" style="border-color:var(--green);white-space:pre-wrap" id="transform-output"></div>
+        <div id="checkpoint-area" style="margin-top:16px"></div>
+      </div>
+    `;
+
+    area.querySelector("#transform-btn").addEventListener("click", () => {
+      sfxClick();
+      area.querySelector("#transform-btn").style.display = "none";
+      const outArea = area.querySelector("#transform-output-area");
+      outArea.style.display = "block";
+
+      simulateAI(area.querySelector("#transform-output"), t.output, 12).then(() => {
+        const cpArea = area.querySelector("#checkpoint-area");
+        cpArea.innerHTML = `<div style="font-family:var(--mono);font-size:0.7rem;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">CONTROLEER DE OUTPUT:</div>`;
+
+        t.checkpoints.forEach(cp => {
+          const div = document.createElement("div");
+          div.className = `feedback ${cp.present ? (cp.warning ? "warning" : "success") : "error"}`;
+          div.style.marginBottom = "8px";
+          div.innerHTML = `<strong>${cp.label}</strong>${cp.warning ? `<br>${cp.warning}` : cp.present ? " \u2714" : " \u2718"}`;
+          cpArea.appendChild(div);
+        });
+
+        state.totalScore++;
+        addXP(100);
+        showInsightAndNext(area, task);
+      });
+    });
+  }
+
+  // ─── INTERACTION: Role Compare ──────────────────────
+  function renderRoleCompare(area, task) {
+    const d = task.interaction;
+    area.innerHTML = `
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">BUSINESS PLAN:</div>
+      <div class="prompt-output" style="margin-bottom:16px;font-style:italic">"${d.basePrompt}"</div>
+      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:8px">KIES EEN ROL VOOR DE AI:</div>
+      <div id="role-buttons" style="margin-bottom:16px"></div>
+      <div id="role-output-area" style="display:none">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">ROL: <span id="role-name" style="color:var(--purple)"></span></div>
+        <div class="prompt-output" style="white-space:pre-wrap" id="role-output"></div>
+        <div id="role-analysis" style="margin-top:8px"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="action-btn secondary" id="try-another">Probeer andere rol</button>
+        </div>
+      </div>
+    `;
+
+    const btnsEl = area.querySelector("#role-buttons");
+    let tried = 0;
+
+    d.roles.forEach((r, i) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-card";
+      btn.style.cursor = "pointer";
+      btn.innerHTML = `<div class="choice-text" style="font-family:var(--mono);font-size:0.85rem">${r.role}</div>`;
+      btn.addEventListener("click", () => {
+        sfxClick();
+        tried++;
+        btnsEl.style.display = "none";
+        const outArea = area.querySelector("#role-output-area");
+        outArea.style.display = "block";
+        area.querySelector("#role-name").textContent = r.role;
+
+        simulateAI(area.querySelector("#role-output"), r.output, 12).then(() => {
+          area.querySelector("#role-analysis").innerHTML = `<div class="feedback info"><div class="feedback-title">Analyse</div>${r.analysis}</div>`;
+
+          if (tried >= 2) {
+            addXP(100);
+            state.totalScore++;
+            showInsightAndNext(area, task);
+          }
+        });
+      });
+      btnsEl.appendChild(btn);
+    });
+
+    area.addEventListener("click", (e) => {
+      if (e.target.id === "try-another" || e.target.closest("#try-another")) {
+        btnsEl.style.display = "block";
+        area.querySelector("#role-output-area").style.display = "none";
+      }
     });
   }
 
