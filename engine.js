@@ -900,16 +900,41 @@
         </div>
       </div>`;
     if (tool === "claude") return `
-      <div class="claude-window">
-        <div class="claude-topbar">
-          <div class="claude-topbar-logo">C</div>
-          <div class="claude-topbar-title">Claude</div>
-          <div class="claude-topbar-model">Sonnet 4</div>
+      <div class="claude-browser">
+        <div class="claude-sidebar">
+          <div class="claude-sidebar-top">
+            <button class="claude-new-chat">\u270E Nieuw gesprek</button>
+          </div>
+          <div class="claude-sidebar-label">Vandaag</div>
+          <div class="claude-sidebar-list">
+            <div class="claude-sidebar-item active">Rapport nakijken</div>
+            <div class="claude-sidebar-item">Sollicitatiebrief review</div>
+            <div class="claude-sidebar-item">Brainstorm productlancering</div>
+          </div>
+          <div class="claude-sidebar-label">Vorige week</div>
+          <div class="claude-sidebar-list">
+            <div class="claude-sidebar-item">Analyse jaarverslag</div>
+            <div class="claude-sidebar-item">Presentatie feedback</div>
+          </div>
+          <div class="claude-sidebar-bottom">
+            <div class="claude-user-avatar">M</div>
+            <div class="claude-user-name">Marjolein</div>
+          </div>
         </div>
-        <div class="claude-chat" id="sim-chat"></div>
-        <div class="claude-inputbar">
-          <input class="claude-input" placeholder="Praat met Claude..." readonly>
-          <button class="claude-send" disabled>\u2191</button>
+        <div class="claude-main">
+          <div class="claude-topbar">
+            <div class="claude-topbar-logo">C</div>
+            <div class="claude-model-select">Claude <span style="font-size:0.6rem">\u25BC</span></div>
+            <div class="claude-topbar-model">Sonnet 4</div>
+          </div>
+          <div class="claude-chat" id="sim-chat"></div>
+          <div class="claude-input-area">
+            <div class="claude-inputbar">
+              <input class="claude-input" placeholder="Praat met Claude..." readonly>
+              <button class="claude-send" disabled>\u2191</button>
+            </div>
+            <div class="claude-disclaimer">Claude kan fouten maken. Verifieer belangrijke informatie.</div>
+          </div>
         </div>
       </div>`;
     return `
