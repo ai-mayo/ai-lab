@@ -859,6 +859,74 @@
   }
 
   // ─── AI Window HTML builders ────────────────────────
+  function buildFullBrowser(tool) {
+    if (tool === "chatgpt") return `
+      <div class="gpt-browser">
+        <div class="gpt-sidebar">
+          <div class="gpt-sidebar-top">
+            <button class="gpt-new-chat">\u270E Nieuwe chat</button>
+          </div>
+          <div class="gpt-sidebar-label">Vandaag</div>
+          <div class="gpt-sidebar-list">
+            <div class="gpt-sidebar-item active">Email schrijven klant</div>
+            <div class="gpt-sidebar-item">Samenvatting vergadering</div>
+            <div class="gpt-sidebar-item">Python script debuggen</div>
+          </div>
+          <div class="gpt-sidebar-label">Gisteren</div>
+          <div class="gpt-sidebar-list">
+            <div class="gpt-sidebar-item">Marketing plan Q2</div>
+            <div class="gpt-sidebar-item">Vertaling rapport EN-NL</div>
+          </div>
+          <div class="gpt-sidebar-bottom">
+            <div class="gpt-user-avatar">M</div>
+            <div class="gpt-user-name">Marjolein</div>
+          </div>
+        </div>
+        <div class="gpt-main">
+          <div class="gpt-topbar">
+            <div class="gpt-topbar-logo">G</div>
+            <div class="gpt-model-select">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
+            <div class="gpt-topbar-model">4o</div>
+            <div class="gpt-topbar-share">\u2197 Delen</div>
+          </div>
+          <div class="gpt-chat" id="sim-chat"></div>
+          <div class="gpt-input-area">
+            <div class="gpt-inputbar">
+              <input class="gpt-input" placeholder="Stuur een bericht..." readonly>
+              <button class="gpt-send" disabled>\u2191</button>
+            </div>
+            <div class="gpt-disclaimer">ChatGPT kan fouten maken. Controleer belangrijke informatie.</div>
+          </div>
+        </div>
+      </div>`;
+    if (tool === "claude") return `
+      <div class="claude-window">
+        <div class="claude-topbar">
+          <div class="claude-topbar-logo">C</div>
+          <div class="claude-topbar-title">Claude</div>
+          <div class="claude-topbar-model">Sonnet 4</div>
+        </div>
+        <div class="claude-chat" id="sim-chat"></div>
+        <div class="claude-inputbar">
+          <input class="claude-input" placeholder="Praat met Claude..." readonly>
+          <button class="claude-send" disabled>\u2191</button>
+        </div>
+      </div>`;
+    return `
+      <div class="gemini-window">
+        <div class="gemini-topbar">
+          <div class="gemini-topbar-logo">G</div>
+          <div class="gemini-topbar-title">Gemini</div>
+          <div class="gemini-topbar-model">2.5 Pro</div>
+        </div>
+        <div class="gemini-chat" id="sim-chat"></div>
+        <div class="gemini-inputbar">
+          <input class="gemini-input" placeholder="Vraag Gemini iets..." readonly>
+          <button class="gemini-send" disabled>\u2191</button>
+        </div>
+      </div>`;
+  }
+
   function buildToolWindow(tool) {
     if (tool === "chatgpt") return {
       cls: "gpt", window: "gpt-window", chat: "gpt-chat",
@@ -916,15 +984,11 @@
       }
 
       area.innerHTML = `
-        <div class="feedback info" style="margin-bottom:16px">
+        <div class="feedback info" style="margin-bottom:12px">
           <div class="feedback-title">Opdracht</div>${step.instruction}
         </div>
-        <div class="${ui.window}" style="margin-bottom:16px">
-          ${ui.topbar}
-          <div class="${ui.chat}" id="sim-chat"></div>
-          ${ui.inputbar}
-        </div>
-        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:8px">KIES WAT JE TYPT:</div>
+        ${buildFullBrowser(d.tool || "chatgpt")}
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin:12px 0 8px">KIES WAT JE TYPT:</div>
         <div id="chat-options" class="choice-grid"></div>
       `;
 
