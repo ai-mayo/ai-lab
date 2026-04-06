@@ -938,16 +938,39 @@
         </div>
       </div>`;
     return `
-      <div class="gemini-window">
-        <div class="gemini-topbar">
-          <div class="gemini-topbar-logo">G</div>
-          <div class="gemini-topbar-title">Gemini</div>
-          <div class="gemini-topbar-model">2.5 Pro</div>
+      <div class="gemini-browser">
+        <div class="gemini-sidebar">
+          <div class="gemini-sidebar-top">
+            <button class="gemini-new-chat">\u2728 Nieuw gesprek</button>
+          </div>
+          <div class="gemini-sidebar-label">Recent</div>
+          <div class="gemini-sidebar-list">
+            <div class="gemini-sidebar-item active">Blockchain uitleg</div>
+            <div class="gemini-sidebar-item">Reisplanning Londen</div>
+            <div class="gemini-sidebar-item">Code review Python</div>
+          </div>
+          <div class="gemini-sidebar-label">Vorige week</div>
+          <div class="gemini-sidebar-list">
+            <div class="gemini-sidebar-item">Recepten meal prep</div>
+          </div>
+          <div class="gemini-sidebar-bottom">
+            <div class="gemini-user-avatar">M</div>
+          </div>
         </div>
-        <div class="gemini-chat" id="sim-chat"></div>
-        <div class="gemini-inputbar">
-          <input class="gemini-input" placeholder="Vraag Gemini iets..." readonly>
-          <button class="gemini-send" disabled>\u2191</button>
+        <div class="gemini-main">
+          <div class="gemini-topbar">
+            <div class="gemini-topbar-logo">G</div>
+            <div class="gemini-model-select">Gemini <span style="font-size:0.6rem">\u25BC</span></div>
+            <div class="gemini-topbar-model">2.5 Pro</div>
+          </div>
+          <div class="gemini-chat" id="sim-chat"></div>
+          <div class="gemini-input-area">
+            <div class="gemini-inputbar">
+              <input class="gemini-input" placeholder="Vraag Gemini iets..." readonly>
+              <button class="gemini-send" disabled>\u2191</button>
+            </div>
+            <div class="gemini-disclaimer">Gemini kan foutieve informatie weergeven, ook over personen. Controleer de antwoorden.</div>
+          </div>
         </div>
       </div>`;
   }
