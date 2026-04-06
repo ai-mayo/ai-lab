@@ -858,9 +858,52 @@
     });
   }
 
+  // ─── AI Window HTML builders ────────────────────────
+  function buildToolWindow(tool) {
+    if (tool === "chatgpt") return {
+      cls: "gpt", window: "gpt-window", chat: "gpt-chat",
+      topbar: `<div class="gpt-topbar"><div class="gpt-topbar-logo">G</div><div class="gpt-topbar-title">ChatGPT</div><div class="gpt-topbar-model">GPT-4o</div></div>`,
+      inputbar: `<div class="gpt-inputbar"><input class="gpt-input" placeholder="Stuur een bericht..." readonly><button class="gpt-send" disabled>\u2191</button></div>`,
+      aiAvatar: `<div class="gpt-avatar ai">G</div>`,
+      userAvatar: `<div class="gpt-avatar user">M</div>`,
+    };
+    if (tool === "claude") return {
+      cls: "claude", window: "claude-window", chat: "claude-chat",
+      topbar: `<div class="claude-topbar"><div class="claude-topbar-logo">C</div><div class="claude-topbar-title">Claude</div><div class="claude-topbar-model">Sonnet 4</div></div>`,
+      inputbar: `<div class="claude-inputbar"><input class="claude-input" placeholder="Praat met Claude..." readonly><button class="claude-send" disabled>\u2191</button></div>`,
+      aiAvatar: `<div class="claude-avatar ai">C</div>`,
+      userAvatar: `<div class="claude-avatar user">M</div>`,
+    };
+    return {
+      cls: "gemini", window: "gemini-window", chat: "gemini-chat",
+      topbar: `<div class="gemini-topbar"><div class="gemini-topbar-logo">G</div><div class="gemini-topbar-title">Gemini</div><div class="gemini-topbar-model">2.5 Pro</div></div>`,
+      inputbar: `<div class="gemini-inputbar"><input class="gemini-input" placeholder="Vraag Gemini iets..." readonly><button class="gemini-send" disabled>\u2191</button></div>`,
+      aiAvatar: `<div class="gemini-avatar ai">G</div>`,
+      userAvatar: `<div class="gemini-avatar user">M</div>`,
+    };
+  }
+
+  function addChatMsg(chatEl, ui, role, text, animate) {
+    const msg = document.createElement("div");
+    msg.className = `${ui.cls}-msg ${role}`;
+    const avatar = role === "user" ? ui.userAvatar : ui.aiAvatar;
+    const bubbleId = "bubble-" + Math.random().toString(36).slice(2, 8);
+    msg.innerHTML = `${avatar}<div class="${ui.cls}-bubble" id="${bubbleId}"></div>`;
+    chatEl.appendChild(msg);
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    const bubbleEl = msg.querySelector(`#${bubbleId}`);
+    if (animate && role === "ai") {
+      return simulateAI(bubbleEl, text, 15);
+    }
+    bubbleEl.innerHTML = text.replace(/\n/g, "<br>");
+    return Promise.resolve();
+  }
+
   // ─── INTERACTION: Chat Simulator ────────────────────
   function renderChatSimulator(area, task) {
     const d = task.interaction;
+    const ui = buildToolWindow(d.tool || "chatgpt");
     let stepIdx = 0;
 
     function renderStep() {
@@ -876,21 +919,18 @@
         <div class="feedback info" style="margin-bottom:16px">
           <div class="feedback-title">Opdracht</div>${step.instruction}
         </div>
-        <div class="email-mockup" style="margin-bottom:16px">
-          <div class="email-header-bar">
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="color:${d.tool === 'chatgpt' ? '#10a37f' : 'var(--cyan)'};font-weight:700">${d.tool === 'chatgpt' ? 'ChatGPT' : d.tool === 'claude' ? 'Claude' : 'AI'}</span>
-              <span style="color:var(--text-muted);font-size:0.75rem">GPT-4o</span>
-            </div>
-          </div>
-          <div class="email-body-area">
-            <div id="chat-messages" style="margin-bottom:16px"></div>
-            <div id="chat-options" class="choice-grid"></div>
-          </div>
+        <div class="${ui.window}" style="margin-bottom:16px">
+          ${ui.topbar}
+          <div class="${ui.chat}" id="sim-chat"></div>
+          ${ui.inputbar}
         </div>
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);margin-bottom:8px">KIES WAT JE TYPT:</div>
+        <div id="chat-options" class="choice-grid"></div>
       `;
 
+      const chatEl = area.querySelector("#sim-chat");
       const optionsEl = area.querySelector("#chat-options");
+
       step.prefilledOptions.forEach(opt => {
         const card = document.createElement("div");
         card.className = "choice-card";
@@ -900,15 +940,12 @@
           optionsEl.querySelectorAll(".choice-card").forEach(c => c.style.pointerEvents = "none");
           card.classList.add("selected");
 
-          const msgs = area.querySelector("#chat-messages");
-          msgs.innerHTML = `<div style="text-align:right;margin-bottom:12px"><div style="display:inline-block;background:var(--cyan-dim);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:0.85rem">${opt.text}</div></div>`;
-
-          const aiDiv = document.createElement("div");
-          aiDiv.innerHTML = `<div class="prompt-output" id="chat-ai-output"></div>`;
-          msgs.appendChild(aiDiv);
+          // Show user message in chat window
+          addChatMsg(chatEl, ui, "user", opt.text, false);
 
           const resp = step.responses[opt.quality];
-          simulateAI(aiDiv.querySelector("#chat-ai-output"), resp.output, 18).then(() => {
+          // Show AI typing then response
+          addChatMsg(chatEl, ui, "ai", resp.output, true).then(() => {
             const fb = document.createElement("div");
             fb.className = `feedback ${resp.feedback.type}`;
             fb.innerHTML = `<div class="feedback-title">${resp.feedback.title}</div>${resp.feedback.text}`;
@@ -999,28 +1036,34 @@
     const outputsEl = area.querySelector("#model-outputs");
     let loadedCount = 0;
 
+    const toolMap = { "ChatGPT": "chatgpt", "Claude": "claude", "Gemini": "gemini" };
+
     d.models.forEach((model, i) => {
-      const div = document.createElement("div");
-      div.style.cssText = "margin-bottom:14px";
-      div.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <span style="font-size:1.2rem">${model.icon}</span>
-          <span style="font-weight:700;color:${model.color}">${model.name}</span>
+      const toolKey = toolMap[model.name] || "chatgpt";
+      const ui = buildToolWindow(toolKey);
+
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = "margin-bottom:16px";
+      wrapper.innerHTML = `
+        <div class="${ui.window}">
+          ${ui.topbar}
+          <div class="${ui.chat}" id="model-chat-${i}" style="min-height:60px"></div>
         </div>
-        <div class="prompt-output" id="model-out-${i}"></div>
-        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
           ${model.strengths.map(s => `<span style="font-size:0.7rem;padding:2px 8px;background:var(--green-dim);color:var(--green);border-radius:4px">\u2713 ${s}</span>`).join("")}
           ${model.weaknesses.map(w => `<span style="font-size:0.7rem;padding:2px 8px;background:var(--orange-dim);color:var(--orange);border-radius:4px">\u26A0 ${w}</span>`).join("")}
         </div>
       `;
-      outputsEl.appendChild(div);
+      outputsEl.appendChild(wrapper);
 
       setTimeout(() => {
-        simulateAI(div.querySelector(`#model-out-${i}`), model.output, 12).then(() => {
+        const chatEl = wrapper.querySelector(`#model-chat-${i}`);
+        addChatMsg(chatEl, ui, "user", d.prompt, false);
+        addChatMsg(chatEl, ui, "ai", model.output, true).then(() => {
           loadedCount++;
           if (loadedCount >= d.models.length) showCompareQuestion();
         });
-      }, i * 800);
+      }, i * 1000);
     });
 
     function showCompareQuestion() {
