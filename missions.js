@@ -146,8 +146,8 @@ const MISSIONS = [
                   { type: "heading", text: "Wat we gebruiken bij Gemeente Mayostad" },
                   { type: "tool", name: "ChatGPT", desc: "Voor emails, samenvattingen, brainstorms. Iedereen heeft een Team-account.", status: "Verplicht" },
                   { type: "tool", name: "Claude", desc: "Voor langere documenten en analyses. Beschikbaar voor iedereen.", status: "Optioneel" },
-                  { type: "tool", name: "Slack", desc: "Interne communicatie.", status: "Verplicht" },
-                  { type: "tool", name: "Notion", desc: "Documentatie en wiki (dit intranet).", status: "Verplicht" },
+                  { type: "tool", name: "MayoChat", desc: "Interne berichten en groepsgesprekken. Open source, draait op eigen servers.", status: "Verplicht" },
+                  { type: "tool", name: "MayoWiki", desc: "Interne kennisbank en documentatie (dit intranet). Open source.", status: "Verplicht" },
                   { type: "text", text: "Belangrijk: plak NOOIT klantgegevens of wachtwoorden in AI-tools. Gebruik alleen voornaam + achternaam, geen BSN of financiele data." }
                 ]
               },

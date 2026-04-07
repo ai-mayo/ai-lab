@@ -1020,12 +1020,12 @@
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#EA8B47"/><rect x="32" y="30" width="56" height="60" rx="4" fill="none" stroke="white" stroke-width="3"/><line x1="42" y1="45" x2="78" y2="45" stroke="white" stroke-width="2.5" opacity="0.7"/><line x1="42" y1="55" x2="72" y2="55" stroke="white" stroke-width="2.5" opacity="0.5"/><line x1="42" y1="65" x2="68" y2="65" stroke="white" stroke-width="2.5" opacity="0.4"/><circle cx="82" cy="78" r="14" fill="#EA8B47" stroke="white" stroke-width="3"/><path d="M78 78h8M82 74v8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <div class="dock-icon" data-app="mail">
-          <div class="dock-tooltip">Outlook</div><div class="dock-label">Outlook</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0078D4"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
+          <div class="dock-tooltip">MayoMail</div><div class="dock-label">MayoMail</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
-        <div class="dock-icon" data-app="teams">
-          <div class="dock-tooltip">Teams</div><div class="dock-label">Teams</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#5B5FC7"/><circle cx="50" cy="45" r="12" fill="none" stroke="white" stroke-width="3"/><circle cx="72" cy="42" r="9" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/><path d="M30 80c0-14 10-22 24-22s24 8 24 22" fill="none" stroke="white" stroke-width="3"/></svg>
+        <div class="dock-icon" data-app="chat">
+          <div class="dock-tooltip">MayoChat</div><div class="dock-label">MayoChat</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/><circle cx="50" cy="57" r="3" fill="white"/><circle cx="60" cy="57" r="3" fill="white"/><circle cx="70" cy="57" r="3" fill="white"/></svg>
         </div>
         <div class="dock-icon" data-app="settings">
           <div class="dock-tooltip">Instellingen</div><div class="dock-label">Instellingen</div>
@@ -1077,8 +1077,8 @@
       finder: "Finder is beschikbaar, maar je hebt geen bestanden nodig voor deze opdracht.",
       claude: "Claude is beschikbaar voor langere documenten. Vandaag gebruik je ChatGPT.",
       notebooklm: "NotebookLM is beschikbaar voor onderzoek en samenvattingen. Probeer het later!",
-      mail: "Outlook opent zodra je een email hebt geschreven in ChatGPT.",
-      teams: "Geen vergaderingen gepland vandaag. Fijn, eerste dag!",
+      mail: "MayoMail opent zodra je een brief hebt geschreven in ChatGPT.",
+      chat: "Lisa stuurt je zo een bericht via MayoChat. Even geduld!",
       settings: "Instellingen zijn vergrendeld door IT. Neem contact op met de helpdesk.",
     };
 
@@ -1244,7 +1244,7 @@
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
-      showTeamsNotification(area, d, task);
+      showChatNotification(area, d, task);
     }, d.taskPopupDelay || 12000);
   }
 
@@ -1266,7 +1266,7 @@
     setTimeout(() => notif.remove(), 4000);
   }
 
-  function showTeamsNotification(area, d, task) {
+  function showChatNotification(area, d, task) {
     const tp = d.taskPopup;
     const notifArea = document.getElementById("notification-area");
     const notif = document.createElement("div");
@@ -1274,8 +1274,8 @@
     notif.style.cursor = "pointer";
     notif.innerHTML = `
       <div class="macos-notif-header">
-        <div class="macos-notif-icon" style="background:#5B5FC7">T</div>
-        <div class="macos-notif-app">Teams</div>
+        <div class="macos-notif-icon" style="background:#2563eb">M</div>
+        <div class="macos-notif-app">MayoChat</div>
         <div class="macos-notif-time">nu</div>
       </div>
       <div class="macos-notif-body">
@@ -1300,7 +1300,7 @@
         // Remind again
         setTimeout(() => {
           if (!document.getElementById("window-chatgpt")?.classList.contains("open-active")) {
-            showTeamsNotification(area, d, task);
+            showChatNotification(area, d, task);
           }
         }, 15000);
       }
