@@ -924,6 +924,7 @@
     const timeStr = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
 
     area.innerHTML = `<div class="desktop" id="macos-desktop">
+      <div class="mac-notch"><div class="mac-notch-cam"></div></div>
       <div class="menubar">
         <span class="menubar-apple"><svg viewBox="0 0 17 20" width="12" height="14" fill="white"><path d="M12.15 0c.08.68-.2 1.36-.54 1.86-.38.53-.99.94-1.6.88-.09-.65.24-1.34.56-1.77.38-.5 1.04-.9 1.58-.97zM14.96 7.2c-.04.02-1.6.92-1.58 2.76.02 2.2 1.93 2.93 1.96 2.94-.01.06-.3 1.06-.1 2.22-.56.46-1.1.92-1.97.92-.42 0-.7-.14-1-.28-.32-.15-.66-.3-1.17-.3-.54 0-.9.16-1.24.31-.28.13-.55.25-.92.27-.83.03-1.46-.98-2.03-1.94-.58-.98-1.06-2.5-.44-3.59.3-.54.84-.88 1.44-.89.47-.01.9.17 1.24.32.28.12.5.22.76.22.24 0 .44-.09.72-.22.38-.17.86-.38 1.48-.33.85.03 1.5.46 1.86 1.13-.75.46-1.26 1.23-1.2 2.15.06.98.65 1.82 1.49 2.18-.18.53-.4 1.04-.7 1.51z"/></svg></span>
         <span class="menubar-app">Finder</span>
@@ -2148,25 +2149,68 @@
       // Skip boot if already seen this session
       if (sessionStorage.getItem("ai-lab-booted")) {
         bootScreen.classList.add("hidden");
+        document.getElementById("login-screen").classList.add("hidden");
         app.style.display = "";
         init();
         return;
       }
 
-      const lines = [
-        "NEURAL INTERFACE v2.0.4",
-        "Verbinding maken met AI-netwerk...",
-        "Taalmodellen laden: GPT-4o, Claude Sonnet, Gemini Pro",
-        "Beveiligingsprotocol activeren...",
-        "Kennisbank synchroniseren... 847.291 bronnen",
-        "Agent-sandbox initialiseren...",
-        `Gebruiker identificeren... ${nickname}`,
-        "Toegangsniveau: EXPLORER",
+      // Show login screen first
+      bootScreen.classList.add("hidden");
+      const loginScreen = document.getElementById("login-screen");
+      loginScreen.classList.remove("hidden");
+
+      // Set time and date
+      const now = new Date();
+      const days = ["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"];
+      const months = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+      document.getElementById("login-time").textContent = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
+      document.getElementById("login-date").textContent = days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()];
+      document.getElementById("login-avatar").textContent = nickname[0].toUpperCase();
+      document.getElementById("login-name-display").textContent = nickname;
+
+      const pwInput = document.getElementById("login-password");
+      const loginGo = document.getElementById("login-go");
+      pwInput.focus();
+
+      function doLogin() {
+        loginScreen.style.transition = "opacity 0.6s";
+        loginScreen.style.opacity = "0";
+        setTimeout(() => {
+          loginScreen.classList.add("hidden");
+          // Now show boot sequence
+          const bootScreen2 = document.getElementById("boot-screen");
+          bootScreen2.classList.remove("hidden");
+          bootScreen2.style.opacity = "1";
+          runBootLines(nickname);
+        }, 600);
+      }
+      loginGo.addEventListener("click", doLogin);
+      pwInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+
+      return; // Don't run boot lines yet
+    });
+  }
+
+  function runBootLines(nickname) {
+    const bootScreen = document.getElementById("boot-screen");
+    const app = document.getElementById("app");
+
+    {
+
+    const lines = [
+        "GEMEENTE MAYOSTAD \u2014 AI WERKPLEK v2.0",
+        `Welkom terug, ${nickname}`,
+        "Verbinding maken met gemeentelijk netwerk...",
+        "AI-tools laden: ChatGPT Team, Claude, Gemini...",
+        "Beveiligingsprotocol AVG activeren...",
+        "Zaaksysteem Topdesk synchroniseren...",
+        "Intranet laden...",
         "",
-        "WAARSCHUWING: AI-systemen kunnen hallucineren.",
-        "Controleer altijd de output.",
+        "WAARSCHUWING: AI-output altijd controleren.",
+        "Jij bent verantwoordelijk, niet de AI.",
         "",
-        `Systeem gereed. Welkom bij AI Lab, ${nickname}.`
+        `Systeem gereed. Fijne eerste dag, ${nickname}.`
       ];
 
     const bootText = document.getElementById("boot-text");

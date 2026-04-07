@@ -56,6 +56,104 @@ body {
 #boot-screen.fade-out { opacity: 0; pointer-events: none; }
 #boot-screen.hidden { display: none; }
 
+/* macOS Login Screen */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900"><defs><linearGradient id="ls" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23667eea"/><stop offset="30%25" stop-color="%23764ba2"/><stop offset="60%25" stop-color="%23f093fb"/><stop offset="100%25" stop-color="%23f5576c"/></linearGradient></defs><rect fill="url(%23ls)" width="1440" height="900"/></svg>') center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif;
+}
+#login-screen.hidden { display: none; }
+
+.login-time {
+  font-size: 5rem;
+  font-weight: 200;
+  color: white;
+  letter-spacing: -2px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.login-date {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 40px;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.2);
+}
+
+.login-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.login-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 14px;
+}
+
+.login-input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 0 6px 0 16px;
+  width: 220px;
+  margin-bottom: 10px;
+}
+
+.login-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 8px 0;
+  outline: none;
+}
+.login-input::placeholder { color: rgba(255,255,255,0.5); }
+
+.login-arrow {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.login-arrow:hover { background: rgba(255,255,255,0.35); }
+
+.login-hint {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+}
+
 .boot-container {
   text-align: center;
   max-width: 360px;
@@ -1641,11 +1739,29 @@ body {
 .desktop {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
-  font-family: -apple-system, 'Inter', sans-serif;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900"><defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23667eea"/><stop offset="30%25" stop-color="%23764ba2"/><stop offset="60%25" stop-color="%23f093fb"/><stop offset="100%25" stop-color="%23f5576c"/></linearGradient><linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%25" stop-color="%232d1b69"/><stop offset="100%25" stop-color="%231a1040"/></linearGradient></defs><rect fill="url(%23sky)" width="1440" height="900"/><path d="M0 500Q200 350 400 450T800 350 1200 420 1440 380V900H0Z" fill="url(%23mtn)" opacity="0.6"/><path d="M0 600Q300 480 600 550T1100 500 1440 520V900H0Z" fill="%230d0a1a" opacity="0.7"/><circle cx="1100" cy="200" r="60" fill="%23fbbf24" opacity="0.9"/><circle cx="1100" cy="200" r="80" fill="%23fbbf24" opacity="0.15"/></svg>') center/cover no-repeat;
+  font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif;
   font-size: 13px;
   overflow: hidden;
   z-index: 100;
+}
+
+/* Notch */
+.mac-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 28px;
+  background: #000;
+  border-radius: 0 0 16px 16px;
+  z-index: 115;
+}
+.mac-notch-cam {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #1a1a2e; border: 1px solid #333;
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
 }
 
 /* Menu bar */
@@ -1653,15 +1769,16 @@ body {
   display: flex;
   align-items: center;
   height: 25px;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
   padding: 0 10px;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.95);
   font-size: 0.72rem;
   font-weight: 500;
   z-index: 110;
   letter-spacing: 0.01em;
+  text-shadow: 0 0.5px 1px rgba(0,0,0,0.3);
 }
 .menubar-apple { margin-right: 18px; opacity: 0.95; font-size: 0.85rem; }
 .menubar-app { font-weight: 600; margin-right: 18px; }
@@ -1678,11 +1795,11 @@ body {
   display: flex;
   gap: 4px;
   padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.25);
   z-index: 110;
 }
 
@@ -1729,10 +1846,12 @@ body {
 /* App Window */
 .app-window {
   position: absolute;
-  background: #1e1e1e;
-  border-radius: 10px;
+  background: rgba(30, 30, 30, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.15);
   display: none;
   flex-direction: column;
   z-index: 105;
@@ -1741,7 +1860,7 @@ body {
 .app-window.focused { z-index: 106; }
 
 .app-window.maximized {
-  top: 28px !important;
+  top: 26px !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 68px !important;
@@ -1753,10 +1872,10 @@ body {
 .app-titlebar {
   display: flex;
   align-items: center;
-  height: 36px;
-  padding: 0 12px;
-  background: #2a2a2a;
-  border-bottom: 1px solid #333;
+  height: 38px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
   cursor: default;
 }
