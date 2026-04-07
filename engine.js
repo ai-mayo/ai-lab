@@ -967,7 +967,7 @@
             <div class="app-titlebar-dot yellow" data-action="minimize" data-window="wiwa"></div>
             <div class="app-titlebar-dot green" data-action="maximize" data-window="wiwa"></div>
           </div>
-          <div class="app-titlebar-title">WiWa \u2014 Wie is Wa</div>
+          <div class="app-titlebar-title">WiWa \u2014 Wie is Waarvan</div>
           <div class="app-titlebar-controls">
             <div class="app-titlebar-ctrl" data-action="minimize" data-window="wiwa">\u2014</div>
             <div class="app-titlebar-ctrl" data-action="maximize" data-window="wiwa">\u25A1</div>
@@ -1613,6 +1613,30 @@
   }
 
   // ─── WiWa - Wie is Wa ───────────────────────────────
+  // Photo URLs - using randomuser.me and robohash for AI
+  const PHOTOS = {
+    "Lisa de Vries": "https://randomuser.me/api/portraits/women/44.jpg",
+    "Remco van Dam": "https://randomuser.me/api/portraits/men/32.jpg",
+    "Priya Sharma": "https://randomuser.me/api/portraits/women/68.jpg",
+    "Henk Visser": "https://randomuser.me/api/portraits/men/62.jpg",
+    "Fatima El-Amrani": "https://randomuser.me/api/portraits/women/90.jpg",
+    "Sandra Mulder": "https://randomuser.me/api/portraits/women/52.jpg",
+    "Bas van den Berg": "https://randomuser.me/api/portraits/men/46.jpg",
+    "Noor de Jong": "https://randomuser.me/api/portraits/women/33.jpg",
+    "Marco Pieterse": "https://randomuser.me/api/portraits/men/55.jpg",
+    "Anouk Willems": "https://randomuser.me/api/portraits/women/26.jpg",
+    "Dennis Krul": "https://randomuser.me/api/portraits/men/76.jpg",
+    "Youssef Amrani": "https://randomuser.me/api/portraits/men/83.jpg",
+    "Sarah Chen": "https://randomuser.me/api/portraits/women/75.jpg",
+    "Tom Bakker": "https://randomuser.me/api/portraits/men/22.jpg",
+    "Ahmed Hassan": "https://randomuser.me/api/portraits/men/91.jpg",
+    "KCC-Bot": "https://robohash.org/kcc-bot?set=set3&size=200x200",
+    "BZ-Vertaler": "https://robohash.org/bz-vertaler?set=set3&size=200x200",
+    "WMO-Schrijver": "https://robohash.org/wmo-schrijver?set=set3&size=200x200",
+    "BOA-Rapporteur": "https://robohash.org/boa-rapporteur?set=set3&size=200x200",
+    "Content-AI": "https://robohash.org/content-ai?set=set3&size=200x200",
+  };
+
   const WIWA_DATA = [
     { dept: "KCC", people: [
       { name: "Lisa de Vries", role: "Teamleider", skills: ["Klantcontact", "Teamaansturing", "AI-pilot sponsor"], status: "online", bot: false },
@@ -1698,9 +1722,13 @@
                   const isSelected = sel && sel.name === p.name && sel.dept === d.dept;
                   const colors = p.bot ? ["#6366f1","#a855f7"] : avatarGradient(p.name);
                   const initials = p.bot ? "\u{1F916}" : p.name.split(" ").map(w => w[0]).join("").slice(0,2);
+                  const photo = PHOTOS[p.name];
                   return `<div class="wiwa-person-row" data-name="${p.name}" data-dept="${d.dept}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;border-radius:8px;margin:1px 6px;background:${isSelected ? "#007aff" : "transparent"}">
                     <div style="position:relative;flex-shrink:0">
-                      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${colors[0]},${colors[1]});display:flex;align-items:center;justify-content:center;font-size:${p.bot ? "1.1rem" : "0.75rem"};font-weight:700;color:white">${initials}</div>
+                      ${photo
+                        ? `<img src="${photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${colors[0]},${colors[1]});display:none;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white">${initials}</div>`
+                        : `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${colors[0]},${colors[1]});display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white">${initials}</div>`
+                      }
                       <div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:${statusColors[p.status]};border:2px solid ${isSelected ? "#007aff" : "#fff"}"></div>
                     </div>
                     <div style="flex:1;min-width:0">
@@ -1718,7 +1746,10 @@
               <div style="width:100%;max-width:360px">
                 <div style="background:linear-gradient(135deg,${selColors[0]},${selColors[1]});border-radius:20px;padding:30px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden">
                   <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,0.15),transparent 60%)"></div>
-                  <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:${sel.bot ? "2.5rem" : "1.8rem"};font-weight:800;color:white;margin:0 auto 12px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.3)">${selInitials}</div>
+                  ${PHOTOS[sel.name]
+                    ? `<img src="${PHOTOS[sel.name]}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;border:3px solid rgba(255,255,255,0.3);box-shadow:0 4px 20px rgba(0,0,0,0.2)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.2);display:none;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:white;margin:0 auto 12px;border:3px solid rgba(255,255,255,0.3)">${selInitials}</div>`
+                    : `<div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:${sel.bot ? "2.5rem" : "1.8rem"};font-weight:800;color:white;margin:0 auto 12px;backdrop-filter:blur(10px);border:3px solid rgba(255,255,255,0.3)">${selInitials}</div>`
+                  }
                   <div style="font-size:1.2rem;font-weight:700;color:white;margin-bottom:4px">${sel.name}</div>
                   <div style="font-size:0.82rem;color:rgba(255,255,255,0.8)">${sel.role} \u2022 ${sel.dept}</div>
                   ${sel.model ? `<div style="margin-top:8px;display:inline-block;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:10px;font-size:0.7rem;color:white;font-weight:600">${sel.model}</div>` : ""}
