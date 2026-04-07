@@ -265,6 +265,7 @@
       "compare-scenarios": renderCompareScenarios,
       "agent-builder": renderAgentBuilder,
       "find-config-errors": renderFindConfigErrors,
+      "free-prompt": renderFreePrompt,
       "chat-simulator": renderChatSimulator,
       "model-compare": renderModelCompare,
       "sort-safe-unsafe": renderSortSafeUnsafe,
@@ -904,6 +905,250 @@
       });
       problemsEl.appendChild(card);
     });
+  }
+
+  // ─── INTERACTION: Free Prompt ────────────────────────
+  function renderFreePrompt(area, task) {
+    const d = task.interaction;
+    const b = d.briefing;
+    const initial = (state.nickname || "G")[0].toUpperCase();
+
+    area.innerHTML = `
+      <div class="briefing-panel" id="briefing-panel">
+        <div class="briefing-toggle" id="briefing-toggle">
+          <span>\u{1F4CB} Opdracht & bedrijfsinfo</span>
+          <span class="briefing-arrow" id="briefing-arrow">\u25BC</span>
+        </div>
+        <div class="briefing-content" id="briefing-content">
+          <div class="briefing-section">
+            <div class="briefing-label">OPDRACHT</div>
+            <div class="briefing-text">${b.text}</div>
+          </div>
+          <div class="briefing-section">
+            <div class="briefing-label">KLANTGEGEVENS</div>
+            <div class="briefing-row"><span>Naam:</span><strong>${b.customerInfo.name}</strong></div>
+            <div class="briefing-row"><span>Bedrijf:</span><strong>${b.customerInfo.company}</strong></div>
+            <div class="briefing-row"><span>Klant sinds:</span><strong>${b.customerInfo.customerSince}</strong></div>
+            <div class="briefing-row"><span>Bestelnr:</span><strong>${b.customerInfo.orderNumber}</strong></div>
+            <div class="briefing-row"><span>Probleem:</span><strong>${b.customerInfo.issue}</strong></div>
+            <div class="briefing-row"><span>Nieuwe datum:</span><strong>${b.customerInfo.newDate}</strong></div>
+            <div class="briefing-row"><span>Notitie:</span><em style="color:var(--orange)">${b.customerInfo.notes}</em></div>
+          </div>
+          <div class="briefing-section">
+            <div class="briefing-label">TONE OF VOICE — ${b.companyInfo.name}</div>
+            <div class="briefing-text">${b.companyInfo.toneOfVoice}</div>
+            <div class="briefing-row"><span>Afsluiting:</span><strong>${b.companyInfo.signoff}</strong></div>
+            <div class="briefing-row"><span>Telefoon:</span><strong>${b.companyInfo.phone}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prompt-checklist" id="prompt-checklist">
+        ${d.checks.map(c => `<div class="check-item" id="check-${c.id}"><span class="check-icon">\u25CB</span><span class="check-label">${c.label}</span></div>`).join("")}
+      </div>
+
+      ${buildFullBrowser(d.tool || "chatgpt")}
+    `;
+
+    // Make the GPT input actually work
+    const chatEl = area.querySelector("#sim-chat");
+    const inputEl = area.querySelector(".gpt-input");
+    const sendBtn = area.querySelector(".gpt-send");
+    inputEl.removeAttribute("readonly");
+    inputEl.placeholder = "Schrijf hier je prompt...";
+    sendBtn.disabled = false;
+
+    const ui = buildToolWindow(d.tool || "chatgpt");
+
+    // Toggle briefing panel
+    const toggle = area.querySelector("#briefing-toggle");
+    const content = area.querySelector("#briefing-content");
+    const arrow = area.querySelector("#briefing-arrow");
+    toggle.addEventListener("click", () => {
+      const open = content.style.display !== "none";
+      content.style.display = open ? "none" : "block";
+      arrow.textContent = open ? "\u25B6" : "\u25BC";
+    });
+
+    // Live prompt checking
+    inputEl.addEventListener("input", () => {
+      const text = inputEl.value.toLowerCase();
+      let matched = 0;
+      d.checks.forEach(c => {
+        const found = c.keywords.some(kw => text.includes(kw.toLowerCase()));
+        const el = area.querySelector(`#check-${c.id}`);
+        const icon = el.querySelector(".check-icon");
+        if (found) {
+          el.classList.add("checked");
+          icon.textContent = "\u2713";
+          matched++;
+        } else {
+          el.classList.remove("checked");
+          icon.textContent = "\u25CB";
+        }
+      });
+      sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3";
+    });
+
+    // Send prompt
+    let sent = false;
+    function handleSend() {
+      if (sent || inputEl.value.trim().length < 5) return;
+      sent = true;
+      sfxClick();
+
+      const promptText = inputEl.value.trim();
+      inputEl.setAttribute("readonly", "");
+      sendBtn.disabled = true;
+
+      // Show user message
+      addChatMsg(chatEl, ui, "user", promptText, false);
+
+      // Calculate score
+      const text = promptText.toLowerCase();
+      let score = 0;
+      let found = 0;
+      let missing = [];
+      d.checks.forEach(c => {
+        if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
+          score += c.points;
+          found++;
+        } else {
+          missing.push(c);
+        }
+      });
+
+      // Pick response based on score
+      let responseKey = "bad";
+      if (score >= 90) responseKey = "perfect";
+      else if (score >= 60) responseKey = "good";
+      else if (score >= 30) responseKey = "mediocre";
+
+      const response = d.responses[responseKey];
+
+      // Show AI response
+      addChatMsg(chatEl, ui, "ai", response, true).then(() => {
+        // Show feedback
+        const fbArea = document.createElement("div");
+        fbArea.style.marginTop = "16px";
+
+        if (score >= 90) {
+          sfxCorrect();
+          addXP(200);
+          state.totalScore++;
+          fbArea.innerHTML = `
+            <div class="feedback success">
+              <div class="feedback-title">${found}/${d.checks.length} elementen gevonden — Uitstekend!</div>
+              Je prompt bevatte alle cruciale informatie. De AI kon een email produceren die je vrijwel direct kunt versturen.
+            </div>
+          `;
+        } else {
+          if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; }
+          else { sfxWrong(); addXP(30); }
+
+          const missingHTML = missing.map(m =>
+            `<div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:0.85rem">
+              <span style="color:var(--red)">\u2718</span>
+              <span><strong>${m.label}:</strong> ${m.hint}</span>
+            </div>`
+          ).join("");
+
+          fbArea.innerHTML = `
+            <div class="feedback ${score >= 60 ? "warning" : "error"}">
+              <div class="feedback-title">${found}/${d.checks.length} elementen — ${score >= 60 ? "Goed begin, maar er mist nog wat" : "De AI miste veel context"}</div>
+              ${score < 60 ? "Kijk naar wat er ontbrak. Hoe meer details je geeft, hoe beter het resultaat." : "Bijna! Met deze extra details was de email nog beter geweest:"}
+              ${missingHTML}
+            </div>
+            <button class="action-btn secondary" id="retry-prompt" style="margin-top:12px">Probeer opnieuw</button>
+          `;
+        }
+
+        area.appendChild(fbArea);
+        showInsightAndNext(area, task);
+
+        // Retry handler
+        const retryBtn = area.querySelector("#retry-prompt");
+        if (retryBtn) {
+          retryBtn.addEventListener("click", () => {
+            sent = false;
+            inputEl.removeAttribute("readonly");
+            sendBtn.disabled = false;
+            chatEl.innerHTML = "";
+            inputEl.value = "";
+            inputEl.focus();
+            fbArea.remove();
+            // Remove insight/next button
+            const insightEls = area.querySelectorAll(".feedback.info, #next-task-btn");
+            insightEls.forEach(el => el.parentElement?.contains(el) && el.remove());
+          });
+        }
+      });
+    }
+
+    sendBtn.addEventListener("click", handleSend);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    });
+
+    // Wire sidebar and model selector
+    wireSidebarAndModel(area, chatEl, d.tool || "chatgpt", ui);
+  }
+
+  function wireSidebarAndModel(area, chatEl, tool, ui) {
+    // Sidebar chats
+    area.querySelectorAll("[data-chat]").forEach(item => {
+      item.addEventListener("click", () => {
+        const chatName = item.dataset.chat;
+        if (chatName === "current") return;
+        const history = GPT_SIDEBAR_CHATS[chatName];
+        if (!history) return;
+        sfxClick();
+        area.querySelectorAll("[data-chat]").forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+        const savedHTML = chatEl.innerHTML;
+        chatEl.innerHTML = "";
+        history.forEach(msg => addChatMsg(chatEl, ui, msg.role, msg.text, false));
+
+        if (!area.querySelector("#sidebar-back-btn")) {
+          const backBtn = document.createElement("button");
+          backBtn.className = "action-btn secondary";
+          backBtn.id = "sidebar-back-btn";
+          backBtn.textContent = "\u2190 Terug naar je opdracht";
+          backBtn.style.margin = "12px 0";
+          backBtn.addEventListener("click", () => {
+            sfxClick();
+            area.querySelectorAll("[data-chat]").forEach(i => i.classList.remove("active"));
+            area.querySelector('[data-chat="current"]')?.classList.add("active");
+            chatEl.innerHTML = savedHTML;
+            backBtn.remove();
+          });
+          chatEl.parentElement.appendChild(backBtn);
+        }
+      });
+    });
+
+    // Model selector
+    const modelBtn = area.querySelector("#gpt-model-btn");
+    const modelDropdown = area.querySelector("#gpt-model-dropdown");
+    const modelLabel = area.querySelector("#gpt-model-label");
+    if (modelBtn && modelDropdown) {
+      modelBtn.addEventListener("click", () => {
+        sfxClick();
+        modelDropdown.style.display = modelDropdown.style.display === "none" ? "block" : "none";
+      });
+      modelDropdown.querySelectorAll(".gpt-model-option").forEach(opt => {
+        opt.addEventListener("click", () => {
+          sfxClick();
+          modelLabel.textContent = opt.dataset.model;
+          modelDropdown.style.display = "none";
+          modelDropdown.querySelectorAll(".gpt-model-option").forEach(o => o.classList.remove("selected"));
+          opt.classList.add("selected");
+        });
+      });
+      area.addEventListener("click", (e) => {
+        if (!modelBtn.contains(e.target) && !modelDropdown.contains(e.target)) modelDropdown.style.display = "none";
+      });
+    }
   }
 
   // ─── Fake sidebar chat histories ─────────────────────

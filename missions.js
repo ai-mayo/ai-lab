@@ -26,49 +26,48 @@ const MISSIONS = [
         type: "scenario",
         label: "OPEN CHATGPT",
         title: "Je opent ChatGPT voor het eerst",
-        desc: "Lisa heeft je de details gegeven: Bakkerij Van Dijk (klant sinds 2021, contactpersoon: meneer Van Dijk) heeft bestelling #4891 geplaatst. Door een probleem bij de leverancier komt de bestelling 2 dagen later dan beloofd. Nieuwe leverdatum: donderdag 10 april. Lisa wil dat je een nette excuus-email schrijft namens het team.",
+        desc: "Lisa geeft je een opdracht. Schrijf zelf de prompt in ChatGPT.",
         interaction: {
-          type: "chat-simulator",
+          type: "free-prompt",
           tool: "chatgpt",
-          steps: [
-            {
-              instruction: "Je hebt alle informatie. Nu moet je ChatGPT de juiste opdracht geven. Welke prompt kies je?",
-              prefilledOptions: [
-                { text: "schrijf een email", quality: "bad" },
-                { text: "Schrijf een professionele email aan meneer Van Dijk van Bakkerij Van Dijk. Zijn bestelling #4891 is 2 dagen vertraagd door een leveranciersprobleem. Nieuwe leverdatum: donderdag 10 april. Bied excuses aan namens het team. Houd het kort en vriendelijk.", quality: "good" },
-                { text: "email klant vertraging", quality: "terrible" }
-              ],
-              responses: {
-                terrible: {
-                  output: "Hallo,\n\nWe willen u laten weten dat er een vertraging is.\n\nGroeten",
-                  feedback: { type: "error", title: "Te weinig informatie", text: "AI weet niet WIE de klant is, WAT er vertraagd is, of HOE laat het komt. Alle details die Lisa je gaf zijn verloren gegaan. Je zou dit helemaal opnieuw moeten schrijven." }
-                },
-                bad: {
-                  output: "Beste ontvanger,\n\nIk wilde u graag informeren dat uw bestelling vertraging heeft opgelopen. We verwachten dat deze binnenkort wordt geleverd.\n\nOnze excuses voor het ongemak.\n\nMet vriendelijke groet,\n[Naam]",
-                  feedback: { type: "warning", title: "Vaag resultaat", text: "De email mist cruciale details: geen naam, geen bestelnummer, geen nieuwe datum, geen reden. Meneer Van Dijk zou hier niets mee kunnen. Je hebt de informatie van Lisa niet meegegeven aan ChatGPT." }
-                },
-                good: {
-                  output: "Beste meneer Van Dijk,\n\nVia deze weg wil ik u informeren dat uw bestelling #4891 helaas vertraging heeft opgelopen door een onverwacht probleem bij onze leverancier.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor dit ongemak.\n\nMocht u vragen hebben, neem gerust contact met ons op.\n\nMet vriendelijke groet,\nTeam Nova",
-                  feedback: { type: "success", title: "Direct bruikbaar!", text: "Door alle details mee te geven (naam, bestelnummer, reden, nieuwe datum, toon) krijg je een email die je vrijwel direct kunt versturen. Dat is het verschil tussen een goede en slechte prompt." }
-                }
-              }
+          briefing: {
+            title: "Opdracht van Lisa",
+            text: "Schrijf een excuus-email aan de klant over de vertraagde bestelling. Gebruik ChatGPT.",
+            companyInfo: {
+              name: "Nova",
+              tagline: "Innovatieve oplossingen voor moderne bedrijven",
+              toneOfVoice: "Professioneel maar warm. We zijn geen bank - we zijn een team dat geeft om klanten. Gebruik voornaam + achternaam, niet 'Geachte'. Sluit af met 'Hartelijke groet' niet 'Hoogachtend'.",
+              signoff: "Team Nova",
+              phone: "020-1234567",
+              email: "klantenservice@nova.nl"
             },
-            {
-              instruction: "Je zag het verschil. Nu ga je begrijpen WAAROM. Een goede prompt heeft 5 bouwstenen. Klik ze een voor een aan en zie hoe de prompt groeit:",
-              type: "prompt-enhance",
-              basePrompt: "Schrijf een email",
-              enhancers: [
-                { label: "1. WIE - Ontvanger", value: "aan meneer Van Dijk van Bakkerij Van Dijk", impact: "AI weet nu precies wie de ontvanger is en kan de aanhef personaliseren" },
-                { label: "2. WAT - Boodschap", value: "over bestelling #4891 die 2 dagen vertraagd is door een leveranciersprobleem", impact: "AI kent nu het exacte probleem, het bestelnummer en de oorzaak" },
-                { label: "3. WANNEER - Details", value: "nieuwe leverdatum is donderdag 10 april", impact: "AI kan nu de concrete nieuwe datum noemen in plaats van vaag 'binnenkort'" },
-                { label: "4. HOE - Toon", value: "professioneel maar warm, bied excuses aan namens het team", impact: "AI kiest de juiste toon: niet te formeel, niet te casual, wel empathisch" },
-                { label: "5. HOEVEEL - Formaat", value: "houd het kort, maximaal 6 zinnen", impact: "AI weet dat het beknopt moet zijn - geen roman, geen one-liner" }
-              ],
-              finalOutput: "Beste meneer Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling #4891 door een onverwacht probleem bij onze leverancier twee dagen vertraging heeft opgelopen.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor het ongemak - we doen ons best om dit in de toekomst te voorkomen.\n\nNeem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nTeam Nova"
+            customerInfo: {
+              name: "Meneer Van Dijk",
+              company: "Bakkerij Van Dijk",
+              customerSince: "2021",
+              orderNumber: "#4891",
+              issue: "Bestelling 2 dagen vertraagd door leveranciersprobleem",
+              newDate: "Donderdag 10 april",
+              notes: "Trouwe klant, altijd op tijd betaald. Behandel met zorg."
             }
-          ]
+          },
+          checks: [
+            { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de klant", points: 20 },
+            { id: "order", label: "Bestelnummer", keywords: ["4891", "#4891"], hint: "Vermeld het bestelnummer", points: 15 },
+            { id: "issue", label: "Probleem", keywords: ["vertraag", "later", "uitgesteld", "leverancier"], hint: "Leg uit wat er aan de hand is", points: 20 },
+            { id: "date", label: "Nieuwe datum", keywords: ["10 april", "donderdag"], hint: "Noem de nieuwe leverdatum", points: 20 },
+            { id: "tone", label: "Toon/stijl", keywords: ["excus", "sorry", "onze excuses", "spijt", "vervelend"], hint: "Bied excuses aan", points: 10 },
+            { id: "format", label: "Formaat", keywords: ["kort", "bondig", "zinnen", "beknopt"], hint: "Geef aan hoe lang de email moet zijn", points: 5 },
+            { id: "signoff", label: "Ondertekening", keywords: ["nova", "team nova", "namens"], hint: "Vermeld namens wie je schrijft", points: 10 }
+          ],
+          responses: {
+            perfect: "Beste meneer Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling #4891 door een onverwacht leveranciersprobleem twee dagen vertraging heeft opgelopen.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor het ongemak.\n\nNeem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nTeam Nova",
+            good: "Beste meneer Van Dijk,\n\nUw bestelling heeft helaas vertraging opgelopen. We verwachten deze op donderdag 10 april te kunnen leveren.\n\nOnze excuses voor het ongemak.\n\nMet vriendelijke groet,\nTeam Nova",
+            mediocre: "Beste klant,\n\nUw bestelling is vertraagd. We hopen deze binnenkort te leveren.\n\nExcuses voor het ongemak.\n\nGroeten",
+            bad: "Hallo,\n\nEr is een vertraging.\n\nGroeten"
+          }
         },
-        insight: "Een goede prompt heeft 5 bouwstenen: WIE (ontvanger), WAT (boodschap), WANNEER (details), HOE (toon), HOEVEEL (formaat). Hoe meer context je geeft, hoe bruikbaarder het resultaat. Dit geldt voor elk AI-model."
+        insight: "Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), HOE (toon), en FORMAAT (lengte). Hoe specifieker je bent, hoe bruikbaarder het resultaat. Tip: geef AI dezelfde informatie die je een collega zou geven."
       },
       {
         type: "scenario",
