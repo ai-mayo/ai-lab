@@ -1772,44 +1772,58 @@
     container.innerHTML = `
       <div class="kanban">
         <div class="kanban-topbar">
-          <div class="kanban-topbar-title">MayoBoard \u2014 Sprint 14 \u2022 AI-pilot</div>
+          <div class="kanban-topbar-title">MayoBoard \u2014 Mijn taken</div>
           <div class="kanban-avatars">
-            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" title="Lisa">
-            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" title="Remco">
-            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/men/46.jpg" title="Bas">
+            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/men/55.jpg" title="Marco">
+            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/women/26.jpg" title="Anouk">
           </div>
-          <div class="kanban-topbar-search"><input placeholder="Zoek taken..."></div>
         </div>
         <div class="kanban-board">
           <div class="kanban-column">
-            <div class="kanban-col-header">Te doen <span class="kanban-col-count" id="todo-count">${showNewTask ? 3 : 2}</span></div>
+            <div class="kanban-col-header">Te doen <span class="kanban-col-count">${showNewTask ? 1 : 0}</span></div>
             <div id="kanban-todo">
-              ${showNewTask && tp ? `<div class="kanban-card clickable priority-high" id="main-task-card" style="animation:screenIn 0.4s ease"><div class="kanban-card-title">${tp.message.slice(0, 90)}...</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-42</div><div class="kanban-card-meta"><span class="kanban-card-priority high">Urgent</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/44.jpg"></div></div></div>` : ""}
-              <div class="kanban-card priority-medium"><div class="kanban-card-title">Subsidiebevestiging Buurtvereniging Zuiderpark</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-39</div><div class="kanban-card-meta"><span class="kanban-card-priority medium">Normaal</span><div class="kanban-card-avatar-text" style="background:#059669">RD</div></div></div></div>
-              <div class="kanban-card priority-low"><div class="kanban-card-title">Website Afvalkalender 2026 actualiseren</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-37</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/75.jpg"></div></div></div>
+              ${showNewTask && tp ? `
+              <div class="kanban-card clickable priority-high" id="main-task-card" style="animation:screenIn 0.4s ease">
+                <div class="kanban-card-title">Brief terrasvergunning Bakkerij Van Dijk</div>
+                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:8px">Inwoner informeren over vertraging door bezwaar</div>
+                <div class="kanban-card-footer">
+                  <div class="kanban-card-id">VTH-042</div>
+                  <div class="kanban-card-meta">
+                    <span class="kanban-card-priority high">Urgent</span>
+                    <img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/55.jpg">
+                  </div>
+                </div>
+              </div>` : `<div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Geen taken</div>`}
             </div>
           </div>
           <div class="kanban-column">
             <div class="kanban-col-header">In uitvoering <span class="kanban-col-count">2</span></div>
             <div>
-              <div class="kanban-card priority-medium"><div class="kanban-card-title">WMO-indicatie fam. De Boer afronden</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-35</div><div class="kanban-card-meta"><span class="kanban-card-priority medium">Normaal</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/46.jpg"></div></div></div>
-              <div class="kanban-card priority-low"><div class="kanban-card-title">Brochure jeugdhulp vertalen AR/TR</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-33</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/90.jpg"></div></div></div>
+              <div class="kanban-card priority-low">
+                <div class="kanban-card-title">MayoWiki doorlezen</div>
+                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:6px">Schrijfwijzer, AI-regels, organisatie</div>
+                <div class="kanban-card-footer">
+                  <div class="kanban-card-id">VTH-040</div>
+                  <div class="kanban-card-meta"><span class="kanban-card-priority low">Onboarding</span></div>
+                </div>
+              </div>
+              <div class="kanban-card priority-low">
+                <div class="kanban-card-title">WiWa bekijken</div>
+                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:6px">Collega's en AI-assistenten leren kennen</div>
+                <div class="kanban-card-footer">
+                  <div class="kanban-card-id">VTH-041</div>
+                  <div class="kanban-card-meta"><span class="kanban-card-priority low">Onboarding</span></div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="kanban-column">
-            <div class="kanban-col-header">Review <span class="kanban-col-count">3</span></div>
-            <div>
-              <div class="kanban-card priority-high" style="border-left-color:#6366f1"><div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 5px;border-radius:3px;font-weight:700">AI-GENERATED</span></div><div class="kanban-card-title">Concept-antwoord: openingstijden zwembad</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-41</div><div class="kanban-card-meta"><span style="font-size:0.55rem;color:#6366f1">\u{1F916} KCC-Bot</span><span class="kanban-card-priority high">Check</span></div></div></div>
-              <div class="kanban-card priority-medium" style="border-left-color:#6366f1"><div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 5px;border-radius:3px;font-weight:700">AI-GENERATED</span></div><div class="kanban-card-title">Concept WMO-beschikking mevr. Jansen</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-40</div><div class="kanban-card-meta"><span style="font-size:0.55rem;color:#6366f1">\u{1F916} WMO-Schrijver</span><span class="kanban-card-priority medium">Check</span></div></div></div>
-              <div class="kanban-card priority-low"><div class="kanban-card-title">Social media post Koningsdag</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-38</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/75.jpg"></div></div></div>
-            </div>
+            <div class="kanban-col-header">Review <span class="kanban-col-count">0</span></div>
+            <div><div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Geen reviews</div></div>
           </div>
           <div class="kanban-column">
-            <div class="kanban-col-header">Afgerond <span class="kanban-col-count">2</span></div>
-            <div>
-              <div class="kanban-card" style="opacity:0.6"><div class="kanban-card-title">BOA-rapport overlast Parkweg</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-34</div><div class="kanban-card-meta"><span style="color:#61bd4f;font-size:0.65rem">\u2713</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/83.jpg"></div></div></div>
-              <div class="kanban-card" style="opacity:0.6"><div class="kanban-card-title">Bezwaar parkeerboete D. Krul</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-31</div><div class="kanban-card-meta"><span style="color:#61bd4f;font-size:0.65rem">\u2713</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/76.jpg"></div></div></div>
-            </div>
+            <div class="kanban-col-header">Afgerond <span class="kanban-col-count">0</span></div>
+            <div><div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Nog niets afgerond</div></div>
           </div>
         </div>
       </div>
