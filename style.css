@@ -2552,6 +2552,15 @@ body {
 .kanban-card-priority.medium { background: #fff8e1; color: #956f09; }
 .kanban-card-priority.low { background: #e3fcef; color: #006644; }
 
+.kanban-drop-zone {
+  min-height: 60px;
+  transition: background 0.15s;
+  border-radius: 4px;
+}
+.kanban-drop-zone.drag-over {
+  background: #e8f0fe;
+}
+
 /* Task popup notification */
 .task-popup-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;

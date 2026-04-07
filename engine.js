@@ -1772,8 +1772,36 @@
   };
 
   // ─── MayoBoard - Kanban ──────────────────────────────
+  const BOARD_TASKS = [
+    { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees de schrijfwijzer, AI-regels en organisatie-info op MayoWiki.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki via het bureaublad en lees de pagina's Schrijfwijzer, AI Huisregels en Over Mayostad.", action:null },
+    { id:"VTH-041", title:"WiWa bekijken", desc:"Leer je collega's en de AI-assistenten kennen via het WiWa adresboek.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad. Klik door de afdelingen en bekijk ook de robot-collega's.", action:null },
+    { id:"VTH-042", title:"Brief terrasvergunning Bakkerij Van Dijk", desc:"Meneer Van Dijk moet geinformeerd worden dat zijn terrasvergunning vertraagd is door een bezwaar van de buurman. Verwacht besluit: 10 april. Schrijf een nette brief via ChatGPT.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Kijk in MayoWiki bij Schrijfwijzer voor de juiste toon. Bij Lopende Zaken vind je de details over Van Dijk. Open daarna ChatGPT om de brief te schrijven.", action:"chatgpt" },
+  ];
+
   function renderBoard(container, d, task, showNewTask) {
-    const tp = d?.taskPopup;
+    // Build columns from task data
+    const cols = { todo: [], progress: [], review: [], done: [] };
+    BOARD_TASKS.forEach(t => {
+      if (t.id === "VTH-042" && !showNewTask) return; // hide main task until ready
+      cols[t.col].push(t);
+    });
+
+    function renderCards(tasks, colId) {
+      if (tasks.length === 0) return `<div class="kanban-drop-zone" data-col="${colId}" style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem;min-height:60px;border:2px dashed #e5e7eb;border-radius:6px;margin:4px">${colId==="done"?"Sleep taken hierheen":"Geen taken"}</div>`;
+      return `<div class="kanban-drop-zone" data-col="${colId}" style="min-height:40px">` + tasks.map(t => `
+        <div class="kanban-card ${t.priority === "high" ? "priority-high" : t.priority === "medium" ? "priority-medium" : "priority-low"}" draggable="true" data-task-id="${t.id}" style="cursor:grab">
+          <div class="kanban-card-title">${t.title}</div>
+          <div class="kanban-card-footer">
+            <div class="kanban-card-id">${t.id}</div>
+            <div class="kanban-card-meta">
+              <span class="kanban-card-priority ${t.priority}">${t.prioLabel}</span>
+              ${t.avatar ? `<img class="kanban-card-avatar" src="${t.avatar}">` : ""}
+            </div>
+          </div>
+        </div>
+      `).join("") + "</div>";
+    }
+
     container.innerHTML = `
       <div class="kanban">
         <div class="kanban-topbar">
@@ -1784,62 +1812,87 @@
           </div>
         </div>
         <div class="kanban-board">
-          <div class="kanban-column">
-            <div class="kanban-col-header">Te doen <span class="kanban-col-count">${showNewTask ? 1 : 0}</span></div>
-            <div id="kanban-todo">
-              ${showNewTask && tp ? `
-              <div class="kanban-card clickable priority-high" id="main-task-card" style="animation:screenIn 0.4s ease">
-                <div class="kanban-card-title">Brief terrasvergunning Bakkerij Van Dijk</div>
-                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:8px">Inwoner informeren over vertraging door bezwaar</div>
-                <div class="kanban-card-footer">
-                  <div class="kanban-card-id">VTH-042</div>
-                  <div class="kanban-card-meta">
-                    <span class="kanban-card-priority high">Urgent</span>
-                    <img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/55.jpg">
-                  </div>
-                </div>
-              </div>` : `<div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Geen taken</div>`}
-            </div>
-          </div>
-          <div class="kanban-column">
-            <div class="kanban-col-header">In uitvoering <span class="kanban-col-count">2</span></div>
-            <div>
-              <div class="kanban-card priority-low">
-                <div class="kanban-card-title">MayoWiki doorlezen</div>
-                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:6px">Schrijfwijzer, AI-regels, organisatie</div>
-                <div class="kanban-card-footer">
-                  <div class="kanban-card-id">VTH-040</div>
-                  <div class="kanban-card-meta"><span class="kanban-card-priority low">Onboarding</span></div>
-                </div>
-              </div>
-              <div class="kanban-card priority-low">
-                <div class="kanban-card-title">WiWa bekijken</div>
-                <div style="font-size:0.75rem;color:#6b7280;margin-bottom:6px">Collega's en AI-assistenten leren kennen</div>
-                <div class="kanban-card-footer">
-                  <div class="kanban-card-id">VTH-041</div>
-                  <div class="kanban-card-meta"><span class="kanban-card-priority low">Onboarding</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="kanban-column">
-            <div class="kanban-col-header">Review <span class="kanban-col-count">0</span></div>
-            <div><div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Geen reviews</div></div>
-          </div>
-          <div class="kanban-column">
-            <div class="kanban-col-header">Afgerond <span class="kanban-col-count">0</span></div>
-            <div><div style="padding:20px;text-align:center;color:#9ca3af;font-size:0.8rem">Nog niets afgerond</div></div>
-          </div>
+          <div class="kanban-column"><div class="kanban-col-header">Te doen <span class="kanban-col-count">${cols.todo.length}</span></div>${renderCards(cols.todo, "todo")}</div>
+          <div class="kanban-column"><div class="kanban-col-header">In uitvoering <span class="kanban-col-count">${cols.progress.length}</span></div>${renderCards(cols.progress, "progress")}</div>
+          <div class="kanban-column"><div class="kanban-col-header">Review <span class="kanban-col-count">${cols.review.length}</span></div>${renderCards(cols.review, "review")}</div>
+          <div class="kanban-column"><div class="kanban-col-header">Afgerond <span class="kanban-col-count">${cols.done.length}</span></div>${renderCards(cols.done, "done")}</div>
         </div>
       </div>
+      <div id="board-popup-overlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center">
+        <div id="board-popup" style="background:#fff;border-radius:10px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden"></div>
+      </div>
     `;
-    const mainCard = container.querySelector("#main-task-card");
-    if (mainCard) {
-      mainCard.addEventListener("click", () => {
+
+    // Click card = popup with details
+    container.querySelectorAll("[data-task-id]").forEach(card => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest("[draggable]") && card.getAttribute("draggable")) {
+          // Only show popup on click, not drag
+        }
         sfxClick();
-        openChatGPTWindow(container.closest("#macos-desktop")?.parentElement || container.closest(".screen") || document.querySelector("#story-content"), d, task);
+        const t = BOARD_TASKS.find(bt => bt.id === card.dataset.taskId);
+        if (!t) return;
+        const overlay = container.querySelector("#board-popup-overlay");
+        const popup = container.querySelector("#board-popup");
+        overlay.style.display = "flex";
+        popup.innerHTML = `
+          <div style="padding:16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-family:monospace;font-size:0.7rem;color:#9ca3af;background:#f3f4f6;padding:2px 8px;border-radius:4px">${t.id}</span>
+              <span class="kanban-card-priority ${t.priority}" style="font-size:0.65rem">${t.prioLabel}</span>
+            </div>
+            <button id="popup-close" style="background:none;border:none;font-size:1.2rem;color:#9ca3af;cursor:pointer">\u2715</button>
+          </div>
+          <div style="padding:20px">
+            <div style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:10px">${t.title}</div>
+            <div style="font-size:0.88rem;color:#555;line-height:1.6;margin-bottom:16px">${t.desc}</div>
+            ${t.hint ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px;margin-bottom:16px">
+              <div style="font-size:0.65rem;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Hint</div>
+              <div style="font-size:0.82rem;color:#1e3a5f;line-height:1.5">${t.hint}</div>
+            </div>` : ""}
+            ${t.action === "chatgpt" ? `<button id="popup-action" style="width:100%;padding:10px;background:#10a37f;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer">Open ChatGPT \u2192</button>` : ""}
+          </div>
+        `;
+        popup.querySelector("#popup-close").addEventListener("click", () => { overlay.style.display = "none"; });
+        overlay.addEventListener("click", (ev) => { if (ev.target === overlay) overlay.style.display = "none"; });
+        const actionBtn = popup.querySelector("#popup-action");
+        if (actionBtn) {
+          actionBtn.addEventListener("click", () => {
+            overlay.style.display = "none";
+            sfxClick();
+            openChatGPTWindow(container.closest("#macos-desktop")?.parentElement || container.closest(".screen") || document.querySelector("#story-content"), d, task);
+          });
+        }
       });
-    }
+    });
+
+    // Drag and drop
+    let draggedId = null;
+    container.querySelectorAll("[draggable=true]").forEach(card => {
+      card.addEventListener("dragstart", (e) => {
+        draggedId = card.dataset.taskId;
+        card.style.opacity = "0.4";
+        e.dataTransfer.effectAllowed = "move";
+      });
+      card.addEventListener("dragend", () => { card.style.opacity = "1"; draggedId = null; });
+    });
+
+    container.querySelectorAll(".kanban-drop-zone").forEach(zone => {
+      zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.style.background = "#e8f0fe"; });
+      zone.addEventListener("dragleave", () => { zone.style.background = ""; });
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.style.background = "";
+        if (!draggedId) return;
+        const newCol = zone.dataset.col;
+        const t = BOARD_TASKS.find(bt => bt.id === draggedId);
+        if (t) {
+          t.col = newCol;
+          sfxClick();
+          renderBoard(container, d, task, showNewTask);
+        }
+      });
+    });
   }
 
   // ─── WiWa ───────────────────────────────────────────
