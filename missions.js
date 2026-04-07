@@ -33,9 +33,9 @@ const MISSIONS = [
           taskPopupDelay: 15000,
           taskPopup: {
             from: "Lisa de Vries",
-            fromRole: "Teamlead Klantenservice",
+            fromRole: "Teamleider KCC",
             avatar: "LV",
-            message: "Hey! Kun je even een email schrijven naar Bakkerij Van Dijk? Hun bestelling #4891 is 2 dagen vertraagd door een leveranciersprobleem. Nieuwe datum: donderdag 10 april. Gebruik ChatGPT, dat scheelt je tijd. Check onze Tone of Voice op het intranet!",
+            message: "Hey! Kun je een brief schrijven naar meneer Van Dijk van de bakkerij? Zijn terrasvergunning is vertraagd door een bezwaar van de buurman. Verwacht besluit: 10 april. Hij moet weten dat het langer duurt en waarom. Gebruik ChatGPT, kijk even op het intranet voor onze schrijfwijzer!",
             urgency: "Vandaag afhandelen"
           },
           wiki: {
@@ -46,12 +46,13 @@ const MISSIONS = [
                 content: [
                   { type: "banner", text: "Welkom bij Gemeente Mayostad! Jouw eerste week begint hier." },
                   { type: "cards", items: [
-                    { title: "Over Gemeente Mayostad", icon: "\u{1F4D6}", link: "about" },
-                    { title: "Tone of Voice", icon: "\u{1F3A8}", link: "tone" },
-                    { title: "Klanten", icon: "\u{1F465}", link: "clients" },
+                    { title: "Over Mayostad", icon: "\u{1F3DB}", link: "about" },
+                    { title: "Schrijfwijzer", icon: "\u{1F3A8}", link: "tone" },
+                    { title: "Lopende Zaken", icon: "\u{1F4C2}", link: "clients" },
+                    { title: "AI bij de Gemeente", icon: "\u{1F916}", link: "ai" },
                     { title: "Tools & Apps", icon: "\u{1F527}", link: "tools" },
-                    { title: "Team", icon: "\u{1F44B}", link: "team" },
-                    { title: "Huisregels", icon: "\u{1F4CB}", link: "rules" }
+                    { title: "Organisatie", icon: "\u{1F3E2}", link: "team" },
+                    { title: "AI Huisregels", icon: "\u{1F4CB}", link: "rules" }
                   ]}
                 ]
               },
@@ -90,14 +91,16 @@ const MISSIONS = [
                 ]
               },
               clients: {
-                title: "Klanten",
-                icon: "\u{1F465}",
+                title: "Lopende Zaken",
+                icon: "\u{1F4C2}",
                 content: [
-                  { type: "heading", text: "Klantenportfolio" },
-                  { type: "client", name: "Bakkerij Van Dijk", contact: "Meneer Van Dijk", since: "2021", status: "Actief", note: "Trouwe klant. Altijd op tijd betaald. Behandel met zorg." },
-                  { type: "client", name: "Garage Jansen", contact: "Mevrouw Jansen", since: "2022", status: "Actief", note: "Groot account. Maandelijks overleg." },
-                  { type: "client", name: "Bloemen Zuiderpark", contact: "Fatima El-Amrani", since: "2023", status: "Actief", note: "Nieuw. Nog in onboarding." },
-                  { type: "client", name: "Sportschool FitNow", contact: "Dennis Krul", since: "2020", status: "Inactief", note: "Contract afgelopen. Heractivatie mogelijk." }
+                  { type: "heading", text: "Recente zaken op jouw afdeling" },
+                  { type: "client", name: "Terrasvergunning Bakkerij Van Dijk", contact: "Dhr. H. van Dijk", since: "Aangevraagd: feb. 2026", status: "Vertraagd", note: "Bezwaar van buurman ontvangen. Verwacht besluit: 10 april. Inwoner moet ge\u00EFnformeerd worden over vertraging." },
+                  { type: "client", name: "WMO-aanvraag Fam. Jansen", contact: "Mevr. R. Jansen-de Groot", since: "Aangevraagd: mrt. 2026", status: "In behandeling", note: "Hulp bij huishouden aangevraagd. Wacht op indicatiestelling. Mevrouw is 78 en woont alleen." },
+                  { type: "client", name: "Subsidie Buurtvereniging Zuiderpark", contact: "F. El-Amrani (voorzitter)", since: "Aangevraagd: jan. 2026", status: "Toegekend", note: "Subsidie buurtfeest goedgekeurd (\u20AC2.500). Bevestigingsbrief moet nog verstuurd." },
+                  { type: "client", name: "Bezwaar parkeerboete D. Krul", contact: "D. Krul", since: "Ingediend: jan. 2026", status: "Afgehandeld", note: "Bezwaar ongegrond verklaard. Beschikking is verstuurd." },
+                  { type: "client", name: "Omgevingsvergunning Sportschool FitNow", contact: "Dhr. J. de Boer", since: "Aangevraagd: mrt. 2026", status: "In behandeling", note: "Uitbreiding pand. Welstandscommissie moet nog adviseren." },
+                  { type: "client", name: "Melding overlast Parkweg", contact: "Anoniem", since: "Gemeld: apr. 2026", status: "Nieuw", note: "Geluidsoverlast horeca. BOA-controle gepland voor deze week." }
                 ]
               },
               tools: {
@@ -113,14 +116,43 @@ const MISSIONS = [
                 ]
               },
               team: {
-                title: "Team",
-                icon: "\u{1F44B}",
+                title: "Organisatie Gemeente Mayostad",
+                icon: "\u{1F3E2}",
                 content: [
-                  { type: "heading", text: "Je nieuwe collega's" },
-                  { type: "person", name: "Lisa de Vries", role: "Teamlead Klantenservice", note: "Jouw directe manager. Vraag haar alles." },
-                  { type: "person", name: "Tom Bakker", role: "Senior Developer", note: "De AI-nerd van het team. Weet alles over prompts." },
-                  { type: "person", name: "Sarah Chen", role: "Marketing", note: "Gebruikt AI voor content. Goed voorbeeld." },
-                  { type: "person", name: "Jij", role: "Nieuwe medewerker", note: "Welkom! Vandaag is dag 1." }
+                  { type: "heading", text: "Afdelingen & Collega's" },
+                  { type: "text", text: "Gemeente Mayostad heeft 650 medewerkers verdeeld over 8 afdelingen. Hieronder de afdelingen die meedoen aan de AI-pilot." },
+
+                  { type: "heading", text: "KCC \u2014 Klant Contact Centrum" },
+                  { type: "person", name: "Lisa de Vries", role: "Teamleider KCC", note: "Jouw directe leidinggevende. Enthousiast over AI. Eerste aanspreekpunt." },
+                  { type: "person", name: "Remco van Dam", role: "Medewerker KCC", note: "Beantwoordt dagelijks 80+ telefoontjes. Wil AI inzetten voor standaard-antwoorden." },
+                  { type: "person", name: "Priya Sharma", role: "Medewerker KCC", note: "Specialist in klachtafhandeling. Kritisch maar eerlijk over AI." },
+
+                  { type: "heading", text: "Burgerzaken" },
+                  { type: "person", name: "Henk Visser", role: "Teamleider Burgerzaken", note: "Verantwoordelijk voor paspoorten, rijbewijzen, geboorteaangifte. Zoekt AI-hulp bij brieven." },
+                  { type: "person", name: "Fatima El-Amrani", role: "Medewerker Burgerzaken", note: "Tweetalig (NL/AR). Helpt nieuwkomers. Wil AI gebruiken voor vertalingen." },
+
+                  { type: "heading", text: "Sociaal Domein (WMO/Jeugd)" },
+                  { type: "person", name: "Sandra Mulder", role: "Teamleider Sociaal Domein", note: "WMO-beschikkingen, jeugdhulp, schuldhulpverlening. Veel complexe brieven." },
+                  { type: "person", name: "Bas van den Berg", role: "Consulent WMO", note: "Schrijft dagelijks beschikkingen. AI kan hem uren besparen, maar juridische check is cruciaal." },
+                  { type: "person", name: "Noor de Jong", role: "Jeugdconsulent", note: "Werkt met kwetsbare gezinnen. Privacy is topprioriteit." },
+
+                  { type: "heading", text: "VTH \u2014 Vergunningen, Toezicht & Handhaving" },
+                  { type: "person", name: "Marco Pieterse", role: "Teamleider VTH", note: "Bouw- en omgevingsvergunningen, horeca, evenementen." },
+                  { type: "person", name: "Anouk Willems", role: "Vergunningverlener", note: "Behandelt 30+ aanvragen per maand. Wil AI voor standaard-afwijzingsbrieven." },
+
+                  { type: "heading", text: "BOA's \u2014 Buitengewoon Opsporingsambtenaren" },
+                  { type: "person", name: "Dennis Krul", role: "Co\u00F6rdinator BOA's", note: "Aansturing van 12 BOA's. Rapportages en processen-verbaal." },
+                  { type: "person", name: "Youssef Amrani", role: "BOA", note: "Wil AI gebruiken voor het opstellen van rapporten na een controle." },
+
+                  { type: "heading", text: "Communicatie" },
+                  { type: "person", name: "Sarah Chen", role: "Communicatieadviseur", note: "Bewaakt de schrijfwijzer. Persberichten, social media, website." },
+
+                  { type: "heading", text: "ICT & Digitalisering" },
+                  { type: "person", name: "Tom Bakker", role: "Projectleider AI-pilot", note: "Heeft de AI-pilot opgezet. Technische vragen? Vraag Tom." },
+                  { type: "person", name: "Ahmed Hassan", role: "Informatiebeveiliging (CISO)", note: "Bewaakt AVG en security. Moet akkoord geven op nieuwe AI-tools." },
+
+                  { type: "heading", text: "Jij" },
+                  { type: "person", name: "Jij", role: "Nieuwe medewerker \u2014 AI-pilot deelnemer", note: "Welkom bij Gemeente Mayostad! Je gaat als eerste de AI-tools testen en leren hoe je ze inzet voor je dagelijkse werk." }
                 ]
               },
               rules: {
@@ -138,19 +170,19 @@ const MISSIONS = [
             }
           },
           checks: [
-            { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de klant", points: 20 },
-            { id: "order", label: "Bestelnummer", keywords: ["4891", "#4891"], hint: "Vermeld het bestelnummer", points: 15 },
-            { id: "issue", label: "Probleem", keywords: ["vertraag", "later", "uitgesteld", "leverancier"], hint: "Leg uit wat er aan de hand is", points: 20 },
-            { id: "date", label: "Nieuwe datum", keywords: ["10 april", "donderdag"], hint: "Noem de nieuwe leverdatum", points: 20 },
-            { id: "tone", label: "Toon/stijl", keywords: ["excus", "sorry", "onze excuses", "spijt", "vervelend"], hint: "Bied excuses aan", points: 10 },
-            { id: "format", label: "Formaat", keywords: ["kort", "bondig", "zinnen", "beknopt"], hint: "Geef aan hoe lang de email moet zijn", points: 5 },
-            { id: "signoff", label: "Ondertekening", keywords: ["nova", "team nova", "namens"], hint: "Vermeld namens wie je schrijft", points: 10 }
+            { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de inwoner/ondernemer", points: 20 },
+            { id: "subject", label: "Onderwerp", keywords: ["terrasvergunning", "vergunning"], hint: "Vermeld om welke vergunning het gaat", points: 15 },
+            { id: "issue", label: "Reden vertraging", keywords: ["bezwaar", "vertraag", "langer duurt", "uitgesteld"], hint: "Leg uit waarom het langer duurt (bezwaar ontvangen)", points: 20 },
+            { id: "date", label: "Verwacht besluit", keywords: ["10 april", "april"], hint: "Noem wanneer het besluit verwacht wordt", points: 15 },
+            { id: "tone", label: "Toon", keywords: ["begrip", "excus", "ongemak", "vervelend", "begrijpen"], hint: "Toon begrip voor de situatie", points: 10 },
+            { id: "contact", label: "Contactgegevens", keywords: ["14 0555", "bel", "contact", "telefoon"], hint: "Geef aan hoe de inwoner contact kan opnemen", points: 10 },
+            { id: "signoff", label: "Afsluiting", keywords: ["gemeente", "mayostad", "vriendelijke groet"], hint: "Sluit af namens de gemeente", points: 10 }
           ],
           responses: {
-            perfect: "Beste meneer Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling #4891 door een onverwacht leveranciersprobleem twee dagen vertraging heeft opgelopen.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor het ongemak.\n\nNeem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nKlantenservice Gemeente Mayostad",
-            good: "Beste meneer Van Dijk,\n\nUw bestelling heeft helaas vertraging opgelopen. We verwachten deze op donderdag 10 april te kunnen leveren.\n\nOnze excuses voor het ongemak.\n\nMet vriendelijke groet,\nKlantenservice Gemeente Mayostad",
-            mediocre: "Beste klant,\n\nUw bestelling is vertraagd. We hopen deze binnenkort te leveren.\n\nExcuses voor het ongemak.\n\nGroeten",
-            bad: "Hallo,\n\nEr is een vertraging.\n\nGroeten"
+            perfect: "Beste meneer Van Dijk,\n\nU heeft een terrasvergunning aangevraagd voor Bakkerij Van Dijk. Helaas is er een bezwaar ingediend door een omwonende, waardoor de behandeling van uw aanvraag meer tijd nodig heeft.\n\nHet verwachte besluit is nu donderdag 10 april. Wij begrijpen dat dit vervelend is en doen ons best om uw aanvraag zo snel mogelijk af te ronden.\n\nHeeft u vragen? Neem gerust contact op via 14 0555.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+            good: "Beste meneer Van Dijk,\n\nUw terrasvergunning heeft helaas vertraging opgelopen door een ingediend bezwaar. We verwachten rond 10 april een besluit te kunnen nemen.\n\nExcuses voor het ongemak.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+            mediocre: "Beste heer/mevrouw,\n\nUw vergunningsaanvraag is vertraagd. Wij hopen spoedig een besluit te nemen.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+            bad: "Geachte aanvrager,\n\nUw aanvraag is in behandeling.\n\nHoogachtend"
           }
         },
         insight: "Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), HOE (toon), en FORMAAT (lengte). Hoe specifieker je bent, hoe bruikbaarder het resultaat. Tip: geef AI dezelfde informatie die je een collega zou geven."

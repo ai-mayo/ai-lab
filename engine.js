@@ -1018,8 +1018,8 @@
           <div class="widget-task">
             <div class="widget-task-dot urgent"></div>
             <div>
-              <div class="widget-task-text">Email schrijven aan Bakkerij Van Dijk</div>
-              <div class="widget-task-meta">Via Lisa - Vandaag afhandelen</div>
+              <div class="widget-task-text">Brief aan Bakkerij Van Dijk</div>
+              <div class="widget-task-meta">Terrasvergunning vertraagd - Via Lisa</div>
             </div>
           </div>
           <div class="widget-task">
