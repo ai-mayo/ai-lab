@@ -2196,8 +2196,6 @@
     const bootScreen = document.getElementById("boot-screen");
     const app = document.getElementById("app");
 
-    {
-
     const lines = [
         "GEMEENTE MAYOSTAD \u2014 AI WERKPLEK v2.0",
         `Welkom terug, ${nickname}`,
@@ -2216,6 +2214,9 @@
     const bootText = document.getElementById("boot-text");
     const progressFill = document.getElementById("boot-progress-fill");
     const bootStatus = document.getElementById("boot-status");
+    bootText.innerHTML = "";
+    progressFill.style.width = "0%";
+    bootStatus.textContent = "INITIALISEREN...";
 
     let lineIdx = 0;
     let charIdx = 0;
@@ -2264,7 +2265,6 @@
     }
 
     setTimeout(typeBoot, 500);
-    }); // end askNickname.then
   }
 
   document.readyState === "loading"
