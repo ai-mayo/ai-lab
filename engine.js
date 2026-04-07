@@ -938,7 +938,7 @@
         </div>
       </div>
 
-      <div class="app-window maximized open focused" id="window-intranet">
+      <div class="app-window open" id="window-intranet" style="display:none;top:40px;left:20px;right:20px;bottom:80px">
         <div class="app-titlebar">
           <div class="app-titlebar-dots">
             <div class="app-titlebar-dot red" data-action="close" data-window="intranet"></div>
@@ -958,6 +958,23 @@
             <div class="intranet-main" id="intranet-page"></div>
           </div>
         </div>
+      </div>
+
+      <div class="app-window open focused" id="window-wiwa" style="top:40px;left:40px;width:700px;height:500px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots">
+            <div class="app-titlebar-dot red" data-action="close" data-window="wiwa"></div>
+            <div class="app-titlebar-dot yellow" data-action="minimize" data-window="wiwa"></div>
+            <div class="app-titlebar-dot green" data-action="maximize" data-window="wiwa"></div>
+          </div>
+          <div class="app-titlebar-title">WiWa \u2014 Wie is Wa</div>
+          <div class="app-titlebar-controls">
+            <div class="app-titlebar-ctrl" data-action="minimize" data-window="wiwa">\u2014</div>
+            <div class="app-titlebar-ctrl" data-action="maximize" data-window="wiwa">\u25A1</div>
+            <div class="app-titlebar-ctrl close" data-action="close" data-window="wiwa">\u2715</div>
+          </div>
+        </div>
+        <div class="app-body" id="wiwa-body"></div>
       </div>
 
       <div class="app-window open" id="window-chatgpt" style="display:none;top:40px;left:30px;right:30px;bottom:80px">
@@ -982,7 +999,11 @@
           <div class="dock-tooltip">Finder</div><div class="dock-label">Finder</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#1565C0"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#fg)"/><path d="M35 30h50v60H35z" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="52" r="4" fill="white"/><path d="M44 75c0-8 7-15 16-15s16 7 16 15" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
-        <div class="dock-icon active" data-app="intranet">
+        <div class="dock-icon active" data-app="wiwa">
+          <div class="dock-tooltip">WiWa - Wie is Wa</div><div class="dock-label">WiWa</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="5" fill="#fbbf24"/><path d="M57 72h6" stroke="#6366f1" stroke-width="1.5"/><path d="M60 69v6" stroke="#6366f1" stroke-width="1.5"/></svg>
+        </div>
+        <div class="dock-icon" data-app="intranet">
           <div class="dock-tooltip">Gemeente Mayostad</div><div class="dock-label">Intranet</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1a1a2e"/><path d="M30 85V50l30-20 30 20v35" fill="none" stroke="#7dd3fc" stroke-width="3"/><rect x="48" y="60" width="24" height="25" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2.5"/><line x1="60" y1="60" x2="60" y2="85" stroke="#7dd3fc" stroke-width="2"/><line x1="48" y1="72" x2="72" y2="72" stroke="#7dd3fc" stroke-width="2"/><path d="M55 35h10v10l-5 5-5-5z" fill="#7dd3fc"/></svg>
         </div>
@@ -994,9 +1015,9 @@
           <div class="dock-tooltip">Claude</div><div class="dock-label">Claude</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
         </div>
-        <div class="dock-icon" data-app="slack">
-          <div class="dock-tooltip">Slack</div><div class="dock-label">Slack</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#4A154B"/><rect x="35" y="50" width="12" height="24" rx="6" fill="#E01E5A"/><rect x="50" y="35" width="24" height="12" rx="6" fill="#36C5F0"/><rect x="73" y="46" width="12" height="24" rx="6" fill="#2EB67D"/><rect x="46" y="73" width="24" height="12" rx="6" fill="#ECB22E"/></svg>
+        <div class="dock-icon" data-app="notebooklm">
+          <div class="dock-tooltip">NotebookLM</div><div class="dock-label">NotebookLM</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#EA8B47"/><rect x="32" y="30" width="56" height="60" rx="4" fill="none" stroke="white" stroke-width="3"/><line x1="42" y1="45" x2="78" y2="45" stroke="white" stroke-width="2.5" opacity="0.7"/><line x1="42" y1="55" x2="72" y2="55" stroke="white" stroke-width="2.5" opacity="0.5"/><line x1="42" y1="65" x2="68" y2="65" stroke="white" stroke-width="2.5" opacity="0.4"/><circle cx="82" cy="78" r="14" fill="#EA8B47" stroke="white" stroke-width="3"/><path d="M78 78h8M82 74v8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <div class="dock-icon" data-app="mail">
           <div class="dock-tooltip">Outlook</div><div class="dock-label">Outlook</div>
@@ -1048,11 +1069,14 @@
       <div id="notification-area"></div>
     </div>`;
 
+    // Populate WiWa
+    renderWiWa(area.querySelector("#wiwa-body"));
+
     // Dock click handlers
     const appMessages = {
       finder: "Finder is beschikbaar, maar je hebt geen bestanden nodig voor deze opdracht.",
       claude: "Claude is beschikbaar voor langere documenten. Vandaag gebruik je ChatGPT.",
-      slack: "Lisa stuurt je zo een bericht via Slack. Even geduld!",
+      notebooklm: "NotebookLM is beschikbaar voor onderzoek en samenvattingen. Probeer het later!",
       mail: "Outlook opent zodra je een email hebt geschreven in ChatGPT.",
       teams: "Geen vergaderingen gepland vandaag. Fijn, eerste dag!",
       settings: "Instellingen zijn vergrendeld door IT. Neem contact op met de helpdesk.",
@@ -1062,10 +1086,17 @@
       icon.addEventListener("click", () => {
         sfxClick();
         const app = icon.dataset.app;
-        if (app === "intranet") {
-          document.getElementById("window-intranet").style.display = "flex";
-          document.getElementById("window-intranet").classList.add("focused");
-          document.getElementById("window-chatgpt")?.classList.remove("focused");
+        if (app === "wiwa") {
+          const w = document.getElementById("window-wiwa");
+          w.style.display = "flex";
+          area.querySelectorAll(".app-window").forEach(ww => ww.classList.remove("focused"));
+          w.classList.add("focused");
+        } else if (app === "intranet") {
+          const w = document.getElementById("window-intranet");
+          w.style.display = "flex";
+          w.classList.add("maximized");
+          area.querySelectorAll(".app-window").forEach(ww => ww.classList.remove("focused"));
+          w.classList.add("focused");
         } else if (app === "chatgpt") {
           if (!taskShown) {
             showDesktopNotification("ChatGPT is beschikbaar zodra je een taak hebt. Verken eerst het intranet!");
@@ -1213,7 +1244,7 @@
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
-      showSlackNotification(area, d, task);
+      showTeamsNotification(area, d, task);
     }, d.taskPopupDelay || 12000);
   }
 
@@ -1235,7 +1266,7 @@
     setTimeout(() => notif.remove(), 4000);
   }
 
-  function showSlackNotification(area, d, task) {
+  function showTeamsNotification(area, d, task) {
     const tp = d.taskPopup;
     const notifArea = document.getElementById("notification-area");
     const notif = document.createElement("div");
@@ -1243,8 +1274,8 @@
     notif.style.cursor = "pointer";
     notif.innerHTML = `
       <div class="macos-notif-header">
-        <div class="macos-notif-icon" style="background:#4A154B">S</div>
-        <div class="macos-notif-app">Slack</div>
+        <div class="macos-notif-icon" style="background:#5B5FC7">T</div>
+        <div class="macos-notif-app">Teams</div>
         <div class="macos-notif-time">nu</div>
       </div>
       <div class="macos-notif-body">
@@ -1269,7 +1300,7 @@
         // Remind again
         setTimeout(() => {
           if (!document.getElementById("window-chatgpt")?.classList.contains("open-active")) {
-            showSlackNotification(area, d, task);
+            showTeamsNotification(area, d, task);
           }
         }, 15000);
       }
@@ -1567,6 +1598,132 @@
         if (!modelBtn.contains(e.target) && !modelDropdown.contains(e.target)) modelDropdown.style.display = "none";
       });
     }
+  }
+
+  // ─── WiWa - Wie is Wa ───────────────────────────────
+  const WIWA_DATA = [
+    { dept: "KCC", people: [
+      { name: "Lisa de Vries", role: "Teamleider", skills: ["Klantcontact", "Teamaansturing", "AI-pilot sponsor"], status: "online", bot: false },
+      { name: "Remco van Dam", role: "Medewerker KCC", skills: ["Telefonie", "Klachtafhandeling"], status: "online", bot: false },
+      { name: "Priya Sharma", role: "Medewerker KCC", skills: ["Klachtafhandeling", "Escalaties"], status: "bezet", bot: false },
+      { name: "KCC-Bot", role: "AI Assistent", skills: ["Standaard-antwoorden", "Wachttijd info", "Doorverbinden"], status: "online", bot: true, model: "GPT-4o", desc: "Beantwoordt eenvoudige vragen van inwoners via de website. Escaleert naar mens bij complexe vragen." },
+    ]},
+    { dept: "Burgerzaken", people: [
+      { name: "Henk Visser", role: "Teamleider", skills: ["Paspoorten", "Rijbewijzen", "Geboorteaangifte"], status: "online", bot: false },
+      { name: "Fatima El-Amrani", role: "Medewerker", skills: ["Tweetalig NL/AR", "Nieuwkomers", "Inburgering"], status: "online", bot: false },
+      { name: "BZ-Vertaler", role: "AI Assistent", skills: ["Vertaling NL\u2194AR", "Vertaling NL\u2194TR", "Eenvoudige taal"], status: "online", bot: true, model: "Claude", desc: "Vertaalt gemeentelijke brieven naar andere talen en vereenvoudigt teksten naar B1-niveau." },
+    ]},
+    { dept: "Sociaal Domein", people: [
+      { name: "Sandra Mulder", role: "Teamleider", skills: ["WMO", "Jeugdhulp", "Schuldhulp"], status: "online", bot: false },
+      { name: "Bas van den Berg", role: "WMO Consulent", skills: ["Beschikkingen", "Indicatiestelling"], status: "bezet", bot: false },
+      { name: "Noor de Jong", role: "Jeugdconsulent", skills: ["Kwetsbare gezinnen", "Privacy"], status: "afwezig", bot: false },
+      { name: "WMO-Schrijver", role: "AI Assistent", skills: ["Beschikkingen opstellen", "Bezwaar-templates", "B1-taal"], status: "online", bot: true, model: "GPT-4o", desc: "Stelt concept-beschikkingen op. Output MOET altijd juridisch gecontroleerd worden door Bas of Ahmed." },
+    ]},
+    { dept: "VTH", people: [
+      { name: "Marco Pieterse", role: "Teamleider", skills: ["Vergunningen", "Toezicht", "Handhaving"], status: "online", bot: false },
+      { name: "Anouk Willems", role: "Vergunningverlener", skills: ["Omgevingsvergunning", "Horeca", "Evenementen"], status: "online", bot: false },
+    ]},
+    { dept: "BOA", people: [
+      { name: "Dennis Krul", role: "Co\u00F6rdinator", skills: ["Aansturing BOA's", "Rapportages", "PV's"], status: "online", bot: false },
+      { name: "Youssef Amrani", role: "BOA", skills: ["Controles", "Handhaving", "Overlast"], status: "buiten", bot: false },
+      { name: "BOA-Rapporteur", role: "AI Assistent", skills: ["Controlerapporten", "PV-concepten", "Fotoanalyse"], status: "standby", bot: true, model: "GPT-4o + Vision", desc: "Helpt BOA's bij het opstellen van rapporten na controles. Kan foto's analyseren. NIET voor juridische conclusies." },
+    ]},
+    { dept: "Communicatie", people: [
+      { name: "Sarah Chen", role: "Communicatieadviseur", skills: ["Schrijfwijzer", "Social media", "Persberichten"], status: "online", bot: false },
+      { name: "Content-AI", role: "AI Assistent", skills: ["Social media posts", "Nieuwsbrieven", "Websiteteksten"], status: "online", bot: true, model: "Claude", desc: "Schrijft conceptteksten voor externe communicatie. Sarah controleert altijd voor publicatie." },
+    ]},
+    { dept: "ICT & Digitalisering", people: [
+      { name: "Tom Bakker", role: "Projectleider AI-pilot", skills: ["AI-strategie", "Implementatie", "Training"], status: "online", bot: false },
+      { name: "Ahmed Hassan", role: "CISO", skills: ["Informatiebeveiliging", "AVG", "Security"], status: "online", bot: false },
+    ]},
+  ];
+
+  function renderWiWa(container) {
+    let selectedDept = null;
+    let searchQuery = "";
+
+    function render() {
+      const filtered = searchQuery
+        ? WIWA_DATA.flatMap(d => d.people.filter(p =>
+            p.name.toLowerCase().includes(searchQuery) ||
+            p.role.toLowerCase().includes(searchQuery) ||
+            p.skills.some(s => s.toLowerCase().includes(searchQuery))
+          ).map(p => ({ ...p, dept: d.dept })))
+        : null;
+
+      container.innerHTML = `
+        <div style="display:flex;flex:1;overflow:hidden;background:#1a1a2e">
+          <div style="width:180px;background:#151528;border-right:1px solid #252545;padding:8px;overflow-y:auto;flex-shrink:0">
+            <div style="padding:8px;margin-bottom:8px">
+              <input type="text" id="wiwa-search" placeholder="Zoek collega..." value="${searchQuery}" style="width:100%;padding:7px 10px;background:#1e1e38;border:1px solid #2a2a4a;border-radius:8px;color:#ccc;font-family:inherit;font-size:0.8rem;outline:none">
+            </div>
+            <div style="font-size:0.6rem;font-weight:700;color:#555;padding:4px 8px;text-transform:uppercase;letter-spacing:1px">Afdelingen</div>
+            ${WIWA_DATA.map(d => {
+              const botCount = d.people.filter(p => p.bot).length;
+              const isActive = selectedDept === d.dept;
+              return `<div class="wiwa-dept-item ${isActive ? "active" : ""}" data-dept="${d.dept}" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:6px;font-size:0.8rem;color:${isActive ? "#fff" : "#999"};cursor:pointer;background:${isActive ? "#252550" : "transparent"};margin-bottom:2px">
+                <span>${d.dept}</span>
+                <span style="display:flex;gap:3px;align-items:center">
+                  <span style="font-size:0.65rem;color:#666">${d.people.length}</span>
+                  ${botCount > 0 ? `<span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 4px;border-radius:3px">${botCount} AI</span>` : ""}
+                </span>
+              </div>`;
+            }).join("")}
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:16px" id="wiwa-people"></div>
+        </div>
+      `;
+
+      const peopleEl = container.querySelector("#wiwa-people");
+      const people = filtered || (selectedDept
+        ? WIWA_DATA.find(d => d.dept === selectedDept)?.people.map(p => ({ ...p, dept: selectedDept })) || []
+        : WIWA_DATA.flatMap(d => d.people.map(p => ({ ...p, dept: d.dept }))));
+
+      if (people.length === 0) {
+        peopleEl.innerHTML = '<div style="color:#666;font-size:0.85rem;text-align:center;padding:40px">Selecteer een afdeling of zoek een collega</div>';
+      } else {
+        peopleEl.innerHTML = people.map(p => {
+          const statusColors = { online: "#00ff88", bezet: "#ff6b6b", afwezig: "#666", buiten: "#fbbf24", standby: "#00d4ff" };
+          const initials = p.name.split(" ").map(w => w[0]).join("").slice(0, 2);
+          return `<div style="display:flex;gap:12px;padding:12px;background:#1e1e38;border:1px solid #252550;border-radius:10px;margin-bottom:8px;${p.bot ? "border-left:3px solid #6366f1" : ""}">
+            <div style="position:relative;flex-shrink:0">
+              <div style="width:42px;height:42px;border-radius:50%;background:${p.bot ? "linear-gradient(135deg,#6366f1,#a855f7)" : "#2a2a4a"};display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:${p.bot ? "white" : "#999"}">${p.bot ? "\u{1F916}" : initials}</div>
+              <div style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:${statusColors[p.status] || "#666"};border:2px solid #1e1e38"></div>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                <span style="font-weight:600;color:#ddd;font-size:0.85rem">${p.name}</span>
+                ${p.bot ? '<span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 6px;border-radius:3px;font-weight:700">AI</span>' : ""}
+                <span style="font-size:0.7rem;color:#666;margin-left:auto">${p.dept}</span>
+              </div>
+              <div style="font-size:0.75rem;color:#888;margin-bottom:4px">${p.role}${p.model ? " \u2022 " + p.model : ""}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px">
+                ${p.skills.map(s => `<span style="font-size:0.6rem;padding:2px 6px;background:#252550;border-radius:4px;color:#aaa">${s}</span>`).join("")}
+              </div>
+              ${p.desc ? `<div style="font-size:0.7rem;color:#777;margin-top:6px;line-height:1.4;font-style:italic">${p.desc}</div>` : ""}
+            </div>
+          </div>`;
+        }).join("");
+      }
+
+      // Dept click handlers
+      container.querySelectorAll("[data-dept]").forEach(item => {
+        item.addEventListener("click", () => {
+          sfxClick();
+          selectedDept = selectedDept === item.dataset.dept ? null : item.dataset.dept;
+          searchQuery = "";
+          render();
+        });
+      });
+
+      // Search handler
+      container.querySelector("#wiwa-search")?.addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        selectedDept = null;
+        render();
+      });
+    }
+    render();
   }
 
   // ─── Fake sidebar chat histories ─────────────────────

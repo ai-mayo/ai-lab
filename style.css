@@ -1925,10 +1925,23 @@ body {
 }
 
 .app-window:not(.maximized) {
-  resize: both;
-  min-width: 400px;
-  min-height: 300px;
+  min-width: 350px;
+  min-height: 250px;
 }
+
+/* Resize handles on all edges */
+.resize-handle {
+  position: absolute;
+  z-index: 10;
+}
+.resize-handle.n { top: -3px; left: 10px; right: 10px; height: 6px; cursor: n-resize; }
+.resize-handle.s { bottom: -3px; left: 10px; right: 10px; height: 6px; cursor: s-resize; }
+.resize-handle.e { right: -3px; top: 10px; bottom: 10px; width: 6px; cursor: e-resize; }
+.resize-handle.w { left: -3px; top: 10px; bottom: 10px; width: 6px; cursor: w-resize; }
+.resize-handle.nw { top: -3px; left: -3px; width: 12px; height: 12px; cursor: nw-resize; }
+.resize-handle.ne { top: -3px; right: -3px; width: 12px; height: 12px; cursor: ne-resize; }
+.resize-handle.sw { bottom: -3px; left: -3px; width: 12px; height: 12px; cursor: sw-resize; }
+.resize-handle.se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: se-resize; }
 
 .app-titlebar {
   cursor: move;
@@ -1994,10 +2007,10 @@ body {
 }
 
 .desktop-widget {
-  background: rgba(255,255,255,0.12);
+  background: rgba(20,20,35,0.85);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 14px;
   padding: 14px;
   color: white;
@@ -2033,8 +2046,8 @@ body {
 .widget-task-dot.normal { background: #fbbf24; }
 .widget-task-dot.done { background: #00ff88; }
 
-.widget-task-text { color: rgba(255,255,255,0.85); line-height: 1.3; }
-.widget-task-meta { font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.widget-task-text { color: #e8e8f0; line-height: 1.3; font-weight: 500; }
+.widget-task-meta { font-size: 0.65rem; color: #8888aa; margin-top: 2px; }
 
 .app-titlebar-title {
   flex: 1;
