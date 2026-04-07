@@ -906,8 +906,29 @@
     });
   }
 
+  // ─── Fake sidebar chat histories ─────────────────────
+  const GPT_SIDEBAR_CHATS = {
+    "Samenvatting vergadering": [
+      { role: "user", text: "Kun je deze vergadernotities samenvatten?" },
+      { role: "ai", text: "Hier is een samenvatting van de vergadering:\n\n**Besproken punten:**\n1. Projectvoortgang Q2 - op schema\n2. Nieuw CRM-systeem - besluit uitgesteld\n3. Teamuitje gepland voor 15 mei\n\n**Actiepunten:**\n- Jan: offerte CRM opvragen\n- Lisa: planning teamuitje delen" }
+    ],
+    "Python script debuggen": [
+      { role: "user", text: "Mijn Python script geeft een KeyError op regel 42. Kun je helpen?" },
+      { role: "ai", text: "Een KeyError betekent dat je een dictionary-key probeert te gebruiken die niet bestaat. Check of de key 'user_id' daadwerkelijk in je data zit:\n\n```python\nif 'user_id' in data:\n    result = data['user_id']\nelse:\n    result = None\n```\n\nOf gebruik `.get()` met een default waarde:\n```python\nresult = data.get('user_id', None)\n```" }
+    ],
+    "Marketing plan Q2": [
+      { role: "user", text: "Help me een marketingplan schrijven voor Q2. We zijn een kleine webshop in duurzame producten." },
+      { role: "ai", text: "**Q2 Marketingplan - Duurzame Webshop**\n\n**Doelen:**\n- 20% meer websiteverkeer\n- 15% stijging conversie\n\n**Kanalen:**\n1. Instagram Reels (2x per week)\n2. Email nieuwsbrief (maandelijks)\n3. Google Shopping Ads\n\n**Thema's:** Aarde Dag (april), Moederdag (mei), Zomercollectie (juni)\n\n**Budget:** Totaal ca. 2.500 per maand" }
+    ],
+    "Vertaling rapport EN-NL": [
+      { role: "user", text: "Vertaal dit: 'The quarterly results exceeded expectations with a 12% increase in revenue.'" },
+      { role: "ai", text: "De kwartaalresultaten overtroffen de verwachtingen met een omzetstijging van 12%." }
+    ]
+  };
+
   // ─── AI Window HTML builders ────────────────────────
   function buildFullBrowser(tool) {
+    const initial = (state.nickname || "G")[0].toUpperCase();
     if (tool === "chatgpt") return `
       <div class="gpt-browser">
         <div class="gpt-sidebar">
@@ -916,26 +937,31 @@
           </div>
           <div class="gpt-sidebar-label">Vandaag</div>
           <div class="gpt-sidebar-list">
-            <div class="gpt-sidebar-item active">Email schrijven klant</div>
-            <div class="gpt-sidebar-item">Samenvatting vergadering</div>
-            <div class="gpt-sidebar-item">Python script debuggen</div>
+            <div class="gpt-sidebar-item active" data-chat="current">Email schrijven klant</div>
+            <div class="gpt-sidebar-item" data-chat="Samenvatting vergadering">Samenvatting vergadering</div>
+            <div class="gpt-sidebar-item" data-chat="Python script debuggen">Python script debuggen</div>
           </div>
           <div class="gpt-sidebar-label">Gisteren</div>
           <div class="gpt-sidebar-list">
-            <div class="gpt-sidebar-item">Marketing plan Q2</div>
-            <div class="gpt-sidebar-item">Vertaling rapport EN-NL</div>
+            <div class="gpt-sidebar-item" data-chat="Marketing plan Q2">Marketing plan Q2</div>
+            <div class="gpt-sidebar-item" data-chat="Vertaling rapport EN-NL">Vertaling rapport EN-NL</div>
           </div>
           <div class="gpt-sidebar-bottom">
-            <div class="gpt-user-avatar">M</div>
+            <div class="gpt-user-avatar">${initial}</div>
             <div class="gpt-user-name">${state.nickname || "Gebruiker"}</div>
           </div>
         </div>
         <div class="gpt-main">
           <div class="gpt-topbar">
             <div class="gpt-topbar-logo">G</div>
-            <div class="gpt-model-select">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
-            <div class="gpt-topbar-model">4o</div>
+            <div class="gpt-model-select" id="gpt-model-btn">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
+            <div class="gpt-topbar-model" id="gpt-model-label">4o</div>
             <div class="gpt-topbar-share">\u2197 Delen</div>
+          </div>
+          <div class="gpt-model-dropdown" id="gpt-model-dropdown" style="display:none">
+            <div class="gpt-model-option" data-model="4o"><strong>GPT-4o</strong><span style="color:#888;font-size:0.7rem">Snelst en slimst</span></div>
+            <div class="gpt-model-option" data-model="4o-mini"><strong>GPT-4o mini</strong><span style="color:#888;font-size:0.7rem">Snel en goedkoop</span></div>
+            <div class="gpt-model-option" data-model="o3"><strong>o3</strong><span style="color:#888;font-size:0.7rem">Redeneren</span></div>
           </div>
           <div class="gpt-chat" id="sim-chat"></div>
           <div class="gpt-input-area">
@@ -1090,6 +1116,69 @@
 
       const chatEl = area.querySelector("#sim-chat");
       const optionsEl = area.querySelector("#chat-options");
+
+      // Wire up sidebar chats
+      area.querySelectorAll("[data-chat]").forEach(item => {
+        item.addEventListener("click", () => {
+          const chatName = item.dataset.chat;
+          if (chatName === "current") return;
+          const history = GPT_SIDEBAR_CHATS[chatName];
+          if (!history) return;
+          sfxClick();
+          // Mark active
+          area.querySelectorAll("[data-chat]").forEach(i => i.classList.remove("active"));
+          item.classList.add("active");
+          // Show old conversation
+          chatEl.innerHTML = "";
+          const ui = buildToolWindow(d.tool || "chatgpt");
+          history.forEach(msg => addChatMsg(chatEl, ui, msg.role, msg.text, false));
+          // Hide options while viewing old chat
+          optionsEl.style.display = "none";
+          // Add "terug" button
+          const backBtn = document.createElement("button");
+          backBtn.className = "action-btn secondary";
+          backBtn.textContent = "\u2190 Terug naar je opdracht";
+          backBtn.style.marginTop = "12px";
+          backBtn.addEventListener("click", () => {
+            sfxClick();
+            area.querySelectorAll("[data-chat]").forEach(i => i.classList.remove("active"));
+            area.querySelector('[data-chat="current"]')?.classList.add("active");
+            chatEl.innerHTML = "";
+            optionsEl.style.display = "";
+            backBtn.remove();
+          });
+          area.appendChild(backBtn);
+        });
+      });
+
+      // Wire up model selector
+      const modelBtn = area.querySelector("#gpt-model-btn");
+      const modelDropdown = area.querySelector("#gpt-model-dropdown");
+      const modelLabel = area.querySelector("#gpt-model-label");
+      if (modelBtn && modelDropdown) {
+        modelBtn.addEventListener("click", () => {
+          sfxClick();
+          modelDropdown.style.display = modelDropdown.style.display === "none" ? "block" : "none";
+        });
+        modelDropdown.querySelectorAll(".gpt-model-option").forEach(opt => {
+          opt.addEventListener("click", () => {
+            sfxClick();
+            const model = opt.dataset.model;
+            modelLabel.textContent = model;
+            modelBtn.innerHTML = `ChatGPT <span style="font-size:0.6rem">\u25BC</span>`;
+            modelDropdown.style.display = "none";
+            // Visual feedback
+            modelDropdown.querySelectorAll(".gpt-model-option").forEach(o => o.classList.remove("selected"));
+            opt.classList.add("selected");
+          });
+        });
+        // Close dropdown on outside click
+        area.addEventListener("click", (e) => {
+          if (!modelBtn.contains(e.target) && !modelDropdown.contains(e.target)) {
+            modelDropdown.style.display = "none";
+          }
+        });
+      }
 
       step.prefilledOptions.forEach(opt => {
         const card = document.createElement("div");

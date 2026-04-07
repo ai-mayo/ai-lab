@@ -1211,6 +1211,44 @@ body {
   margin-top: 6px;
 }
 
+/* Model dropdown */
+.gpt-model-dropdown, .claude-model-dropdown, .gemini-model-dropdown {
+  position: absolute;
+  top: 44px;
+  left: 200px;
+  background: #2a2a2a;
+  border: 1px solid #424242;
+  border-radius: 10px;
+  padding: 4px;
+  z-index: 20;
+  min-width: 200px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+.claude-model-dropdown { left: 200px; background: #363530; border-color: #4a493f; }
+.gemini-model-dropdown { left: 200px; background: #282a2c; border-color: #3c4043; }
+
+.gpt-model-option, .claude-model-option, .gemini-model-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #ececec;
+  transition: background 0.15s;
+}
+.gpt-model-option:hover { background: #333; }
+.claude-model-option:hover { background: #2b2a27; }
+.gemini-model-option:hover { background: #333537; }
+.gpt-model-option.selected, .claude-model-option.selected, .gemini-model-option.selected {
+  background: rgba(0, 212, 255, 0.1);
+}
+
+@media (max-width: 520px) {
+  .gpt-model-dropdown, .claude-model-dropdown, .gemini-model-dropdown { left: 10px; }
+}
+
 /* Compact gpt-window for small displays (model compare etc) */
 .gpt-window {
   background: #212121;
