@@ -58,42 +58,96 @@ const APP_RENDERERS = {
       </div>`;
   },
 
-  // ─── Vergunningtool ─────────────────────────────────
+  // ─── Vergunningtool (met kaart) ──────────────────────
   vergunning(container) {
-    container.innerHTML = `
-      <div style="flex:1;display:flex;flex-direction:column;background:#f5f3ff;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
-          <span style="font-weight:700;color:#7c3aed;font-size:0.95rem">Vergunningtool</span>
-          <div style="display:flex;gap:6px;margin-left:16px">
-            <span style="padding:4px 12px;background:#7c3aed;color:white;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer">Overzicht</span>
-            <span style="padding:4px 12px;background:#f3f4f6;border-radius:6px;font-size:0.75rem;color:#666;cursor:pointer">Kaart</span>
-            <span style="padding:4px 12px;background:#f3f4f6;border-radius:6px;font-size:0.75rem;color:#666;cursor:pointer">Planning</span>
+    const vergunningen = [
+      {title:"Terrasvergunning Bakkerij Van Dijk",id:"VG-2026-042",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",lat:52.078,lng:4.315,adres:"Dorpsstraat 23",aanvrager:"H. van Dijk",date:"12-02-2026",note:"Bezwaar buurman ontvangen. Hoorzitting gepland 8 april.",plan:"Terras van 6x3m aan de voorzijde. 8 tafels, 16 stoelen. Openingstijden: 08:00-22:00. Parasols in huisstijl gemeente."},
+      {title:"Omgevingsvergunning Sportschool FitNow",id:"VG-2026-048",status:"In behandeling",statusColor:"#d97706",type:"Bouw",lat:52.082,lng:4.320,adres:"Industrieweg 5",aanvrager:"J. de Boer",date:"18-03-2026",note:"Wacht op advies welstandscommissie.",plan:"Uitbreiding bestaand pand met 200m\u00B2. Nieuwe sportzaal + kleedkamers. Bouwlaag: 1. Materiaal: staal/glas."},
+      {title:"Kapvergunning Esdoorn Kerkstraat",id:"VG-2026-045",status:"Verleend",statusColor:"#059669",type:"Kap",lat:52.076,lng:4.312,adres:"Kerkstraat 41",aanvrager:"Gemeente Mayostad",date:"25-03-2026",note:"Herplantplicht: 2 nieuwe bomen binnen 1 jaar.",plan:"Kap van 1 esdoorn (omtrek 180cm). Reden: wortelopdruk trottoir. Herplant: 2 lindes."},
+      {title:"Evenementenvergunning Koningsdag",id:"VG-2026-038",status:"Verleend",statusColor:"#059669",type:"Evenement",lat:52.079,lng:4.318,adres:"Marktplein 1",aanvrager:"Oranjevereniging Mayostad",date:"10-02-2026",note:"Inclusief geluidsontheffing tot 23:00.",plan:"Koningsmarkt 08:00-18:00, live muziek 14:00-23:00. Verwacht: 5.000 bezoekers. Verkeersmaatregelen: afsluiting centrum."},
+      {title:"Terrasvergunning Caf\u00E9 Het Hoekje",id:"VG-2026-051",status:"Nieuw",statusColor:"#2563eb",type:"Horeca",lat:52.080,lng:4.310,adres:"Havenstraat 1",aanvrager:"M. Hendriks",date:"02-04-2026",note:"Eerste aanvraag, nog niet in behandeling.",plan:"Terras 4x5m op het trottoir. 6 tafels. Aanvraag inclusief verwarmingselementen voor winter."},
+      {title:"Reclamevergunning AH XL",id:"VG-2026-049",status:"In behandeling",statusColor:"#d97706",type:"Reclame",lat:52.083,lng:4.322,adres:"Winkelcentrum Mayostad 12",aanvrager:"Albert Heijn B.V.",date:"20-03-2026",note:"Lichtplan ontbreekt, nagevraagd bij aanvrager.",plan:"Verlichte gevelreclame 8x1.5m. LED-verlichting. Dimbaar na 22:00 conform APV."},
+    ];
+
+    let selectedId = null;
+    function renderVG() {
+      const sel = selectedId ? vergunningen.find(v => v.id === selectedId) : null;
+      container.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f5f3ff;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
+            <span style="font-weight:700;color:#7c3aed;font-size:0.95rem">Vergunningtool</span>
+            <span style="font-size:0.7rem;color:#888;background:#f3f4f6;padding:2px 8px;border-radius:4px">${vergunningen.length} aanvragen</span>
           </div>
-        </div>
-        <div style="flex:1;overflow:auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;align-content:start">
-          ${[
-            {title:"Terrasvergunning Bakkerij Van Dijk",id:"VG-2026-042",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",date:"12-02-2026",note:"Bezwaar buurman ontvangen"},
-            {title:"Omgevingsvergunning Sportschool FitNow",id:"VG-2026-048",status:"In behandeling",statusColor:"#d97706",type:"Bouw",date:"18-03-2026",note:"Wacht op welstandscommissie"},
-            {title:"Kapvergunning Esdoorn Kerkstraat",id:"VG-2026-045",status:"Verleend",statusColor:"#059669",type:"Kap",date:"25-03-2026",note:"Herplantplicht opgenomen"},
-            {title:"Evenementenvergunning Koningsdag",id:"VG-2026-038",status:"Verleend",statusColor:"#059669",type:"Evenement",date:"10-02-2026",note:"Incl. geluidsontheffing"},
-            {title:"Terrasvergunning Caf\u00E9 Het Hoekje",id:"VG-2026-051",status:"Nieuw",statusColor:"#2563eb",type:"Horeca",date:"02-04-2026",note:"Eerste aanvraag"},
-            {title:"Reclamevergunning AH XL",id:"VG-2026-049",status:"In behandeling",statusColor:"#d97706",type:"Reclame",date:"20-03-2026",note:"Lichtplan ontbreekt nog"},
-          ].map(v => `
-            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;border-left:4px solid ${v.statusColor};cursor:default">
-              <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#9ca3af">${v.id}</span>
-                <span style="font-size:0.65rem;background:#f5f3ff;color:#7c3aed;padding:2px 8px;border-radius:4px;font-weight:600">${v.type}</span>
-              </div>
-              <div style="font-weight:600;color:#111827;margin-bottom:6px;font-size:0.88rem">${v.title}</div>
-              <div style="font-size:0.78rem;color:#6b7280;margin-bottom:8px">${v.note}</div>
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="font-size:0.7rem;font-weight:600;color:${v.statusColor}">\u2022 ${v.status}</span>
-                <span style="font-size:0.7rem;color:#9ca3af">${v.date}</span>
-              </div>
+          <div style="flex:1;display:flex;overflow:hidden">
+            <div id="vg-map" style="flex:1;min-height:300px"></div>
+            <div style="width:320px;background:#fff;border-left:1px solid #e5e7eb;overflow-y:auto;flex-shrink:0" id="vg-detail">
+              ${sel ? `
+                <div style="padding:16px;border-bottom:1px solid #e5e7eb">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                    <span style="font-family:monospace;font-size:0.7rem;color:#9ca3af">${sel.id}</span>
+                    <span style="font-size:0.65rem;background:#f5f3ff;color:#7c3aed;padding:2px 8px;border-radius:4px;font-weight:600">${sel.type}</span>
+                  </div>
+                  <div style="font-weight:700;color:#111;font-size:1rem;margin-bottom:8px">${sel.title}</div>
+                  <div style="font-size:0.7rem;font-weight:600;color:${sel.statusColor};margin-bottom:12px">\u2022 ${sel.status}</div>
+                  <div style="font-size:0.78rem;color:#555;margin-bottom:6px"><strong>Adres:</strong> ${sel.adres}</div>
+                  <div style="font-size:0.78rem;color:#555;margin-bottom:6px"><strong>Aanvrager:</strong> ${sel.aanvrager}</div>
+                  <div style="font-size:0.78rem;color:#555;margin-bottom:6px"><strong>Datum:</strong> ${sel.date}</div>
+                  <div style="font-size:0.78rem;color:#555;margin-bottom:12px"><strong>Notitie:</strong> ${sel.note}</div>
+                </div>
+                <div style="padding:16px">
+                  <div style="font-size:0.7rem;font-weight:600;color:#7c3aed;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Plan / Omschrijving</div>
+                  <div style="font-size:0.82rem;color:#374151;line-height:1.6;background:#faf5ff;border:1px solid #e9d5ff;border-radius:6px;padding:12px">${sel.plan}</div>
+                </div>
+              ` : `
+                <div style="padding:40px 20px;text-align:center;color:#9ca3af">
+                  <div style="font-size:2rem;margin-bottom:8px">\u{1F4CD}</div>
+                  <div style="font-size:0.85rem">Klik op een marker op de kaart om de aanvraag te bekijken</div>
+                </div>
+                ${vergunningen.map(v => `
+                  <div class="vg-list-item" data-vgid="${v.id}" style="padding:10px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer" onmouseover="this.style.background='#faf5ff'" onmouseout="this.style.background=''">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+                      <span style="font-weight:500;font-size:0.82rem;color:#111">${v.title}</span>
+                    </div>
+                    <div style="display:flex;gap:8px;font-size:0.7rem;color:#9ca3af">
+                      <span style="color:${v.statusColor};font-weight:600">${v.status}</span>
+                      <span>${v.adres}</span>
+                    </div>
+                  </div>
+                `).join("")}
+              `}
             </div>
-          `).join("")}
-        </div>
-      </div>`;
+          </div>
+        </div>`;
+
+      // Init map
+      try {
+        const map = L.map(container.querySelector("#vg-map")).setView([52.079, 4.316], 15);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "\u00A9 OpenStreetMap"
+        }).addTo(map);
+
+        vergunningen.forEach(v => {
+          const color = v.statusColor;
+          const icon = L.divIcon({
+            className: "",
+            html: `<div style="width:24px;height:24px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:white;font-weight:700">${v.type[0]}</div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+          });
+          const marker = L.marker([v.lat, v.lng], { icon }).addTo(map);
+          marker.bindTooltip(v.title, { direction: "top", offset: [0, -14] });
+          marker.on("click", () => { selectedId = v.id; renderVG(); });
+        });
+
+        setTimeout(() => map.invalidateSize(), 100);
+      } catch(e) {}
+
+      // List item clicks
+      container.querySelectorAll("[data-vgid]").forEach(item => {
+        item.addEventListener("click", () => { selectedId = item.dataset.vgid; renderVG(); });
+      });
+    }
+    renderVG();
   },
 
   // ─── KCC-software ───────────────────────────────────

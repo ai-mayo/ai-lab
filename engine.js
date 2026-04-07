@@ -1090,35 +1090,47 @@
         <div class="app-body" id="board-body"></div>
       </div>
 
+      <div class="desktop-icons" id="desktop-icons">
+        ${[
+          {app:"board",label:"MayoBoard",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0052cc"/><rect x="20" y="30" width="22" height="60" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="49" y="30" width="22" height="45" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="78" y="30" width="22" height="35" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="23" y="34" width="16" height="10" rx="2" fill="white"/><rect x="23" y="48" width="16" height="10" rx="2" fill="white"/><rect x="52" y="34" width="16" height="10" rx="2" fill="white"/><rect x="81" y="34" width="16" height="10" rx="2" fill="white"/></svg>'},
+          {app:"wiwa",label:"WiWa",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg>'},
+          {app:"intranet",label:"MayoWiki",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg>'},
+          {app:"chatgpt",label:"ChatGPT",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>'},
+          {app:"claude",label:"Claude",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>'},
+          {app:"gemini",label:"Gemini",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e1f20"/><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4285f4"/><stop offset="33%" stop-color="#ea4335"/><stop offset="66%" stop-color="#fbbc05"/><stop offset="100%" stop-color="#34a853"/></linearGradient></defs><circle cx="60" cy="60" r="24" fill="none" stroke="url(#dg)" stroke-width="4"/><circle cx="60" cy="60" r="10" fill="url(#dg)"/></svg>'},
+          {app:"zaaksysteem",label:"Zaaksysteem",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0f766e"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5" opacity="0.7"/></svg>'},
+          {app:"vergunning",label:"Vergunning",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#7c3aed"/><rect x="30" y="25" width="50" height="65" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M42 40h26M42 50h20M42 60h24" stroke="white" stroke-width="2" opacity="0.6"/><circle cx="80" cy="75" r="16" fill="#7c3aed" stroke="white" stroke-width="3"/><path d="M74 75l4 4 8-8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>'},
+          {app:"kcc",label:"KCC",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0369a1"/><path d="M35 75c0-12 10-20 25-20s25 8 25 20" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="42" r="14" fill="none" stroke="white" stroke-width="3"/></svg>'},
+          {app:"sociaal",label:"Sociaal Domein",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#be185d"/><circle cx="45" cy="45" r="10" fill="none" stroke="white" stroke-width="2.5"/><circle cx="75" cy="45" r="10" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="10" fill="none" stroke="white" stroke-width="2.5"/><line x1="52" y1="52" x2="55" y2="65" stroke="white" stroke-width="2"/><line x1="68" y1="52" x2="65" y2="65" stroke="white" stroke-width="2"/></svg>'},
+          {app:"mail",label:"MayoMail",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>'},
+          {app:"chat",label:"MayoChat",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/><circle cx="50" cy="57" r="3" fill="white"/><circle cx="60" cy="57" r="3" fill="white"/><circle cx="70" cy="57" r="3" fill="white"/></svg>'},
+          {app:"notebooklm",label:"NotebookLM",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#EA8B47"/><rect x="32" y="30" width="56" height="60" rx="4" fill="none" stroke="white" stroke-width="3"/><line x1="42" y1="45" x2="78" y2="45" stroke="white" stroke-width="2.5" opacity="0.7"/><line x1="42" y1="55" x2="72" y2="55" stroke="white" stroke-width="2.5" opacity="0.5"/><line x1="42" y1="65" x2="68" y2="65" stroke="white" stroke-width="2.5" opacity="0.4"/></svg>'},
+        ].map(a => `<div class="desktop-icon-item" data-desk-app="${a.app}">${a.svg}<div class="desktop-icon-label">${a.label}</div></div>`).join("")}
+      </div>
+
       <div class="desktop-widgets" id="desktop-widgets">
-        <div class="desktop-widget">
+        <div class="desktop-widget" style="cursor:pointer" id="widget-tasks-click">
           <div class="widget-title">Taken vandaag</div>
           <div class="widget-task">
-            <div class="widget-task-dot urgent"></div>
+            <div class="widget-task-dot normal"></div>
             <div>
-              <div class="widget-task-text">Brief aan Bakkerij Van Dijk</div>
-              <div class="widget-task-meta">Terrasvergunning vertraagd - Via Lisa</div>
+              <div class="widget-task-text">MayoWiki doorlezen</div>
+              <div class="widget-task-meta">Onboarding \u2022 Kennismaken met organisatie</div>
             </div>
           </div>
           <div class="widget-task">
             <div class="widget-task-dot normal"></div>
             <div>
-              <div class="widget-task-text">Intranet doorlezen</div>
-              <div class="widget-task-meta">Onboarding - Eerste week</div>
+              <div class="widget-task-text">WiWa bekijken</div>
+              <div class="widget-task-meta">Onboarding \u2022 Collega's leren kennen</div>
             </div>
           </div>
-          <div class="widget-task">
-            <div class="widget-task-dot done"></div>
-            <div>
-              <div class="widget-task-text">Laptop inloggen</div>
-              <div class="widget-task-meta">IT - Voltooid</div>
-            </div>
-          </div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-top:6px;text-align:center">Klik om MayoBoard te openen</div>
         </div>
         <div class="desktop-widget">
-          <div class="widget-title">Welkom, AI-pilot co\u00F6rdinator!</div>
+          <div class="widget-title">Welkom, ${state.nickname || "collega"}!</div>
           <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);line-height:1.5">
-            Hoi ${state.nickname || "daar"}! Jij begeleidt de AI-pilot bij Gemeente Mayostad. Deze week loop je mee bij verschillende afdelingen en help je collega's met hun eerste AI-opdrachten. Verken het intranet om de organisatie te leren kennen.
+            Jij bent de AI-pilot co\u00F6rdinator van Gemeente Mayostad. Verken je werkplek en wacht op je eerste opdracht.
           </div>
         </div>
       </div>
@@ -1128,6 +1140,21 @@
 
     // Populate WiWa
     renderWiWa(area.querySelector("#wiwa-body"));
+
+    // Tasks widget click -> open board
+    area.querySelector("#widget-tasks-click")?.addEventListener("click", () => {
+      sfxClick();
+      area.querySelector('[data-app="board"]')?.click();
+    });
+
+    // Desktop icon double-click = same as dock click
+    area.querySelectorAll("[data-desk-app]").forEach(icon => {
+      icon.addEventListener("dblclick", () => {
+        const app = icon.dataset.deskApp;
+        const dockIcon = area.querySelector(`.dock-icon[data-app="${app}"]`);
+        if (dockIcon) dockIcon.click();
+      });
+    });
 
     // Dock click handlers
     const appMessages = {
@@ -1284,7 +1311,7 @@
       let html = currentPage !== "home"
         ? `<div class="wiki-breadcrumbs"><span data-link="home">MayoWiki</span><span class="sep">/</span><span>${page.title}</span></div>`
         : "";
-      html += `<div class="intranet-page-title">${page.icon} ${page.title}</div>`;
+      html += `<div class="intranet-page-title">${page.title}</div>`;
 
       page.content.forEach(block => {
         if (block.type === "banner") html += `<div class="intranet-banner">${block.text}</div>`;
@@ -1351,12 +1378,6 @@
       if (taskShown) return;
       taskShown = true;
       renderBoard(area.querySelector("#board-body"), d, task, true);
-      // Open board automatically + notification
-      const boardWin = document.getElementById("window-board");
-      boardWin.style.display = "flex";
-      boardWin.classList.add("maximized", "focused");
-      area.querySelectorAll(".app-window").forEach(w => { if (w !== boardWin) w.classList.remove("focused"); });
-      area.querySelector('[data-app="board"]')?.classList.add("active");
       showDesktopNotification("Nieuwe taak op MayoBoard! Lisa heeft een opdracht voor je.");
     }, d.taskPopupDelay || 12000);
   }
@@ -1939,13 +1960,6 @@
                     ${sel.skills.map(s => `<span style="font-size:0.75rem;padding:4px 10px;background:#f0f0f5;border-radius:8px;color:#1d1d1f;font-weight:500">${s}</span>`).join("")}
                   </div>
                 </div>
-                <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid #e5e5ea">
-                  <div style="font-size:0.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Contact</div>
-                  <div style="display:flex;gap:8px">
-                    <button style="flex:1;padding:10px;background:#007aff;color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer">MayoChat</button>
-                    <button style="flex:1;padding:10px;background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer">MayoMail</button>
-                  </div>
-                </div>
               </div>
             ` : '<div style="color:#86868b;font-size:0.9rem">Selecteer een collega</div>'}
           </div>
@@ -1964,10 +1978,19 @@
       });
 
       // Search handler
-      container.querySelector("#wiwa-search")?.addEventListener("input", (e) => {
-        searchQuery = e.target.value.toLowerCase();
-        render();
-      });
+      const searchEl = container.querySelector("#wiwa-search");
+      if (searchEl) {
+        searchEl.addEventListener("input", (e) => {
+          searchQuery = e.target.value.toLowerCase();
+          const cursorPos = e.target.selectionStart;
+          render();
+          // Restore focus after re-render
+          const newSearch = container.querySelector("#wiwa-search");
+          if (newSearch) { newSearch.focus(); newSearch.setSelectionRange(cursorPos, cursorPos); }
+        });
+        // Auto-focus if searching
+        if (searchQuery) { searchEl.focus(); searchEl.setSelectionRange(searchQuery.length, searchQuery.length); }
+      }
     }
     render();
   }

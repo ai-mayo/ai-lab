@@ -1994,6 +1994,49 @@ body {
 .app-titlebar-dot.green { background: #28c840; }
 .app-titlebar-dot:hover { filter: brightness(1.2); }
 
+/* Desktop icons grid */
+.desktop-icons {
+  position: absolute;
+  top: 34px;
+  left: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 80px);
+  gap: 4px;
+  padding: 8px;
+  z-index: 103;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.desktop-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+  width: 76px;
+}
+.desktop-icon-item:hover { background: rgba(255,255,255,0.12); }
+.desktop-icon-item:active { background: rgba(255,255,255,0.2); }
+
+.desktop-icon-item svg { width: 48px; height: 48px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+.desktop-icon-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  line-height: 1.2;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Desktop widgets */
 .desktop-widgets {
   position: absolute;

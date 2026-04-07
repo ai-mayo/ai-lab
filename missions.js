@@ -46,20 +46,20 @@ const MISSIONS = [
                 content: [
                   { type: "banner", text: "MayoWiki \u2014 Kennisbank Gemeente Mayostad. Gebruik de zoekbalk of navigeer via de categorie\u00EBn." },
                   { type: "cards", items: [
-                    { title: "Over Mayostad", icon: "\u{1F3DB}", link: "about" },
-                    { title: "Schrijfwijzer", icon: "\u{1F3A8}", link: "tone" },
-                    { title: "Lopende Zaken", icon: "\u{1F4C2}", link: "clients" },
-                    { title: "AI bij de Gemeente", icon: "\u{1F916}", link: "ai" },
-                    { title: "Tools & Apps", icon: "\u{1F527}", link: "tools" },
-                    { title: "AI Huisregels", icon: "\u{1F4CB}", link: "rules" },
-                    { title: "Parkeerbeleid", icon: "\u{1F697}", link: "parking" },
-                    { title: "Kantine & Lunch", icon: "\u{2615}", link: "kantine" },
-                    { title: "BHV & Veiligheid", icon: "\u{1F6D1}", link: "bhv" },
-                    { title: "Vergaderruimtes", icon: "\u{1F4C5}", link: "vergader" },
-                    { title: "Declaraties", icon: "\u{1F4B3}", link: "declaraties" },
-                    { title: "Verlof & Ziekte", icon: "\u{1F3D6}", link: "verlof" },
-                    { title: "Huisvesting", icon: "\u{1F3E2}", link: "huisvesting" },
-                    { title: "Duurzaamheid", icon: "\u{1F33F}", link: "duurzaam" }
+                    { title: "Over Mayostad", icon: "", link: "about" },
+                    { title: "Schrijfwijzer", icon: "", link: "tone" },
+                    { title: "Lopende Zaken", icon: "", link: "clients" },
+                    { title: "AI bij de Gemeente", icon: "", link: "ai" },
+                    { title: "Tools & Apps", icon: "", link: "tools" },
+                    { title: "AI Huisregels", icon: "", link: "rules" },
+                    { title: "Parkeerbeleid", icon: "", link: "parking" },
+                    { title: "Kantine & Lunch", icon: "", link: "kantine" },
+                    { title: "BHV & Veiligheid", icon: "", link: "bhv" },
+                    { title: "Vergaderruimtes", icon: "", link: "vergader" },
+                    { title: "Declaraties", icon: "", link: "declaraties" },
+                    { title: "Verlof & Ziekte", icon: "", link: "verlof" },
+                    { title: "Huisvesting", icon: "", link: "huisvesting" },
+                    { title: "Duurzaamheid", icon: "", link: "duurzaam" }
                   ]}
                 ]
               },
