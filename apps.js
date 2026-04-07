@@ -222,62 +222,105 @@ const APP_RENDERERS = {
 
   // ─── MayoChat ───────────────────────────────────────
   chat(container) {
-    const channels = [
-      {name:"# algemeen", unread:3},
-      {name:"# ai-pilot", unread:7},
-      {name:"# kcc-team", unread:0},
-      {name:"# sociaal-domein", unread:2},
-      {name:"# vth", unread:0},
-      {name:"# boa-team", unread:1},
-      {name:"# grappig", unread:12},
-    ];
-    const messages = [
-      {user:"Tom Bakker",time:"09:14",text:"Goedemorgen! Wie heeft er al met ChatGPT gewerkt vandaag?",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
-      {user:"Sarah Chen",time:"09:16",text:"Ik heb net een persbericht laten herschrijven. Best goed resultaat!",avatar:"https://randomuser.me/api/portraits/women/75.jpg"},
-      {user:"Remco van Dam",time:"09:18",text:"Ik probeerde een standaard-antwoord voor de afvalcontainer-vraag. Werkt prima als je specifiek genoeg bent.",avatar:"https://randomuser.me/api/portraits/men/32.jpg"},
-      {user:"Lisa de Vries",time:"09:22",text:"Top! Vergeet niet de schrijfwijzer te checken voordat je iets verstuurt naar inwoners.",avatar:"https://randomuser.me/api/portraits/women/44.jpg"},
-      {user:"Ahmed Hassan",time:"09:25",text:"\u26A0\uFE0F Reminder: GEEN BSN-nummers of medische gegevens in ChatGPT plakken. Wie dat doet krijgt taart-plicht voor het hele team.",avatar:"https://randomuser.me/api/portraits/men/91.jpg"},
-      {user:"Dennis Krul",time:"09:30",text:"Haha Ahmed, begrepen! Youssef heeft gisteren een controlerapport laten schrijven. Zag er goed uit maar we moesten 2 feitelijke fouten eruit halen.",avatar:"https://randomuser.me/api/portraits/men/76.jpg"},
-      {user:"Priya Sharma",time:"09:35",text:"Ik ben nog sceptisch. Hoe weet je zeker dat AI geen onzin schrijft in een offici\u00EBle brief?",avatar:"https://randomuser.me/api/portraits/women/68.jpg"},
-      {user:"Tom Bakker",time:"09:37",text:"Goede vraag Priya! Daarom is er altijd een menselijke check nodig. AI schrijft het concept, jij controleert en verstuurt.",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
-    ];
+    const channelData = {
+      "# algemeen": {
+        members: 42,
+        messages: [
+          {user:"HR Gemeente Mayostad",time:"08:30",text:"Reminder: morgen is er een brandoefening om 10:00. Neem je spullen mee naar buiten.",avatar:""},
+          {user:"Facilitaire Zaken",time:"08:45",text:"De koffiemachine op de 2e verdieping is gerepareerd. Sorry voor het ongemak!",avatar:""},
+          {user:"Lisa de Vries",time:"09:00",text:"Welkom aan onze nieuwe collega bij VTH! Fijn dat je er bent.",avatar:"https://randomuser.me/api/portraits/women/44.jpg"},
+        ]
+      },
+      "# ai-pilot": {
+        members: 8,
+        messages: [
+          {user:"Tom Bakker",time:"09:14",text:"Goedemorgen! Wie heeft er al met ChatGPT gewerkt vandaag?",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
+          {user:"Sarah Chen",time:"09:16",text:"Ik heb net een persbericht laten herschrijven. Best goed resultaat!",avatar:"https://randomuser.me/api/portraits/women/75.jpg"},
+          {user:"Ahmed Hassan",time:"09:25",text:"\u26A0\uFE0F Reminder: GEEN BSN-nummers of medische gegevens in ChatGPT plakken.",avatar:"https://randomuser.me/api/portraits/men/91.jpg"},
+          {user:"Dennis Krul",time:"09:30",text:"Youssef heeft gisteren een controlerapport laten schrijven. Zag er goed uit maar we moesten 2 feitelijke fouten eruit halen.",avatar:"https://randomuser.me/api/portraits/men/76.jpg"},
+          {user:"Priya Sharma",time:"09:35",text:"Hoe weet je zeker dat AI geen onzin schrijft in een offici\u00EBle brief?",avatar:"https://randomuser.me/api/portraits/women/68.jpg"},
+          {user:"Tom Bakker",time:"09:37",text:"Goede vraag! Daarom is er altijd een menselijke check nodig. AI schrijft het concept, jij controleert.",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
+        ]
+      },
+      "# vth": {
+        members: 5,
+        messages: [
+          {user:"Marco Pieterse",time:"08:50",text:"Team, de terrasvergunning Van Dijk heeft een bezwaar gekregen. Moet vandaag een brief uit.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+          {user:"Anouk Willems",time:"09:05",text:"Ik heb de welstandscommissie gebeld over FitNow. Advies komt vrijdag.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
+          {user:"Marco Pieterse",time:"09:10",text:"Onze nieuwe collega gaat de brief voor Van Dijk oppakken. Met ChatGPT als ondersteuning.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+        ]
+      },
+      "# sociaal-domein": {
+        members: 6,
+        messages: [
+          {user:"Sandra Mulder",time:"09:00",text:"Teamoverleg vrijdag 14:00 over wachtlijsten WMO. Iedereen aanwezig?",avatar:"https://randomuser.me/api/portraits/women/52.jpg"},
+          {user:"Bas van den Berg",time:"09:12",text:"Ik ben er. Heb ook een update over de AI-pilot: de WMO-Schrijver heeft 3 concepten opgeleverd.",avatar:"https://randomuser.me/api/portraits/men/46.jpg"},
+          {user:"Noor de Jong",time:"09:20",text:"Ik maak me wel zorgen over privacy bij die AI-concepten. Kunnen we dat bespreken?",avatar:"https://randomuser.me/api/portraits/women/33.jpg"},
+        ]
+      },
+      "# boa-team": {
+        members: 4,
+        messages: [
+          {user:"Dennis Krul",time:"08:40",text:"Controle Parkweg gepland voor vanmiddag. Youssef, neem je de camera mee?",avatar:"https://randomuser.me/api/portraits/men/76.jpg"},
+          {user:"Youssef Amrani",time:"08:42",text:"Doe ik. Ik test ook de BOA-Rapporteur AI voor het verslag.",avatar:"https://randomuser.me/api/portraits/men/83.jpg"},
+        ]
+      },
+      "# grappig": {
+        members: 38,
+        messages: [
+          {user:"Remco van Dam",time:"08:55",text:"Ik vroeg ChatGPT wat het vindt van de koffie op het gemeentehuis. Antwoord: 'Als ambtenaar kan ik daar geen uitspraken over doen.' \ud83d\ude02",avatar:"https://randomuser.me/api/portraits/men/32.jpg"},
+          {user:"Sarah Chen",time:"09:02",text:"Ik vroeg Claude om een haiku over vergaderen: 'Agenda te lang / Koffie wordt langzaam koud / Wie notuleert er'",avatar:"https://randomuser.me/api/portraits/women/75.jpg"},
+          {user:"Dennis Krul",time:"09:15",text:"AI heeft mijn rapport 'de verdachte stond verdacht te kijken' gecorrigeerd naar 'de persoon vertoonde opvallend gedrag'. Technisch correct maar minder leuk.",avatar:"https://randomuser.me/api/portraits/men/76.jpg"},
+        ]
+      },
+    };
+    const channels = Object.keys(channelData).map(name => ({name, unread: channelData[name].messages.length}));
+    let activeChannel = "# ai-pilot";
 
-    container.innerHTML = `
-      <div style="flex:1;display:flex;background:#1a1a2e;font-family:-apple-system,'Inter',sans-serif;font-size:13px;color:#e2e8f0">
-        <div style="width:200px;background:#151528;border-right:1px solid #252545;padding:10px 0;overflow-y:auto;flex-shrink:0">
-          <div style="padding:8px 14px;font-weight:700;font-size:0.85rem;color:#7dd3fc;margin-bottom:8px">MayoChat</div>
-          ${channels.map(c => `
-            <div style="display:flex;align-items:center;padding:5px 14px;cursor:pointer;color:${c.unread?"#e2e8f0":"#64748b"};font-size:0.82rem;font-weight:${c.unread?"500":"400"}" onmouseover="this.style.background='#1e1e38'" onmouseout="this.style.background=''">
-              <span style="flex:1">${c.name}</span>
-              ${c.unread ? `<span style="background:#dc2626;color:white;font-size:0.6rem;padding:1px 5px;border-radius:8px;font-weight:700">${c.unread}</span>` : ""}
-            </div>
-          `).join("")}
-        </div>
-        <div style="flex:1;display:flex;flex-direction:column">
-          <div style="padding:10px 16px;border-bottom:1px solid #252545;font-weight:600;font-size:0.85rem"># ai-pilot <span style="font-weight:400;color:#64748b;font-size:0.75rem">\u2022 8 leden</span></div>
-          <div style="flex:1;overflow-y:auto;padding:12px 16px">
-            ${messages.map(m => `
-              <div style="display:flex;gap:10px;margin-bottom:14px">
-                <img src="${m.avatar}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0">
-                <div>
-                  <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px">
-                    <span style="font-weight:600;font-size:0.82rem;color:#e2e8f0">${m.user}</span>
-                    <span style="font-size:0.65rem;color:#64748b">${m.time}</span>
-                  </div>
-                  <div style="font-size:0.85rem;color:#cbd5e1;line-height:1.5">${m.text}</div>
-                </div>
+    function renderChat() {
+      const ch = channelData[activeChannel];
+      container.innerHTML = `
+        <div style="flex:1;display:flex;background:#1a1a2e;font-family:-apple-system,'Inter',sans-serif;font-size:13px;color:#e2e8f0">
+          <div style="width:200px;background:#151528;border-right:1px solid #252545;padding:10px 0;overflow-y:auto;flex-shrink:0">
+            <div style="padding:8px 14px;font-weight:700;font-size:0.85rem;color:#7dd3fc;margin-bottom:8px">MayoChat</div>
+            ${channels.map(c => `
+              <div class="mc-channel" data-channel="${c.name}" style="display:flex;align-items:center;padding:5px 14px;cursor:pointer;color:${c.name===activeChannel?"#fff":"#64748b"};font-size:0.82rem;font-weight:${c.name===activeChannel?"600":"400"};background:${c.name===activeChannel?"#252550":"transparent"};border-radius:4px;margin:0 6px">
+                <span style="flex:1">${c.name}</span>
               </div>
             `).join("")}
           </div>
-          <div style="padding:10px 16px;border-top:1px solid #252545">
-            <div style="display:flex;align-items:center;gap:8px;background:#1e1e38;border:1px solid #333;border-radius:8px;padding:8px 12px">
-              <input placeholder="Bericht in #ai-pilot..." style="flex:1;background:transparent;border:none;color:#e2e8f0;font-family:inherit;font-size:0.85rem;outline:none" readonly>
-              <span style="color:#64748b;cursor:pointer">\u{1F4CE}</span>
-              <span style="color:#64748b;cursor:pointer">\u{1F600}</span>
+          <div style="flex:1;display:flex;flex-direction:column">
+            <div style="padding:10px 16px;border-bottom:1px solid #252545;font-weight:600;font-size:0.85rem">${activeChannel} <span style="font-weight:400;color:#64748b;font-size:0.75rem">\u2022 ${ch.members} leden</span></div>
+            <div style="flex:1;overflow-y:auto;padding:12px 16px">
+              ${ch.messages.map(m => `
+                <div style="display:flex;gap:10px;margin-bottom:14px">
+                  ${m.avatar ? `<img src="${m.avatar}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0">` : `<div style="width:32px;height:32px;border-radius:6px;background:#333;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#888;font-weight:700;flex-shrink:0">${m.user.split(" ").map(w=>w[0]).join("").slice(0,2)}</div>`}
+                  <div>
+                    <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px">
+                      <span style="font-weight:600;font-size:0.82rem;color:#e2e8f0">${m.user}</span>
+                      <span style="font-size:0.65rem;color:#64748b">${m.time}</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:#cbd5e1;line-height:1.5">${m.text}</div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+            <div style="padding:10px 16px;border-top:1px solid #252545">
+              <div style="display:flex;align-items:center;gap:8px;background:#1e1e38;border:1px solid #333;border-radius:8px;padding:8px 12px">
+                <input placeholder="Bericht in ${activeChannel}..." style="flex:1;background:transparent;border:none;color:#e2e8f0;font-family:inherit;font-size:0.85rem;outline:none" readonly>
+              </div>
             </div>
           </div>
-        </div>
-      </div>`;
+        </div>`;
+
+      container.querySelectorAll(".mc-channel").forEach(el => {
+        el.addEventListener("click", () => {
+          activeChannel = el.dataset.channel;
+          renderChat();
+        });
+      });
+    }
+    renderChat();
   },
 
   // ─── MayoMail ───────────────────────────────────────
@@ -363,6 +406,73 @@ const APP_RENDERERS = {
                 <div style="padding:10px 14px;background:#242424;border:1px solid #333;border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:0.85rem;color:#aaa" onmouseover="this.style.borderColor='#EA8B47';this.style.color='#e0e0e0'" onmouseout="this.style.borderColor='#333';this.style.color='#aaa'">${s}</div>
               `).join("")}
             </div>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  // ─── GAIMS - lokale chatbot ──────────────────────────
+  gaims(container) {
+    container.innerHTML = `
+      <div style="flex:1;display:flex;flex-direction:column;background:#0c1222;font-family:-apple-system,'Inter',sans-serif;font-size:13px;color:#e2e8f0">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#0f1729;border-bottom:1px solid #1e293b">
+          <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06b6d4,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:white">G</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:#e2e8f0">GAIMS</div>
+            <div style="font-size:0.6rem;color:#64748b">Generatieve AI Mayostad \u2022 Lokaal \u2022 AVG-proof</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+            <div style="width:8px;height:8px;border-radius:50%;background:#22c55e"></div>
+            <span style="font-size:0.65rem;color:#22c55e">Lokaal actief</span>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="max-width:500px;text-align:center">
+            <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#06b6d4,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:white;margin:0 auto 16px">G</div>
+            <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Welkom bij GAIMS</div>
+            <div style="font-size:0.85rem;color:#94a3b8;line-height:1.6;margin-bottom:20px">Generatieve AI Mayostad draait volledig op gemeentelijke servers. Geen data verlaat het netwerk. Veilig voor gebruik met interne documenten.</div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:24px">
+              <span style="font-size:0.65rem;padding:4px 10px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8">AVG-compliant</span>
+              <span style="font-size:0.65rem;padding:4px 10px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8">On-premise</span>
+              <span style="font-size:0.65rem;padding:4px 10px;background:#1e293b;border:1px solid #334155;border-radius:20px;color:#94a3b8">Geen datalek risico</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left">
+              ${["Samenvatting intern rapport","Vergunningsaanvraag beoordelen","WMO-beschikking concept","Beleidstekst naar B1-niveau"].map(s => `<div style="padding:10px 12px;background:#1e293b;border:1px solid #334155;border-radius:8px;cursor:pointer;font-size:0.8rem;color:#94a3b8" onmouseover="this.style.borderColor='#06b6d4'" onmouseout="this.style.borderColor='#334155'">${s}</div>`).join("")}
+            </div>
+          </div>
+        </div>
+        <div style="padding:12px 16px;border-top:1px solid #1e293b">
+          <div style="display:flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px 14px">
+            <input placeholder="Stel een vraag aan GAIMS..." style="flex:1;background:transparent;border:none;color:#e2e8f0;font-family:inherit;font-size:0.88rem;outline:none" readonly>
+            <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#06b6d4,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;cursor:pointer">\u2191</div>
+          </div>
+          <div style="text-align:center;font-size:0.6rem;color:#475569;margin-top:6px">Data verlaat nooit het gemeentelijk netwerk.</div>
+        </div>
+      </div>`;
+  },
+
+  // ─── Copilot ────────────────────────────────────────
+  copilot(container) {
+    container.innerHTML = `
+      <div style="flex:1;display:flex;flex-direction:column;background:#1e1e1e;font-family:-apple-system,'Inter',sans-serif;font-size:13px;color:#e0e0e0">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#2d2d2d;border-bottom:1px solid #404040">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#0078d4,#5c2d91);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:white">C</div>
+          <span style="font-weight:600;font-size:0.9rem">Copilot</span>
+          <span style="font-size:0.65rem;color:#888;background:#383838;padding:2px 8px;border-radius:4px">Enterprise</span>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="max-width:480px;text-align:center">
+            <div style="font-size:1.2rem;font-weight:600;margin-bottom:6px">Waarmee kan ik je helpen?</div>
+            <div style="font-size:0.82rem;color:#888;margin-bottom:24px">Copilot Enterprise</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left">
+              ${["Een vergadering samenvatten","Een presentatie maken","Een document analyseren","Een email opstellen"].map(s => `<div style="padding:12px;background:#2d2d2d;border:1px solid #404040;border-radius:10px;cursor:pointer;font-size:0.82rem;color:#ccc" onmouseover="this.style.borderColor='#0078d4'" onmouseout="this.style.borderColor='#404040'">${s}</div>`).join("")}
+            </div>
+          </div>
+        </div>
+        <div style="padding:12px 20px;border-top:1px solid #404040">
+          <div style="display:flex;align-items:center;gap:8px;background:#2d2d2d;border:1px solid #555;border-radius:24px;padding:10px 16px">
+            <input placeholder="Stel Copilot een vraag..." style="flex:1;background:transparent;border:none;color:#e0e0e0;font-family:inherit;font-size:0.88rem;outline:none" readonly>
+            <div style="width:28px;height:28px;border-radius:50%;background:#0078d4;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer">\u2191</div>
           </div>
         </div>
       </div>`;

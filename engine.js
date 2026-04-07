@@ -1035,9 +1035,13 @@
           <div class="dock-tooltip">Claude</div><div class="dock-label">Claude</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
         </div>
-        <div class="dock-icon" data-app="gemini">
-          <div class="dock-tooltip">Gemini</div><div class="dock-label">Gemini</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e1f20"/><circle cx="60" cy="60" r="24" fill="none" stroke="url(#gg)" stroke-width="4"/><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4285f4"/><stop offset="33%" stop-color="#ea4335"/><stop offset="66%" stop-color="#fbbc05"/><stop offset="100%" stop-color="#34a853"/></linearGradient></defs><circle cx="60" cy="60" r="10" fill="url(#gg)"/></svg>
+        <div class="dock-icon" data-app="gaims">
+          <div class="dock-tooltip">GAIMS</div><div class="dock-label">GAIMS</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0c1222"/><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect x="30" y="30" width="60" height="60" rx="14" fill="url(#gg)"/><text x="60" y="68" text-anchor="middle" fill="white" font-size="28" font-weight="900" font-family="sans-serif">G</text></svg>
+        </div>
+        <div class="dock-icon" data-app="copilot">
+          <div class="dock-tooltip">Copilot</div><div class="dock-label">Copilot</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2d2d2d"/><circle cx="60" cy="60" r="24" fill="none" stroke="#0078d4" stroke-width="4"/><circle cx="60" cy="60" r="12" fill="#0078d4"/><circle cx="60" cy="60" r="5" fill="white"/></svg>
         </div>
         <div class="dock-icon" data-app="notebooklm">
           <div class="dock-tooltip">NotebookLM</div><div class="dock-label">NotebookLM</div>
@@ -1096,6 +1100,8 @@
           {app:"vergunning",label:"Vergunningen",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#7c3aed"/><rect x="30" y="25" width="50" height="65" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M42 40h26M42 50h20M42 60h24" stroke="white" stroke-width="2" opacity="0.6"/><circle cx="80" cy="75" r="16" fill="#7c3aed" stroke="white" stroke-width="3"/><path d="M74 75l4 4 8-8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>'},
           {app:"zaaksysteem",label:"Zaaksysteem",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0f766e"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5" opacity="0.7"/></svg>'},
           {app:"chatgpt",label:"ChatGPT",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>'},
+          {app:"gaims",label:"GAIMS",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0c1222"/><defs><linearGradient id="gg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect x="30" y="30" width="60" height="60" rx="14" fill="url(#gg2)"/><text x="60" y="68" text-anchor="middle" fill="white" font-size="28" font-weight="900" font-family="sans-serif">G</text></svg>'},
+          {app:"copilot",label:"Copilot",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2d2d2d"/><circle cx="60" cy="60" r="24" fill="none" stroke="#0078d4" stroke-width="4"/><circle cx="60" cy="60" r="12" fill="#0078d4"/><circle cx="60" cy="60" r="5" fill="white"/></svg>'},
           {app:"intranet",label:"MayoWiki",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg>'},
           {app:"wiwa",label:"WiWa",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg>'},
           {app:"mail",label:"MayoMail",svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>'},
@@ -1142,9 +1148,9 @@
       area.querySelector('[data-app="board"]')?.click();
     });
 
-    // Desktop icon double-click = same as dock click
+    // Desktop icon click = same as dock click (single click, not double)
     area.querySelectorAll("[data-desk-app]").forEach(icon => {
-      icon.addEventListener("dblclick", () => {
+      icon.addEventListener("click", () => {
         const app = icon.dataset.deskApp;
         const dockIcon = area.querySelector(`.dock-icon[data-app="${app}"]`);
         if (dockIcon) dockIcon.click();
@@ -1155,7 +1161,6 @@
     const appMessages = {
       finder: "Finder is beschikbaar, maar je hebt geen bestanden nodig voor deze opdracht.",
       claude: "Claude is beschikbaar voor langere documenten. Vandaag gebruik je ChatGPT.",
-      gemini: "Gemini is beschikbaar voor onderzoek en vergelijking. Probeer het later!",
       settings: "Instellingen zijn vergrendeld door IT. Neem contact op met de helpdesk.",
     };
 
