@@ -8,6 +8,7 @@
     streak: 0,
     lastPlayDate: null,
     completed: {},
+    nickname: null,
     currentMission: null,
     currentTask: 0,
     taskScore: 0,
@@ -39,14 +40,15 @@
   function save() {
     localStorage.setItem("ai-lab-save", JSON.stringify({
       xp: state.xp, streak: state.streak, lastPlayDate: state.lastPlayDate,
-      completed: state.completed, sound: state.sound,
+      completed: state.completed, nickname: state.nickname, sound: state.sound,
     }));
   }
   function load() {
     try {
       const s = JSON.parse(localStorage.getItem("ai-lab-save") || "{}");
       Object.assign(state, { xp: s.xp || 0, streak: s.streak || 0,
-        lastPlayDate: s.lastPlayDate, completed: s.completed || {}, sound: s.sound !== false });
+        lastPlayDate: s.lastPlayDate, completed: s.completed || {},
+        nickname: s.nickname || null, sound: s.sound !== false });
     } catch (e) {}
   }
 
@@ -122,24 +124,30 @@
     const heroText = "AI is geen magie. Het is een tool. Leer hem gebruiken.";
     typeText($("#hero-typing"), heroText, 50);
 
-    // Mission cards
+    // Mission cards — only show unlocked + first locked as teaser
     const grid = $("#missions-grid");
     grid.innerHTML = "";
-    MISSIONS.forEach(m => {
+    let firstIncomplete = null;
+    MISSIONS.forEach((m, i) => {
       const done = state.completed[m.id];
-      const locked = m.unlockAfter && !state.completed[m.unlockAfter];
+      // First mission always unlocked; others need previous completed
+      const prevMission = i > 0 ? MISSIONS[i - 1] : null;
+      const locked = prevMission && !state.completed[prevMission.id];
+      const isNext = !done && !locked && !firstIncomplete;
+      if (isNext) firstIncomplete = m;
+
       const card = document.createElement("div");
-      card.className = `mission-card${done ? " completed" : ""}${locked ? " locked" : ""}`;
+      card.className = `mission-card${done ? " completed" : ""}${locked ? " locked" : ""}${isNext ? " next" : ""}`;
       card.innerHTML = `
         <div class="mission-icon" style="background:${m.colorDim}">${m.icon}</div>
         <div class="mission-info">
           <div class="mission-tag" style="color:${m.tagColor};background:${m.colorDim}">${m.tag}</div>
           <div class="mission-name">${m.name}</div>
-          <div class="mission-desc">${m.desc}</div>
+          <div class="mission-desc">${locked ? "Rond de vorige episode af om te unlocken" : m.desc}</div>
         </div>
         <div class="mission-meta">
-          <div class="mission-xp">${m.xp} XP</div>
-          <div class="mission-status">${done ? "\u2705" : locked ? "\u{1F512}" : "\u25B6"}</div>
+          <div class="mission-xp">${locked ? "" : m.xp + " XP"}</div>
+          <div class="mission-status">${done ? "\u2705" : locked ? "\u{1F512}" : isNext ? "\u25B6" : "\u25CB"}</div>
         </div>
       `;
       if (!locked) card.addEventListener("click", () => { sfxClick(); startMission(m); });
@@ -879,7 +887,7 @@
           </div>
           <div class="gpt-sidebar-bottom">
             <div class="gpt-user-avatar">M</div>
-            <div class="gpt-user-name">Marjolein</div>
+            <div class="gpt-user-name">${state.nickname || "Gebruiker"}</div>
           </div>
         </div>
         <div class="gpt-main">
@@ -918,7 +926,7 @@
           </div>
           <div class="claude-sidebar-bottom">
             <div class="claude-user-avatar">M</div>
-            <div class="claude-user-name">Marjolein</div>
+            <div class="claude-user-name">${state.nickname || "Gebruiker"}</div>
           </div>
         </div>
         <div class="claude-main">
@@ -1400,34 +1408,69 @@
     });
   }
 
+  // ─── Nickname prompt ────────────────────────────────
+  function askNickname() {
+    return new Promise(resolve => {
+      load();
+      if (state.nickname) { resolve(state.nickname); return; }
+
+      const overlay = document.createElement("div");
+      overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:10000;padding:20px";
+      overlay.innerHTML = `
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;max-width:360px;width:100%;text-align:center">
+          <div style="font-family:var(--mono);font-size:0.7rem;color:var(--cyan);letter-spacing:2px;margin-bottom:16px">IDENTIFICATIE VEREIST</div>
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px;color:var(--text)">Hoe mogen we je noemen?</div>
+          <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:20px">Je voortgang wordt opgeslagen onder deze naam.</div>
+          <input type="text" id="nick-input" placeholder="Jouw naam..." style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;text-align:center;margin-bottom:16px">
+          <button class="action-btn" id="nick-btn" style="width:100%" disabled>Toegang verkrijgen</button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      const input = overlay.querySelector("#nick-input");
+      const btn = overlay.querySelector("#nick-btn");
+      input.focus();
+      input.addEventListener("input", () => { btn.disabled = input.value.trim().length < 2; });
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !btn.disabled) btn.click(); });
+      btn.addEventListener("click", () => {
+        state.nickname = input.value.trim();
+        save();
+        overlay.style.opacity = "0";
+        overlay.style.transition = "opacity 0.3s";
+        setTimeout(() => { overlay.remove(); resolve(state.nickname); }, 300);
+      });
+    });
+  }
+
   // ─── Boot Sequence ──────────────────────────────────
   function runBootSequence() {
     const bootScreen = document.getElementById("boot-screen");
     const app = document.getElementById("app");
 
-    // Skip boot if already seen this session
-    if (sessionStorage.getItem("ai-lab-booted")) {
-      bootScreen.classList.add("hidden");
-      app.style.display = "";
-      init();
-      return;
-    }
+    askNickname().then(nickname => {
+      // Skip boot if already seen this session
+      if (sessionStorage.getItem("ai-lab-booted")) {
+        bootScreen.classList.add("hidden");
+        app.style.display = "";
+        init();
+        return;
+      }
 
-    const lines = [
-      "NEURAL INTERFACE v2.0.4",
-      "Verbinding maken met AI-netwerk...",
-      "Taalmodellen laden: GPT-4o, Claude Sonnet, Gemini Pro",
-      "Beveiligingsprotocol activeren...",
-      "Kennisbank synchroniseren... 847.291 bronnen",
-      "Agent-sandbox initialiseren...",
-      "Gebruiker identificeren... Marjolein van Erp",
-      "Toegangsniveau: EXPLORER",
-      "",
-      "WAARSCHUWING: AI-systemen kunnen hallucineren.",
-      "Controleer altijd de output.",
-      "",
-      "Systeem gereed. Welkom bij AI Lab."
-    ];
+      const lines = [
+        "NEURAL INTERFACE v2.0.4",
+        "Verbinding maken met AI-netwerk...",
+        "Taalmodellen laden: GPT-4o, Claude Sonnet, Gemini Pro",
+        "Beveiligingsprotocol activeren...",
+        "Kennisbank synchroniseren... 847.291 bronnen",
+        "Agent-sandbox initialiseren...",
+        `Gebruiker identificeren... ${nickname}`,
+        "Toegangsniveau: EXPLORER",
+        "",
+        "WAARSCHUWING: AI-systemen kunnen hallucineren.",
+        "Controleer altijd de output.",
+        "",
+        `Systeem gereed. Welkom bij AI Lab, ${nickname}.`
+      ];
 
     const bootText = document.getElementById("boot-text");
     const progressFill = document.getElementById("boot-progress-fill");
@@ -1480,6 +1523,7 @@
     }
 
     setTimeout(typeBoot, 500);
+    }); // end askNickname.then
   }
 
   document.readyState === "loading"
