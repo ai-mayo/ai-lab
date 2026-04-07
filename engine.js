@@ -1299,7 +1299,7 @@
       Object.entries(wiki.pages).forEach(([key, page]) => {
         const item = document.createElement("div");
         item.className = "intranet-nav-item" + (key === currentPage ? " active" : "");
-        item.innerHTML = `<span>${page.icon}</span> ${page.title}`;
+        item.innerHTML = page.title;
         item.addEventListener("click", () => { sfxClick(); currentPage = key; renderNav(); renderPage(); });
         navEl.appendChild(item);
       });
@@ -1318,7 +1318,7 @@
         else if (block.type === "cards") {
           html += `<div class="intranet-cards">`;
           block.items.forEach(c => {
-            html += `<div class="intranet-card" data-link="${c.link}"><div class="intranet-card-icon">${c.icon}</div><div class="intranet-card-title">${c.title}</div></div>`;
+            html += `<div class="intranet-card" data-link="${c.link}"><div class="intranet-card-title">${c.title}</div></div>`;
           });
           html += `</div>`;
         }
@@ -1773,9 +1773,9 @@
 
   // ─── MayoBoard - Kanban ──────────────────────────────
   const BOARD_TASKS = [
-    { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees de schrijfwijzer, AI-regels en organisatie-info op MayoWiki.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki via het bureaublad en lees de pagina's Schrijfwijzer, AI Huisregels en Over Mayostad.", action:null },
-    { id:"VTH-041", title:"WiWa bekijken", desc:"Leer je collega's en de AI-assistenten kennen via het WiWa adresboek.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad. Klik door de afdelingen en bekijk ook de robot-collega's.", action:null },
-    { id:"VTH-042", title:"Brief terrasvergunning Bakkerij Van Dijk", desc:"Meneer Van Dijk moet geinformeerd worden dat zijn terrasvergunning vertraagd is door een bezwaar van de buurman. Verwacht besluit: 10 april. Schrijf een nette brief via ChatGPT.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Kijk in MayoWiki bij Schrijfwijzer voor de juiste toon. Bij Lopende Zaken vind je de details over Van Dijk. Open daarna ChatGPT om de brief te schrijven.", action:"chatgpt" },
+    { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente en hoe je moet schrijven naar inwoners. Bekijk ook de AI-regels.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad. Lees de pagina's: Over Gemeente Mayostad, Schrijfwijzer (Tone of Voice), AI bij de Gemeente, en Huisregels AI-gebruik. De rest is handig maar niet verplicht.", action:null },
+    { id:"VTH-041", title:"WiWa bekijken", desc:"Leer je collega's kennen. Er zitten ook AI-assistenten tussen \u2014 die werken op bepaalde afdelingen.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad. Klik op de afdelingen in de linkerzijbalk. Let op de collega's met een paars AI-label \u2014 dat zijn robot-collega's.", action:null },
+    { id:"VTH-042", title:"Brief terrasvergunning Bakkerij Van Dijk", desc:"Meneer Van Dijk heeft een terrasvergunning aangevraagd. Door een bezwaar van de buurman is de behandeling vertraagd. Verwacht besluit: 10 april. Schrijf een brief om hem te informeren.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Stap 1: Ga naar MayoWiki > Schrijfwijzer om te zien hoe de gemeente schrijft.\nStap 2: Ga naar MayoWiki > Lopende Zaken voor de details over Van Dijk.\nStap 3: Open ChatGPT en schrijf een prompt om de brief te laten maken.", action:"chatgpt" },
   ];
 
   function renderBoard(container, d, task, showNewTask) {
@@ -1848,7 +1848,7 @@
             <div style="font-size:0.88rem;color:#555;line-height:1.6;margin-bottom:16px">${t.desc}</div>
             ${t.hint ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px;margin-bottom:16px">
               <div style="font-size:0.65rem;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Hint</div>
-              <div style="font-size:0.82rem;color:#1e3a5f;line-height:1.5">${t.hint}</div>
+              <div style="font-size:0.82rem;color:#1e3a5f;line-height:1.6;white-space:pre-line">${t.hint}</div>
             </div>` : ""}
             ${t.action === "chatgpt" ? `<button id="popup-action" style="width:100%;padding:10px;background:#10a37f;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer">Open ChatGPT \u2192</button>` : ""}
           </div>
