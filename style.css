@@ -1652,50 +1652,54 @@ body {
 .menubar {
   display: flex;
   align-items: center;
-  height: 28px;
-  background: rgba(30, 30, 40, 0.85);
-  backdrop-filter: blur(20px);
-  padding: 0 12px;
-  color: #e0e0e0;
-  font-size: 0.78rem;
+  height: 25px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  padding: 0 10px;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.72rem;
   font-weight: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
   z-index: 110;
+  letter-spacing: 0.01em;
 }
-.menubar-apple { font-size: 1rem; margin-right: 16px; opacity: 0.9; }
-.menubar-app { font-weight: 700; margin-right: 16px; }
-.menubar-item { margin-right: 14px; opacity: 0.7; cursor: default; }
-.menubar-right { margin-left: auto; display: flex; gap: 14px; opacity: 0.7; }
+.menubar-apple { margin-right: 18px; opacity: 0.95; font-size: 0.85rem; }
+.menubar-app { font-weight: 600; margin-right: 18px; }
+.menubar-item { margin-right: 14px; opacity: 0.85; cursor: default; font-weight: 400; }
+.menubar-right { margin-left: auto; display: flex; gap: 12px; align-items: center; opacity: 0.85; font-weight: 400; }
+.menubar-right svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.9; }
 
 /* Dock */
 .dock {
   position: absolute;
-  bottom: 8px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 6px;
-  padding: 6px 10px;
-  background: rgba(40, 40, 50, 0.7);
-  backdrop-filter: blur(20px);
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.1);
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
   z-index: 110;
 }
 
 .dock-icon {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
   cursor: pointer;
-  transition: transform 0.15s;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  overflow: hidden;
 }
-.dock-icon:hover { transform: scale(1.25) translateY(-6px); }
+.dock-icon img, .dock-icon svg { width: 42px; height: 42px; border-radius: 10px; }
+.dock-icon:hover { transform: scale(1.35) translateY(-10px); }
 .dock-icon.active::after {
   content: '';
   position: absolute;

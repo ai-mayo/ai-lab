@@ -925,14 +925,14 @@
 
     area.innerHTML = `<div class="desktop" id="macos-desktop">
       <div class="menubar">
-        <span class="menubar-apple">\uF8FF</span>
+        <span class="menubar-apple"><svg viewBox="0 0 17 20" width="12" height="14" fill="white"><path d="M12.15 0c.08.68-.2 1.36-.54 1.86-.38.53-.99.94-1.6.88-.09-.65.24-1.34.56-1.77.38-.5 1.04-.9 1.58-.97zM14.96 7.2c-.04.02-1.6.92-1.58 2.76.02 2.2 1.93 2.93 1.96 2.94-.01.06-.3 1.06-.1 2.22-.56.46-1.1.92-1.97.92-.42 0-.7-.14-1-.28-.32-.15-.66-.3-1.17-.3-.54 0-.9.16-1.24.31-.28.13-.55.25-.92.27-.83.03-1.46-.98-2.03-1.94-.58-.98-1.06-2.5-.44-3.59.3-.54.84-.88 1.44-.89.47-.01.9.17 1.24.32.28.12.5.22.76.22.24 0 .44-.09.72-.22.38-.17.86-.38 1.48-.33.85.03 1.5.46 1.86 1.13-.75.46-1.26 1.23-1.2 2.15.06.98.65 1.82 1.49 2.18-.18.53-.4 1.04-.7 1.51z"/></svg></span>
         <span class="menubar-app">Finder</span>
         <span class="menubar-item">Archief</span>
         <span class="menubar-item">Wijzig</span>
         <span class="menubar-item">Weergave</span>
         <div class="menubar-right">
-          <span>Wi-Fi</span>
-          <span>100%</span>
+          <svg viewBox="0 0 16 12" width="14" height="10"><path d="M8 9.6a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4zm-4.2-3a.6.6 0 01.42.18l.85.84A4.78 4.78 0 018 6.4c1.1 0 2.15.37 3 1.05l.82-.82a.6.6 0 01.85.85l-.83.83A4.78 4.78 0 018 9.6a4.78 4.78 0 01-3.78-1.27l-.84-.84a.6.6 0 01.42-1.02zM1.2 3.6a.6.6 0 01.42.18l1.5 1.5A7.96 7.96 0 018 3.6c1.84 0 3.56.6 4.95 1.72l1.47-1.47a.6.6 0 01.85.85L13.8 6.17A7.96 7.96 0 018 8a7.96 7.96 0 01-5.73-1.8L.77 4.63a.6.6 0 01.42-1.02z" fill="white" opacity="0.9"/></svg>
+          <svg viewBox="0 0 20 10" width="18" height="9"><rect x="0" y="1" width="16" height="8" rx="1.5" fill="none" stroke="white" stroke-width="1" opacity="0.8"/><rect x="17" y="3.5" width="1.5" height="3" rx="0.5" fill="white" opacity="0.5"/><rect x="1.5" y="2.5" width="12" height="5" rx="0.5" fill="#28c840"/></svg>
           <span>${timeStr}</span>
         </div>
       </div>
@@ -944,7 +944,7 @@
             <div class="app-titlebar-dot yellow" data-action="minimize" data-window="intranet"></div>
             <div class="app-titlebar-dot green" data-action="maximize" data-window="intranet"></div>
           </div>
-          <div class="app-titlebar-title">Nova Intranet - Chrome</div>
+          <div class="app-titlebar-title">Gemeente Mayostad - Intranet</div>
         </div>
         <div class="app-body">
           <div class="intranet" id="intranet-container">
@@ -967,29 +967,37 @@
       </div>
 
       <div class="dock" id="dock">
-        <div class="dock-icon" data-app="finder" style="background:#4A90D9">
+        <div class="dock-icon" data-app="finder">
           <div class="dock-tooltip">Finder</div>
-          \u{1F4C1}
+          <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#1565C0"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#fg)"/><path d="M35 30h50v60H35z" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="52" r="4" fill="white"/><path d="M44 75c0-8 7-15 16-15s16 7 16 15" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
-        <div class="dock-icon active" data-app="intranet" style="background:#222">
-          <div class="dock-tooltip">Nova Intranet</div>
-          \u{1F310}
+        <div class="dock-icon active" data-app="intranet">
+          <div class="dock-tooltip">Gemeente Mayostad</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1a1a2e"/><path d="M30 85V50l30-20 30 20v35" fill="none" stroke="#7dd3fc" stroke-width="3"/><rect x="48" y="60" width="24" height="25" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2.5"/><line x1="60" y1="60" x2="60" y2="85" stroke="#7dd3fc" stroke-width="2"/><line x1="48" y1="72" x2="72" y2="72" stroke="#7dd3fc" stroke-width="2"/><path d="M55 35h10v10l-5 5-5-5z" fill="#7dd3fc"/></svg>
         </div>
-        <div class="dock-icon" data-app="chatgpt" style="background:#10a37f">
+        <div class="dock-icon" data-app="chatgpt">
           <div class="dock-tooltip">ChatGPT</div>
-          \u{1F4AC}
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>
         </div>
-        <div class="dock-icon" data-app="claude" style="background:#d97706">
+        <div class="dock-icon" data-app="claude">
           <div class="dock-tooltip">Claude</div>
-          \u{1F4DD}
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
         </div>
-        <div class="dock-icon" data-app="slack" style="background:#4A154B">
+        <div class="dock-icon" data-app="slack">
           <div class="dock-tooltip">Slack</div>
-          \u{1F4E8}
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#4A154B"/><rect x="35" y="50" width="12" height="24" rx="6" fill="#E01E5A"/><rect x="50" y="35" width="24" height="12" rx="6" fill="#36C5F0"/><rect x="73" y="46" width="12" height="24" rx="6" fill="#2EB67D"/><rect x="46" y="73" width="24" height="12" rx="6" fill="#ECB22E"/></svg>
         </div>
-        <div class="dock-icon" data-app="mail" style="background:#007AFF">
-          <div class="dock-tooltip">Mail</div>
-          \u{2709}\uFE0F
+        <div class="dock-icon" data-app="mail">
+          <div class="dock-tooltip">Outlook</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0078D4"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
+        </div>
+        <div class="dock-icon" data-app="teams">
+          <div class="dock-tooltip">Teams</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#5B5FC7"/><circle cx="50" cy="45" r="12" fill="none" stroke="white" stroke-width="3"/><circle cx="72" cy="42" r="9" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/><path d="M30 80c0-14 10-22 24-22s24 8 24 22" fill="none" stroke="white" stroke-width="3"/></svg>
+        </div>
+        <div class="dock-icon" data-app="settings">
+          <div class="dock-tooltip">Instellingen</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#636366"/><stop offset="100%" stop-color="#48484A"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#sg)"/><circle cx="60" cy="60" r="18" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="60" r="7" fill="white"/><line x1="60" y1="30" x2="60" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="82" x2="60" y2="90" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="60" x2="38" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="82" y1="60" x2="90" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
         </div>
       </div>
 

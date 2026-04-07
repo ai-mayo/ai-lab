@@ -3,8 +3,8 @@
 // with hands-on tasks that teach through doing
 
 const STORY = {
-  title: "Eerste Week bij Nova",
-  intro: "Je bent net aangenomen bij Nova, een snelgroeiend techbedrijf. Op je eerste dag ontdek je dat iedereen hier AI gebruikt. Je manager zegt: 'Wij werken niet harder. Wij werken met AI.' Jij hebt nog nooit een AI-tool geopend. Dat gaat vandaag veranderen.",
+  title: "Eerste Week bij Gemeente Mayostad",
+  intro: "Je bent net aangenomen bij Gemeente Mayostad, een snelgroeiend techbedrijf. Op je eerste dag ontdek je dat iedereen hier AI gebruikt. Je manager zegt: 'Wij werken niet harder. Wij werken met AI.' Jij hebt nog nooit een AI-tool geopend. Dat gaat vandaag veranderen.",
 };
 
 const MISSIONS = [
@@ -20,13 +20,13 @@ const MISSIONS = [
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
-    storyIntro: "Maandagochtend. Je zit achter je nieuwe laptop bij Nova. Een techbedrijf dat vorig jaar heeft besloten AI in te zetten voor alles: klantenservice, marketing, documentatie. Jij bent de nieuwste aanwinst. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
+    storyIntro: "Maandagochtend. Je zit achter je nieuwe laptop bij Gemeente Mayostad. Een techbedrijf dat vorig jaar heeft besloten AI in te zetten voor alles: klantenservice, marketing, documentatie. Jij bent de nieuwste aanwinst. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
     tasks: [
       {
         type: "scenario",
         label: "OPEN CHATGPT",
         title: "Je opent ChatGPT voor het eerst",
-        desc: "Verken het intranet van Nova. Klik rond, leer het bedrijf kennen.",
+        desc: "Verken het intranet van Gemeente Mayostad. Klik rond, leer het bedrijf kennen.",
         interaction: {
           type: "intranet-then-prompt",
           tool: "chatgpt",
@@ -41,12 +41,12 @@ const MISSIONS = [
           wiki: {
             pages: {
               home: {
-                title: "Nova Intranet",
+                title: "Gemeente Mayostad Intranet",
                 icon: "\u{1F3E2}",
                 content: [
-                  { type: "banner", text: "Welkom bij Nova! Jouw eerste week begint hier." },
+                  { type: "banner", text: "Welkom bij Gemeente Mayostad! Jouw eerste week begint hier." },
                   { type: "cards", items: [
-                    { title: "Over Nova", icon: "\u{1F4D6}", link: "about" },
+                    { title: "Over Gemeente Mayostad", icon: "\u{1F4D6}", link: "about" },
                     { title: "Tone of Voice", icon: "\u{1F3A8}", link: "tone" },
                     { title: "Klanten", icon: "\u{1F465}", link: "clients" },
                     { title: "Tools & Apps", icon: "\u{1F527}", link: "tools" },
@@ -56,10 +56,10 @@ const MISSIONS = [
                 ]
               },
               about: {
-                title: "Over Nova",
+                title: "Over Gemeente Mayostad",
                 icon: "\u{1F4D6}",
                 content: [
-                  { type: "text", text: "Nova is een snelgroeiend techbedrijf gespecialiseerd in slimme logistieke oplossingen voor het MKB. Opgericht in 2019, inmiddels 45 medewerkers." },
+                  { type: "text", text: "Gemeente Mayostad is een snelgroeiend techbedrijf gespecialiseerd in slimme logistieke oplossingen voor het MKB. Opgericht in 2019, inmiddels 45 medewerkers." },
                   { type: "text", text: "Onze missie: technologie toegankelijk maken voor bedrijven die geen IT-afdeling hebben. We leveren software, hardware en support als compleet pakket." },
                   { type: "info", label: "Opgericht", value: "2019" },
                   { type: "info", label: "Medewerkers", value: "45" },
@@ -71,11 +71,11 @@ const MISSIONS = [
                 title: "Tone of Voice",
                 icon: "\u{1F3A8}",
                 content: [
-                  { type: "heading", text: "Zo schrijven wij bij Nova" },
+                  { type: "heading", text: "Zo schrijven wij bij Gemeente Mayostad" },
                   { type: "text", text: "We zijn professioneel maar warm. We zijn geen bank en geen overheid. We zijn een team van mensen die oprecht geven om onze klanten." },
                   { type: "do-dont", dos: [
                     "Beste meneer/mevrouw [achternaam]",
-                    "Hartelijke groet, Team Nova",
+                    "Hartelijke groet, Klantenservice Gemeente Mayostad",
                     "Onze excuses voor het ongemak",
                     "Neem gerust contact op",
                     "We doen ons best om..."
@@ -104,7 +104,7 @@ const MISSIONS = [
                 title: "Tools & Apps",
                 icon: "\u{1F527}",
                 content: [
-                  { type: "heading", text: "Wat we gebruiken bij Nova" },
+                  { type: "heading", text: "Wat we gebruiken bij Gemeente Mayostad" },
                   { type: "tool", name: "ChatGPT", desc: "Voor emails, samenvattingen, brainstorms. Iedereen heeft een Team-account.", status: "Verplicht" },
                   { type: "tool", name: "Claude", desc: "Voor langere documenten en analyses. Beschikbaar voor iedereen.", status: "Optioneel" },
                   { type: "tool", name: "Slack", desc: "Interne communicatie.", status: "Verplicht" },
@@ -127,10 +127,10 @@ const MISSIONS = [
                 title: "Huisregels AI-gebruik",
                 icon: "\u{1F4CB}",
                 content: [
-                  { type: "heading", text: "Regels voor AI bij Nova" },
+                  { type: "heading", text: "Regels voor AI bij Gemeente Mayostad" },
                   { type: "rule", num: "1", text: "Controleer ALTIJD de output van AI voordat je het verstuurt." },
                   { type: "rule", num: "2", text: "Deel GEEN klantgegevens, wachtwoorden of financiele data met AI-tools." },
-                  { type: "rule", num: "3", text: "Gebruik de Tone of Voice van Nova. AI kent onze huisstijl niet automatisch." },
+                  { type: "rule", num: "3", text: "Gebruik de Tone of Voice van Gemeente Mayostad. AI kent onze huisstijl niet automatisch." },
                   { type: "rule", num: "4", text: "Bij twijfel: vraag een collega. AI is een hulpmiddel, geen vervanger van je oordeel." },
                   { type: "rule", num: "5", text: "Vermeld in belangrijke documenten dat AI is gebruikt als hulpmiddel." }
                 ]
@@ -147,8 +147,8 @@ const MISSIONS = [
             { id: "signoff", label: "Ondertekening", keywords: ["nova", "team nova", "namens"], hint: "Vermeld namens wie je schrijft", points: 10 }
           ],
           responses: {
-            perfect: "Beste meneer Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling #4891 door een onverwacht leveranciersprobleem twee dagen vertraging heeft opgelopen.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor het ongemak.\n\nNeem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nTeam Nova",
-            good: "Beste meneer Van Dijk,\n\nUw bestelling heeft helaas vertraging opgelopen. We verwachten deze op donderdag 10 april te kunnen leveren.\n\nOnze excuses voor het ongemak.\n\nMet vriendelijke groet,\nTeam Nova",
+            perfect: "Beste meneer Van Dijk,\n\nHelaas moet ik u laten weten dat uw bestelling #4891 door een onverwacht leveranciersprobleem twee dagen vertraging heeft opgelopen.\n\nDe nieuwe verwachte leverdatum is donderdag 10 april. Onze oprechte excuses voor het ongemak.\n\nNeem bij vragen gerust contact op via 020-1234567.\n\nHartelijke groet,\nKlantenservice Gemeente Mayostad",
+            good: "Beste meneer Van Dijk,\n\nUw bestelling heeft helaas vertraging opgelopen. We verwachten deze op donderdag 10 april te kunnen leveren.\n\nOnze excuses voor het ongemak.\n\nMet vriendelijke groet,\nKlantenservice Gemeente Mayostad",
             mediocre: "Beste klant,\n\nUw bestelling is vertraagd. We hopen deze binnenkort te leveren.\n\nExcuses voor het ongemak.\n\nGroeten",
             bad: "Hallo,\n\nEr is een vertraging.\n\nGroeten"
           }
