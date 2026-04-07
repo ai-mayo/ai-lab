@@ -946,6 +946,11 @@
             <div class="app-titlebar-dot green" data-action="maximize" data-window="intranet"></div>
           </div>
           <div class="app-titlebar-title">Gemeente Mayostad - Intranet</div>
+          <div class="app-titlebar-controls">
+            <div class="app-titlebar-ctrl" data-action="minimize" data-window="intranet">\u2014</div>
+            <div class="app-titlebar-ctrl" data-action="maximize" data-window="intranet">\u25A1</div>
+            <div class="app-titlebar-ctrl close" data-action="close" data-window="intranet">\u2715</div>
+          </div>
         </div>
         <div class="app-body">
           <div class="intranet" id="intranet-container">
@@ -963,42 +968,80 @@
             <div class="app-titlebar-dot green" data-action="maximize" data-window="chatgpt"></div>
           </div>
           <div class="app-titlebar-title">ChatGPT - Chrome</div>
+          <div class="app-titlebar-controls">
+            <div class="app-titlebar-ctrl" data-action="minimize" data-window="chatgpt">\u2014</div>
+            <div class="app-titlebar-ctrl" data-action="maximize" data-window="chatgpt">\u25A1</div>
+            <div class="app-titlebar-ctrl close" data-action="close" data-window="chatgpt">\u2715</div>
+          </div>
         </div>
         <div class="app-body" id="chatgpt-app-body"></div>
       </div>
 
       <div class="dock" id="dock">
         <div class="dock-icon" data-app="finder">
-          <div class="dock-tooltip">Finder</div>
+          <div class="dock-tooltip">Finder</div><div class="dock-label">Finder</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#1565C0"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#fg)"/><path d="M35 30h50v60H35z" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="52" r="4" fill="white"/><path d="M44 75c0-8 7-15 16-15s16 7 16 15" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
         <div class="dock-icon active" data-app="intranet">
-          <div class="dock-tooltip">Gemeente Mayostad</div>
+          <div class="dock-tooltip">Gemeente Mayostad</div><div class="dock-label">Intranet</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1a1a2e"/><path d="M30 85V50l30-20 30 20v35" fill="none" stroke="#7dd3fc" stroke-width="3"/><rect x="48" y="60" width="24" height="25" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2.5"/><line x1="60" y1="60" x2="60" y2="85" stroke="#7dd3fc" stroke-width="2"/><line x1="48" y1="72" x2="72" y2="72" stroke="#7dd3fc" stroke-width="2"/><path d="M55 35h10v10l-5 5-5-5z" fill="#7dd3fc"/></svg>
         </div>
         <div class="dock-icon" data-app="chatgpt">
-          <div class="dock-tooltip">ChatGPT</div>
+          <div class="dock-tooltip">ChatGPT</div><div class="dock-label">ChatGPT</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>
         </div>
         <div class="dock-icon" data-app="claude">
-          <div class="dock-tooltip">Claude</div>
+          <div class="dock-tooltip">Claude</div><div class="dock-label">Claude</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
         </div>
         <div class="dock-icon" data-app="slack">
-          <div class="dock-tooltip">Slack</div>
+          <div class="dock-tooltip">Slack</div><div class="dock-label">Slack</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#4A154B"/><rect x="35" y="50" width="12" height="24" rx="6" fill="#E01E5A"/><rect x="50" y="35" width="24" height="12" rx="6" fill="#36C5F0"/><rect x="73" y="46" width="12" height="24" rx="6" fill="#2EB67D"/><rect x="46" y="73" width="24" height="12" rx="6" fill="#ECB22E"/></svg>
         </div>
         <div class="dock-icon" data-app="mail">
-          <div class="dock-tooltip">Outlook</div>
+          <div class="dock-tooltip">Outlook</div><div class="dock-label">Outlook</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0078D4"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
         <div class="dock-icon" data-app="teams">
-          <div class="dock-tooltip">Teams</div>
+          <div class="dock-tooltip">Teams</div><div class="dock-label">Teams</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#5B5FC7"/><circle cx="50" cy="45" r="12" fill="none" stroke="white" stroke-width="3"/><circle cx="72" cy="42" r="9" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/><path d="M30 80c0-14 10-22 24-22s24 8 24 22" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
         <div class="dock-icon" data-app="settings">
-          <div class="dock-tooltip">Instellingen</div>
+          <div class="dock-tooltip">Instellingen</div><div class="dock-label">Instellingen</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#636366"/><stop offset="100%" stop-color="#48484A"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#sg)"/><circle cx="60" cy="60" r="18" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="60" r="7" fill="white"/><line x1="60" y1="30" x2="60" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="82" x2="60" y2="90" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="60" x2="38" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="82" y1="60" x2="90" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="desktop-widgets" id="desktop-widgets">
+        <div class="desktop-widget">
+          <div class="widget-title">Taken vandaag</div>
+          <div class="widget-task">
+            <div class="widget-task-dot urgent"></div>
+            <div>
+              <div class="widget-task-text">Email schrijven aan Bakkerij Van Dijk</div>
+              <div class="widget-task-meta">Via Lisa - Vandaag afhandelen</div>
+            </div>
+          </div>
+          <div class="widget-task">
+            <div class="widget-task-dot normal"></div>
+            <div>
+              <div class="widget-task-text">Intranet doorlezen</div>
+              <div class="widget-task-meta">Onboarding - Eerste week</div>
+            </div>
+          </div>
+          <div class="widget-task">
+            <div class="widget-task-dot done"></div>
+            <div>
+              <div class="widget-task-text">Laptop inloggen</div>
+              <div class="widget-task-meta">IT - Voltooid</div>
+            </div>
+          </div>
+        </div>
+        <div class="desktop-widget">
+          <div class="widget-title">Welkom</div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);line-height:1.5">
+            Hoi ${state.nickname || "daar"}! Welkom bij Gemeente Mayostad. Begin met het intranet te verkennen. Lisa stuurt je zo een opdracht via Slack.
+          </div>
         </div>
       </div>
 
@@ -1006,6 +1049,15 @@
     </div>`;
 
     // Dock click handlers
+    const appMessages = {
+      finder: "Finder is beschikbaar, maar je hebt geen bestanden nodig voor deze opdracht.",
+      claude: "Claude is beschikbaar voor langere documenten. Vandaag gebruik je ChatGPT.",
+      slack: "Lisa stuurt je zo een bericht via Slack. Even geduld!",
+      mail: "Outlook opent zodra je een email hebt geschreven in ChatGPT.",
+      teams: "Geen vergaderingen gepland vandaag. Fijn, eerste dag!",
+      settings: "Instellingen zijn vergrendeld door IT. Neem contact op met de helpdesk.",
+    };
+
     area.querySelectorAll(".dock-icon[data-app]").forEach(icon => {
       icon.addEventListener("click", () => {
         sfxClick();
@@ -1013,15 +1065,17 @@
         if (app === "intranet") {
           document.getElementById("window-intranet").style.display = "flex";
           document.getElementById("window-intranet").classList.add("focused");
-          document.getElementById("window-chatgpt").classList.remove("focused");
+          document.getElementById("window-chatgpt")?.classList.remove("focused");
         } else if (app === "chatgpt") {
           if (!taskShown) {
-            showDesktopNotification("ChatGPT is beschikbaar zodra je een taak hebt.");
+            showDesktopNotification("ChatGPT is beschikbaar zodra je een taak hebt. Verken eerst het intranet!");
             return;
           }
           document.getElementById("window-chatgpt").style.display = "flex";
           document.getElementById("window-chatgpt").classList.add("maximized", "focused");
-          document.getElementById("window-intranet").classList.remove("focused");
+          document.getElementById("window-intranet")?.classList.remove("focused");
+        } else if (appMessages[app]) {
+          showDesktopNotification(appMessages[app]);
         }
       });
     });
