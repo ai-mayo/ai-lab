@@ -954,8 +954,24 @@
         </div>
         <div class="app-body">
           <div class="intranet" id="intranet-container">
-            <div class="intranet-sidebar" id="intranet-nav"></div>
-            <div class="intranet-main" id="intranet-page"></div>
+            <div class="wiki-topbar">
+              <div class="wiki-topbar-logo">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V4H6zm2 3h8v2H8V7zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/></svg>
+                MayoWiki
+              </div>
+              <div class="wiki-topbar-nav">
+                <a>Shelves</a>
+                <a>Books</a>
+                <a>Favorieten</a>
+              </div>
+              <div class="wiki-topbar-search">
+                <input type="text" placeholder="Zoeken in wiki..." id="wiki-search-input">
+              </div>
+            </div>
+            <div class="wiki-body">
+              <div class="intranet-sidebar" id="intranet-nav"></div>
+              <div class="intranet-main" id="intranet-page"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1031,6 +1047,13 @@
           <div class="dock-tooltip">Instellingen</div><div class="dock-label">Instellingen</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#636366"/><stop offset="100%" stop-color="#48484A"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#sg)"/><circle cx="60" cy="60" r="18" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="60" r="7" fill="white"/><line x1="60" y1="30" x2="60" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="82" x2="60" y2="90" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="60" x2="38" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="82" y1="60" x2="90" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
         </div>
+      </div>
+
+      <div class="desktop-sticky" id="sticky-task" style="top:50px;left:50%;transform:translateX(-50%);display:none">
+        <div class="desktop-sticky-badge">NIEUW</div>
+        <div class="desktop-sticky-title">Opdracht van Lisa</div>
+        <div class="desktop-sticky-text" id="sticky-task-text"></div>
+        <div class="desktop-sticky-from">Lisa de Vries \u2022 Teamleider KCC</div>
       </div>
 
       <div class="desktop-widgets" id="desktop-widgets">
@@ -1179,7 +1202,10 @@
     function renderPage() {
       const page = wiki.pages[currentPage];
       if (!page) return;
-      let html = `<div class="intranet-page-title">${page.icon} ${page.title}</div>`;
+      let html = currentPage !== "home"
+        ? `<div class="wiki-breadcrumbs"><span data-link="home">MayoWiki</span><span class="sep">/</span><span>${page.title}</span></div>`
+        : "";
+      html += `<div class="intranet-page-title">${page.icon} ${page.title}</div>`;
 
       page.content.forEach(block => {
         if (block.type === "banner") html += `<div class="intranet-banner">${block.text}</div>`;
@@ -1240,11 +1266,22 @@
     renderNav();
     renderPage();
 
-    // macOS-style notification after delay
+    // Show sticky note after delay
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
-      showChatNotification(area, d, task);
+      const stickyEl = document.getElementById("sticky-task");
+      const stickyText = document.getElementById("sticky-task-text");
+      stickyText.textContent = d.taskPopup.message;
+      stickyEl.style.display = "block";
+      sfxClick();
+
+      // Click sticky = open ChatGPT
+      stickyEl.addEventListener("click", () => {
+        sfxClick();
+        stickyEl.style.display = "none";
+        openChatGPTWindow(area, d, task);
+      });
     }, d.taskPopupDelay || 12000);
   }
 
