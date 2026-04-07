@@ -1038,9 +1038,9 @@
           </div>
         </div>
         <div class="desktop-widget">
-          <div class="widget-title">Welkom</div>
+          <div class="widget-title">Welkom, AI-pilot co\u00F6rdinator!</div>
           <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);line-height:1.5">
-            Hoi ${state.nickname || "daar"}! Welkom bij Gemeente Mayostad. Begin met het intranet te verkennen. Lisa stuurt je zo een opdracht via Slack.
+            Hoi ${state.nickname || "daar"}! Jij begeleidt de AI-pilot bij Gemeente Mayostad. Deze week loop je mee bij verschillende afdelingen en help je collega's met hun eerste AI-opdrachten. Verken het intranet om de organisatie te leren kennen.
           </div>
         </div>
       </div>
@@ -1080,15 +1080,55 @@
       });
     });
 
-    // Window dot handlers
-    area.querySelectorAll("[data-action]").forEach(dot => {
-      dot.addEventListener("click", (e) => {
+    // Window control handlers
+    area.querySelectorAll("[data-action]").forEach(ctrl => {
+      ctrl.addEventListener("click", (e) => {
         e.stopPropagation();
-        const action = dot.dataset.action;
-        const win = document.getElementById("window-" + dot.dataset.window);
-        if (action === "close") win.style.display = "none";
-        else if (action === "maximize") win.classList.toggle("maximized");
+        const action = ctrl.dataset.action;
+        const win = document.getElementById("window-" + ctrl.dataset.window);
+        if (!win) return;
+        if (action === "close") { win.style.display = "none"; win.classList.remove("focused"); }
+        else if (action === "minimize") { win.style.display = "none"; }
+        else if (action === "maximize") {
+          if (win.classList.contains("maximized")) {
+            win.classList.remove("maximized");
+            win.style.top = "50px"; win.style.left = "60px";
+            win.style.right = "60px"; win.style.bottom = "100px";
+          } else {
+            win.classList.add("maximized");
+          }
+        }
       });
+    });
+
+    // Drag windows by titlebar
+    area.querySelectorAll(".app-titlebar").forEach(titlebar => {
+      let dragging = false, startX, startY, startLeft, startTop;
+      titlebar.addEventListener("mousedown", (e) => {
+        const win = titlebar.closest(".app-window");
+        if (win.classList.contains("maximized")) return;
+        if (e.target.closest("[data-action]")) return;
+        dragging = true;
+        // Focus this window
+        area.querySelectorAll(".app-window").forEach(w => w.classList.remove("focused"));
+        win.classList.add("focused");
+        const rect = win.getBoundingClientRect();
+        startX = e.clientX; startY = e.clientY;
+        startLeft = rect.left; startTop = rect.top;
+        win.style.position = "absolute";
+        win.style.right = "auto"; win.style.bottom = "auto";
+        win.style.left = startLeft + "px"; win.style.top = startTop + "px";
+        win.style.width = rect.width + "px"; win.style.height = rect.height + "px";
+        e.preventDefault();
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (!dragging) return;
+        const win = titlebar.closest(".app-window");
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        win.style.left = (startLeft + dx) + "px";
+        win.style.top = Math.max(26, startTop + dy) + "px";
+      });
+      document.addEventListener("mouseup", () => { dragging = false; });
     });
 
     const navEl = area.querySelector("#intranet-nav");
@@ -2256,7 +2296,7 @@
 
     const lines = [
         "GEMEENTE MAYOSTAD \u2014 AI WERKPLEK v2.0",
-        `Welkom terug, ${nickname}`,
+        `Gebruiker: ${nickname} \u2014 AI-pilot co\u00F6rdinator`,
         "Verbinding maken met gemeentelijk netwerk...",
         "AI-tools laden: ChatGPT Team, Claude, Gemini...",
         "Beveiligingsprotocol AVG activeren...",

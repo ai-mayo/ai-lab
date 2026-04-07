@@ -1924,6 +1924,16 @@ body {
   border-radius: 0;
 }
 
+.app-window:not(.maximized) {
+  resize: both;
+  min-width: 400px;
+  min-height: 300px;
+}
+
+.app-titlebar {
+  cursor: move;
+}
+
 .app-titlebar {
   display: flex;
   align-items: center;

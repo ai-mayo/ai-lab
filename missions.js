@@ -20,7 +20,7 @@ const MISSIONS = [
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
-    storyIntro: "Maandagochtend. Je zit achter je nieuwe laptop bij Gemeente Mayostad. Een techbedrijf dat vorig jaar heeft besloten AI in te zetten voor alles: klantenservice, marketing, documentatie. Jij bent de nieuwste aanwinst. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
+    storyIntro: "Maandagochtend. Jouw eerste dag als AI-pilot co\u00F6rdinator bij Gemeente Mayostad. De gemeente heeft besloten AI in te zetten bij alle afdelingen \u2014 en jij bent aangenomen om dat te begeleiden. Je loopt elke week mee bij een andere afdeling, helpt collega's op weg, en leert zelf ook waar AI wel en niet werkt. Vandaag begin je bij het KCC. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
     tasks: [
       {
         type: "scenario",
@@ -44,7 +44,7 @@ const MISSIONS = [
                 title: "Gemeente Mayostad Intranet",
                 icon: "\u{1F3E2}",
                 content: [
-                  { type: "banner", text: "Welkom bij Gemeente Mayostad! Jouw eerste week begint hier." },
+                  { type: "banner", text: "Welkom bij Gemeente Mayostad! Jij bent de nieuwe AI-pilot co\u00F6rdinator. Deze week loop je mee bij verschillende afdelingen om collega's te helpen met AI." },
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "\u{1F3DB}", link: "about" },
                     { title: "Schrijfwijzer", icon: "\u{1F3A8}", link: "tone" },
@@ -188,7 +188,7 @@ const MISSIONS = [
                   { type: "person", name: "Ahmed Hassan", role: "Informatiebeveiliging (CISO)", note: "Bewaakt AVG en security. Moet akkoord geven op nieuwe AI-tools." },
 
                   { type: "heading", text: "Jij" },
-                  { type: "person", name: "Jij", role: "Nieuwe medewerker \u2014 AI-pilot deelnemer", note: "Welkom bij Gemeente Mayostad! Je gaat als eerste de AI-tools testen en leren hoe je ze inzet voor je dagelijkse werk." }
+                  { type: "person", name: "Jij", role: "AI-pilot co\u00F6rdinator", note: "Jouw opdracht: elke afdeling helpen met de eerste stappen in AI. Je loopt mee, begeleidt en signaleert waar het goed gaat en waar het misgaat." }
                 ]
               },
               rules: {
