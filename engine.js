@@ -1015,6 +1015,10 @@
           <div class="dock-tooltip">Finder</div><div class="dock-label">Finder</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#1565C0"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#fg)"/><path d="M35 30h50v60H35z" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="52" r="4" fill="white"/><path d="M44 75c0-8 7-15 16-15s16 7 16 15" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
+        <div class="dock-icon" data-app="board">
+          <div class="dock-tooltip">MayoBoard</div><div class="dock-label">MayoBoard</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0052cc"/><rect x="20" y="30" width="22" height="60" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="49" y="30" width="22" height="45" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="78" y="30" width="22" height="35" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="23" y="34" width="16" height="10" rx="2" fill="white"/><rect x="23" y="48" width="16" height="10" rx="2" fill="white"/><rect x="52" y="34" width="16" height="10" rx="2" fill="white"/><rect x="81" y="34" width="16" height="10" rx="2" fill="white"/></svg>
+        </div>
         <div class="dock-icon active" data-app="wiwa">
           <div class="dock-tooltip">WiWa - Wie is Wa</div><div class="dock-label">WiWa</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="5" fill="#fbbf24"/><path d="M57 72h6" stroke="#6366f1" stroke-width="1.5"/><path d="M60 69v6" stroke="#6366f1" stroke-width="1.5"/></svg>
@@ -1049,11 +1053,21 @@
         </div>
       </div>
 
-      <div class="desktop-sticky" id="sticky-task" style="top:50px;left:50%;transform:translateX(-50%);display:none">
-        <div class="desktop-sticky-badge">NIEUW</div>
-        <div class="desktop-sticky-title">Opdracht van Lisa</div>
-        <div class="desktop-sticky-text" id="sticky-task-text"></div>
-        <div class="desktop-sticky-from">Lisa de Vries \u2022 Teamleider KCC</div>
+      <div class="app-window open" id="window-board" style="display:none;top:35px;left:30px;right:30px;bottom:74px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots">
+            <div class="app-titlebar-dot red" data-action="close" data-window="board"></div>
+            <div class="app-titlebar-dot yellow" data-action="minimize" data-window="board"></div>
+            <div class="app-titlebar-dot green" data-action="maximize" data-window="board"></div>
+          </div>
+          <div class="app-titlebar-title">MayoBoard \u2014 Takenbord</div>
+          <div class="app-titlebar-controls">
+            <div class="app-titlebar-ctrl" data-action="minimize" data-window="board">\u2014</div>
+            <div class="app-titlebar-ctrl" data-action="maximize" data-window="board">\u25A1</div>
+            <div class="app-titlebar-ctrl close" data-action="close" data-window="board">\u2715</div>
+          </div>
+        </div>
+        <div class="app-body" id="board-body"></div>
       </div>
 
       <div class="desktop-widgets" id="desktop-widgets">
@@ -1109,7 +1123,12 @@
       icon.addEventListener("click", () => {
         sfxClick();
         const app = icon.dataset.app;
-        if (app === "wiwa") {
+        if (app === "board") {
+          const w = document.getElementById("window-board");
+          w.style.display = "flex";
+          area.querySelectorAll(".app-window").forEach(ww => ww.classList.remove("focused"));
+          w.classList.add("focused", "maximized");
+        } else if (app === "wiwa") {
           const w = document.getElementById("window-wiwa");
           w.style.display = "flex";
           area.querySelectorAll(".app-window").forEach(ww => ww.classList.remove("focused"));
@@ -1266,22 +1285,19 @@
     renderNav();
     renderPage();
 
-    // Show sticky note after delay
+    // Show task on board after delay
+    renderBoard(area.querySelector("#board-body"), d, task, taskShown);
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
-      const stickyEl = document.getElementById("sticky-task");
-      const stickyText = document.getElementById("sticky-task-text");
-      stickyText.textContent = d.taskPopup.message;
-      stickyEl.style.display = "block";
-      sfxClick();
-
-      // Click sticky = open ChatGPT
-      stickyEl.addEventListener("click", () => {
-        sfxClick();
-        stickyEl.style.display = "none";
-        openChatGPTWindow(area, d, task);
-      });
+      renderBoard(area.querySelector("#board-body"), d, task, true);
+      // Open board automatically + notification
+      const boardWin = document.getElementById("window-board");
+      boardWin.style.display = "flex";
+      boardWin.classList.add("maximized", "focused");
+      area.querySelectorAll(".app-window").forEach(w => { if (w !== boardWin) w.classList.remove("focused"); });
+      area.querySelector('[data-app="board"]')?.classList.add("active");
+      showDesktopNotification("Nieuwe taak op MayoBoard! Lisa heeft een opdracht voor je.");
     }, d.taskPopupDelay || 12000);
   }
 
@@ -1674,6 +1690,64 @@
     "Content-AI": "https://robohash.org/content-ai?set=set3&size=200x200",
   };
 
+  // ─── MayoBoard - Kanban ──────────────────────────────
+  function renderBoard(container, d, task, showNewTask) {
+    const tp = d?.taskPopup;
+    container.innerHTML = `
+      <div class="kanban">
+        <div class="kanban-topbar">
+          <div class="kanban-topbar-title">MayoBoard \u2014 Sprint 14 \u2022 AI-pilot</div>
+          <div class="kanban-avatars">
+            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" title="Lisa">
+            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" title="Remco">
+            <img class="kanban-filter-avatar" src="https://randomuser.me/api/portraits/men/46.jpg" title="Bas">
+          </div>
+          <div class="kanban-topbar-search"><input placeholder="Zoek taken..."></div>
+        </div>
+        <div class="kanban-board">
+          <div class="kanban-column">
+            <div class="kanban-col-header">Te doen <span class="kanban-col-count" id="todo-count">${showNewTask ? 3 : 2}</span></div>
+            <div id="kanban-todo">
+              ${showNewTask && tp ? `<div class="kanban-card clickable priority-high" id="main-task-card" style="animation:screenIn 0.4s ease"><div class="kanban-card-title">${tp.message.slice(0, 90)}...</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-42</div><div class="kanban-card-meta"><span class="kanban-card-priority high">Urgent</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/44.jpg"></div></div></div>` : ""}
+              <div class="kanban-card priority-medium"><div class="kanban-card-title">Subsidiebevestiging Buurtvereniging Zuiderpark</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-39</div><div class="kanban-card-meta"><span class="kanban-card-priority medium">Normaal</span><div class="kanban-card-avatar-text" style="background:#059669">RD</div></div></div></div>
+              <div class="kanban-card priority-low"><div class="kanban-card-title">Website Afvalkalender 2026 actualiseren</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-37</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/75.jpg"></div></div></div>
+            </div>
+          </div>
+          <div class="kanban-column">
+            <div class="kanban-col-header">In uitvoering <span class="kanban-col-count">2</span></div>
+            <div>
+              <div class="kanban-card priority-medium"><div class="kanban-card-title">WMO-indicatie fam. De Boer afronden</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-35</div><div class="kanban-card-meta"><span class="kanban-card-priority medium">Normaal</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/46.jpg"></div></div></div>
+              <div class="kanban-card priority-low"><div class="kanban-card-title">Brochure jeugdhulp vertalen AR/TR</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-33</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/90.jpg"></div></div></div>
+            </div>
+          </div>
+          <div class="kanban-column">
+            <div class="kanban-col-header">Review <span class="kanban-col-count">3</span></div>
+            <div>
+              <div class="kanban-card priority-high" style="border-left-color:#6366f1"><div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 5px;border-radius:3px;font-weight:700">AI-GENERATED</span></div><div class="kanban-card-title">Concept-antwoord: openingstijden zwembad</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-41</div><div class="kanban-card-meta"><span style="font-size:0.55rem;color:#6366f1">\u{1F916} KCC-Bot</span><span class="kanban-card-priority high">Check</span></div></div></div>
+              <div class="kanban-card priority-medium" style="border-left-color:#6366f1"><div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 5px;border-radius:3px;font-weight:700">AI-GENERATED</span></div><div class="kanban-card-title">Concept WMO-beschikking mevr. Jansen</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-40</div><div class="kanban-card-meta"><span style="font-size:0.55rem;color:#6366f1">\u{1F916} WMO-Schrijver</span><span class="kanban-card-priority medium">Check</span></div></div></div>
+              <div class="kanban-card priority-low"><div class="kanban-card-title">Social media post Koningsdag</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-38</div><div class="kanban-card-meta"><span class="kanban-card-priority low">Laag</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/women/75.jpg"></div></div></div>
+            </div>
+          </div>
+          <div class="kanban-column">
+            <div class="kanban-col-header">Afgerond <span class="kanban-col-count">2</span></div>
+            <div>
+              <div class="kanban-card" style="opacity:0.6"><div class="kanban-card-title">BOA-rapport overlast Parkweg</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-34</div><div class="kanban-card-meta"><span style="color:#61bd4f;font-size:0.65rem">\u2713</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/83.jpg"></div></div></div>
+              <div class="kanban-card" style="opacity:0.6"><div class="kanban-card-title">Bezwaar parkeerboete D. Krul</div><div class="kanban-card-footer"><div class="kanban-card-id">MAYO-31</div><div class="kanban-card-meta"><span style="color:#61bd4f;font-size:0.65rem">\u2713</span><img class="kanban-card-avatar" src="https://randomuser.me/api/portraits/men/76.jpg"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    const mainCard = container.querySelector("#main-task-card");
+    if (mainCard) {
+      mainCard.addEventListener("click", () => {
+        sfxClick();
+        openChatGPTWindow(container.closest("#macos-desktop")?.parentElement || container.closest(".screen") || document.querySelector("#story-content"), d, task);
+      });
+    }
+  }
+
+  // ─── WiWa ───────────────────────────────────────────
   const WIWA_DATA = [
     { dept: "KCC", people: [
       { name: "Lisa de Vries", role: "Teamleider", skills: ["Klantcontact", "Teamaansturing", "AI-pilot sponsor"], status: "online", bot: false },
