@@ -2228,11 +2228,15 @@
       pwInput.focus();
 
       function doLogin() {
+        // Try fullscreen
+        if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+
         loginScreen.style.transition = "opacity 0.6s";
         loginScreen.style.opacity = "0";
         setTimeout(() => {
           loginScreen.classList.add("hidden");
-          // Now show boot sequence
           const bootScreen2 = document.getElementById("boot-screen");
           bootScreen2.classList.remove("hidden");
           bootScreen2.style.opacity = "1";

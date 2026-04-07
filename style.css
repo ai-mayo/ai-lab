@@ -154,6 +154,51 @@ body {
   color: rgba(255,255,255,0.5);
 }
 
+/* Mobile blocker */
+.mobile-blocker {
+  position: fixed;
+  inset: 0;
+  background: #0a0e17;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  z-index: 99999;
+  font-family: -apple-system, 'Inter', sans-serif;
+}
+.mobile-blocker-icon { font-size: 3rem; margin-bottom: 16px; }
+.mobile-blocker-title { font-size: 1.3rem; font-weight: 700; color: #e2e8f0; margin-bottom: 8px; }
+.mobile-blocker-text { font-size: 0.9rem; color: #64748b; line-height: 1.6; max-width: 300px; }
+
+@media (max-width: 768px) {
+  .mobile-blocker { display: flex; }
+  .desktop, #boot-screen, #login-screen, #app { display: none !important; }
+}
+
+/* Fullscreen prompt */
+.fullscreen-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  z-index: 99998;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.5s ease;
+}
+.fullscreen-prompt:hover { background: rgba(0,0,0,0.95); }
+
 .boot-container {
   text-align: center;
   max-width: 360px;
