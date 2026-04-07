@@ -1134,13 +1134,6 @@
       finder: "Finder is beschikbaar, maar je hebt geen bestanden nodig voor deze opdracht.",
       claude: "Claude is beschikbaar voor langere documenten. Vandaag gebruik je ChatGPT.",
       gemini: "Gemini is beschikbaar voor onderzoek en vergelijking. Probeer het later!",
-      notebooklm: "NotebookLM is beschikbaar voor onderzoek en samenvattingen. Probeer het later!",
-      mail: "MayoMail opent zodra je een brief hebt geschreven in ChatGPT.",
-      chat: "Lisa stuurt je zo een bericht via MayoChat. Even geduld!",
-      zaaksysteem: "Zaaksysteem bevat alle lopende aanvragen en meldingen. Bekijk lopende zaken via MayoWiki.",
-      vergunning: "Vergunningtool is gekoppeld. Bekijk de lopende vergunningen via MayoWiki > Lopende Zaken.",
-      kcc: "KCC-software actief. 3 medewerkers online, 12 wachtenden in de rij. Gemiddelde wachttijd: 4 min.",
-      sociaal: "Sociaal Domein Hub bevat gevoelige dossiers. Toegang alleen via beveiligd netwerk.",
       settings: "Instellingen zijn vergrendeld door IT. Neem contact op met de helpdesk.",
     };
 
@@ -1172,6 +1165,48 @@
           document.getElementById("window-chatgpt").style.display = "flex";
           document.getElementById("window-chatgpt").classList.add("maximized", "focused");
           document.getElementById("window-intranet")?.classList.remove("focused");
+        } else if (typeof APP_RENDERERS !== "undefined" && APP_RENDERERS[app]) {
+          // Open app in a new window or reuse existing
+          let win = document.getElementById("window-app-" + app);
+          if (!win) {
+            const titles = {zaaksysteem:"Zaaksysteem",vergunning:"Vergunningtool",kcc:"KCC Dashboard",sociaal:"Sociaal Domein Hub",chat:"MayoChat",mail:"MayoMail",notebooklm:"NotebookLM",gemini:"Gemini",claude:"Claude"};
+            win = document.createElement("div");
+            win.className = "app-window open";
+            win.id = "window-app-" + app;
+            win.style.cssText = "top:35px;left:20px;right:20px;bottom:74px";
+            win.innerHTML = `<div class="app-titlebar"><div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="app-${app}"></div><div class="app-titlebar-dot yellow" data-action="minimize" data-window="app-${app}"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="app-${app}"></div></div><div class="app-titlebar-title">${titles[app] || app}</div><div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="app-${app}">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="app-${app}">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="app-${app}">\u2715</div></div></div><div class="app-body" id="app-body-${app}"></div>`;
+            document.getElementById("macos-desktop").insertBefore(win, document.getElementById("dock"));
+            // Wire controls
+            win.querySelectorAll("[data-action]").forEach(ctrl => {
+              ctrl.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (ctrl.dataset.action === "close") { win.style.display = "none"; win.classList.remove("focused"); }
+                else if (ctrl.dataset.action === "minimize") { win.style.display = "none"; }
+                else if (ctrl.dataset.action === "maximize") { win.classList.toggle("maximized"); }
+              });
+            });
+            // Wire drag
+            const tb = win.querySelector(".app-titlebar");
+            let dragging = false, sx, sy, sl, st;
+            tb.addEventListener("mousedown", (e) => {
+              if (win.classList.contains("maximized") || e.target.closest("[data-action]")) return;
+              dragging = true;
+              const r = win.getBoundingClientRect();
+              sx = e.clientX; sy = e.clientY; sl = r.left; st = r.top;
+              win.style.right = "auto"; win.style.bottom = "auto";
+              win.style.left = sl + "px"; win.style.top = st + "px";
+              win.style.width = r.width + "px"; win.style.height = r.height + "px";
+              e.preventDefault();
+            });
+            document.addEventListener("mousemove", (e) => { if (!dragging) return; win.style.left = (sl + e.clientX - sx) + "px"; win.style.top = Math.max(26, st + e.clientY - sy) + "px"; });
+            document.addEventListener("mouseup", () => { dragging = false; });
+            // Render content
+            APP_RENDERERS[app](win.querySelector("#app-body-" + app));
+          }
+          win.style.display = "flex";
+          win.classList.add("maximized", "focused");
+          area.querySelectorAll(".app-window").forEach(w => { if (w !== win) w.classList.remove("focused"); });
+          icon.classList.add("active");
         } else if (appMessages[app]) {
           showDesktopNotification(appMessages[app]);
         }
