@@ -265,6 +265,7 @@
       "compare-scenarios": renderCompareScenarios,
       "agent-builder": renderAgentBuilder,
       "find-config-errors": renderFindConfigErrors,
+      "intranet-then-prompt": renderIntranetThenPrompt,
       "free-prompt": renderFreePrompt,
       "chat-simulator": renderChatSimulator,
       "model-compare": renderModelCompare,
@@ -907,44 +908,156 @@
     });
   }
 
-  // ─── INTERACTION: Free Prompt ────────────────────────
-  function renderFreePrompt(area, task) {
+  // ─── INTERACTION: Intranet then Prompt ───────────────
+  function renderIntranetThenPrompt(area, task) {
     const d = task.interaction;
-    const b = d.briefing;
-    const initial = (state.nickname || "G")[0].toUpperCase();
+    const wiki = d.wiki;
+    let currentPage = "home";
+    let taskShown = false;
 
-    area.innerHTML = `
-      <div class="briefing-panel" id="briefing-panel">
-        <div class="briefing-toggle" id="briefing-toggle">
-          <span>\u{1F4CB} Opdracht & bedrijfsinfo</span>
-          <span class="briefing-arrow" id="briefing-arrow">\u25BC</span>
+    area.innerHTML = `<div class="intranet" id="intranet-container">
+      <div class="intranet-sidebar" id="intranet-nav"></div>
+      <div class="intranet-main" id="intranet-page"></div>
+    </div>`;
+
+    const navEl = area.querySelector("#intranet-nav");
+    const pageEl = area.querySelector("#intranet-page");
+
+    function renderNav() {
+      navEl.innerHTML = `<div class="intranet-sidebar-title">Nova Intranet</div>`;
+      Object.entries(wiki.pages).forEach(([key, page]) => {
+        const item = document.createElement("div");
+        item.className = "intranet-nav-item" + (key === currentPage ? " active" : "");
+        item.innerHTML = `<span>${page.icon}</span> ${page.title}`;
+        item.addEventListener("click", () => { sfxClick(); currentPage = key; renderNav(); renderPage(); });
+        navEl.appendChild(item);
+      });
+    }
+
+    function renderPage() {
+      const page = wiki.pages[currentPage];
+      if (!page) return;
+      let html = `<div class="intranet-page-title">${page.icon} ${page.title}</div>`;
+
+      page.content.forEach(block => {
+        if (block.type === "banner") html += `<div class="intranet-banner">${block.text}</div>`;
+        else if (block.type === "cards") {
+          html += `<div class="intranet-cards">`;
+          block.items.forEach(c => {
+            html += `<div class="intranet-card" data-link="${c.link}"><div class="intranet-card-icon">${c.icon}</div><div class="intranet-card-title">${c.title}</div></div>`;
+          });
+          html += `</div>`;
+        }
+        else if (block.type === "text") html += `<div class="intranet-text">${block.text}</div>`;
+        else if (block.type === "heading") html += `<div class="intranet-heading">${block.text}</div>`;
+        else if (block.type === "info") html += `<div class="intranet-info-row"><div class="intranet-info-label">${block.label}</div><div class="intranet-info-value">${block.value}</div></div>`;
+        else if (block.type === "do-dont") {
+          html += `<div class="intranet-dodont">
+            <div class="intranet-do"><div class="intranet-do-title">WEL DOEN</div><ul>${block.dos.map(d => `<li>${d}</li>`).join("")}</ul></div>
+            <div class="intranet-dont"><div class="intranet-dont-title">NIET DOEN</div><ul>${block.donts.map(d => `<li>${d}</li>`).join("")}</ul></div>
+          </div>`;
+        }
+        else if (block.type === "client") {
+          html += `<div class="intranet-client">
+            <div class="intranet-client-name">${block.name}</div>
+            <div class="intranet-client-row">Contact: ${block.contact} | Klant sinds: ${block.since} | Status: ${block.status}</div>
+            ${block.note ? `<div class="intranet-client-note">${block.note}</div>` : ""}
+          </div>`;
+        }
+        else if (block.type === "tool") {
+          html += `<div class="intranet-tool">
+            <div><div class="intranet-tool-name">${block.name}</div><div class="intranet-tool-desc">${block.desc}</div></div>
+            <div class="intranet-tool-status ${block.status === 'Verplicht' ? 'required' : 'optional'}">${block.status}</div>
+          </div>`;
+        }
+        else if (block.type === "person") {
+          const initials = block.name.split(" ").map(w => w[0]).join("").slice(0, 2);
+          html += `<div class="intranet-person">
+            <div class="intranet-person-avatar">${initials}</div>
+            <div><div class="intranet-person-name">${block.name}</div><div class="intranet-person-role">${block.role}</div><div class="intranet-person-note">${block.note}</div></div>
+          </div>`;
+        }
+        else if (block.type === "rule") {
+          html += `<div class="intranet-rule"><div class="intranet-rule-num">${block.num}</div><div class="intranet-rule-text">${block.text}</div></div>`;
+        }
+      });
+
+      pageEl.innerHTML = html;
+
+      // Wire card links
+      pageEl.querySelectorAll("[data-link]").forEach(card => {
+        card.addEventListener("click", () => {
+          sfxClick();
+          currentPage = card.dataset.link;
+          renderNav();
+          renderPage();
+        });
+      });
+    }
+
+    renderNav();
+    renderPage();
+
+    // Task popup after delay
+    setTimeout(() => {
+      if (taskShown) return;
+      taskShown = true;
+      showTaskPopup(area, d, task);
+    }, d.taskPopupDelay || 15000);
+  }
+
+  function showTaskPopup(area, d, task) {
+    const tp = d.taskPopup;
+    const overlay = document.createElement("div");
+    overlay.className = "task-popup-overlay";
+    overlay.innerHTML = `
+      <div class="task-popup">
+        <div class="task-popup-header">
+          <span class="task-popup-icon">\u{1F514}</span>
+          <span class="task-popup-title">Nieuwe taak</span>
+          <span class="task-popup-urgency">${tp.urgency}</span>
         </div>
-        <div class="briefing-content" id="briefing-content">
-          <div class="briefing-section">
-            <div class="briefing-label">OPDRACHT</div>
-            <div class="briefing-text">${b.text}</div>
+        <div class="task-popup-body">
+          <div class="task-popup-from">
+            <div class="task-popup-avatar">${tp.avatar}</div>
+            <div><div class="task-popup-from-name">${tp.from}</div><div class="task-popup-from-role">${tp.fromRole}</div></div>
           </div>
-          <div class="briefing-section">
-            <div class="briefing-label">KLANTGEGEVENS</div>
-            <div class="briefing-row"><span>Naam:</span><strong>${b.customerInfo.name}</strong></div>
-            <div class="briefing-row"><span>Bedrijf:</span><strong>${b.customerInfo.company}</strong></div>
-            <div class="briefing-row"><span>Klant sinds:</span><strong>${b.customerInfo.customerSince}</strong></div>
-            <div class="briefing-row"><span>Bestelnr:</span><strong>${b.customerInfo.orderNumber}</strong></div>
-            <div class="briefing-row"><span>Probleem:</span><strong>${b.customerInfo.issue}</strong></div>
-            <div class="briefing-row"><span>Nieuwe datum:</span><strong>${b.customerInfo.newDate}</strong></div>
-            <div class="briefing-row"><span>Notitie:</span><em style="color:var(--orange)">${b.customerInfo.notes}</em></div>
-          </div>
-          <div class="briefing-section">
-            <div class="briefing-label">TONE OF VOICE — ${b.companyInfo.name}</div>
-            <div class="briefing-text">${b.companyInfo.toneOfVoice}</div>
-            <div class="briefing-row"><span>Afsluiting:</span><strong>${b.companyInfo.signoff}</strong></div>
-            <div class="briefing-row"><span>Telefoon:</span><strong>${b.companyInfo.phone}</strong></div>
+          <div class="task-popup-message">${tp.message}</div>
+          <div class="task-popup-actions">
+            <button class="action-btn" id="task-accept">Open ChatGPT</button>
+            <button class="action-btn secondary" id="task-later">Nog even rondkijken</button>
           </div>
         </div>
       </div>
-
-      ${buildFullBrowser(d.tool || "chatgpt")}
     `;
+    document.body.appendChild(overlay);
+    sfxClick();
+
+    overlay.querySelector("#task-accept").addEventListener("click", () => {
+      sfxClick();
+      overlay.remove();
+      // Switch to free prompt mode
+      renderFreePromptFromIntranet(area, task);
+    });
+
+    overlay.querySelector("#task-later").addEventListener("click", () => {
+      sfxClick();
+      overlay.remove();
+      // Show again after 10 more seconds
+      setTimeout(() => showTaskPopup(area, d, task), 10000);
+    });
+  }
+
+  function renderFreePromptFromIntranet(area, task) {
+    const d = task.interaction;
+    renderFreePrompt(area, { ...task, interaction: { ...d, type: "free-prompt", tool: d.tool, briefing: null } });
+  }
+
+  // ─── INTERACTION: Free Prompt ────────────────────────
+  function renderFreePrompt(area, task) {
+    const d = task.interaction;
+
+    area.innerHTML = `${buildFullBrowser(d.tool || "chatgpt")}`;
 
     // Make the GPT input actually work
     const chatEl = area.querySelector("#sim-chat");
@@ -955,16 +1068,6 @@
     sendBtn.disabled = false;
 
     const ui = buildToolWindow(d.tool || "chatgpt");
-
-    // Toggle briefing panel
-    const toggle = area.querySelector("#briefing-toggle");
-    const content = area.querySelector("#briefing-content");
-    const arrow = area.querySelector("#briefing-arrow");
-    toggle.addEventListener("click", () => {
-      const open = content.style.display !== "none";
-      content.style.display = open ? "none" : "block";
-      arrow.textContent = open ? "\u25B6" : "\u25BC";
-    });
 
     inputEl.addEventListener("input", () => {
       sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3";

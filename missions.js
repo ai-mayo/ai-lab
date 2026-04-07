@@ -26,29 +26,115 @@ const MISSIONS = [
         type: "scenario",
         label: "OPEN CHATGPT",
         title: "Je opent ChatGPT voor het eerst",
-        desc: "Lisa geeft je een opdracht. Schrijf zelf de prompt in ChatGPT.",
+        desc: "Verken het intranet van Nova. Klik rond, leer het bedrijf kennen.",
         interaction: {
-          type: "free-prompt",
+          type: "intranet-then-prompt",
           tool: "chatgpt",
-          briefing: {
-            title: "Opdracht van Lisa",
-            text: "Schrijf een excuus-email aan de klant over de vertraagde bestelling. Gebruik ChatGPT.",
-            companyInfo: {
-              name: "Nova",
-              tagline: "Innovatieve oplossingen voor moderne bedrijven",
-              toneOfVoice: "Professioneel maar warm. We zijn geen bank - we zijn een team dat geeft om klanten. Gebruik voornaam + achternaam, niet 'Geachte'. Sluit af met 'Hartelijke groet' niet 'Hoogachtend'.",
-              signoff: "Team Nova",
-              phone: "020-1234567",
-              email: "klantenservice@nova.nl"
-            },
-            customerInfo: {
-              name: "Meneer Van Dijk",
-              company: "Bakkerij Van Dijk",
-              customerSince: "2021",
-              orderNumber: "#4891",
-              issue: "Bestelling 2 dagen vertraagd door leveranciersprobleem",
-              newDate: "Donderdag 10 april",
-              notes: "Trouwe klant, altijd op tijd betaald. Behandel met zorg."
+          taskPopupDelay: 15000,
+          taskPopup: {
+            from: "Lisa de Vries",
+            fromRole: "Teamlead Klantenservice",
+            avatar: "LV",
+            message: "Hey! Kun je even een email schrijven naar Bakkerij Van Dijk? Hun bestelling #4891 is 2 dagen vertraagd door een leveranciersprobleem. Nieuwe datum: donderdag 10 april. Gebruik ChatGPT, dat scheelt je tijd. Check onze Tone of Voice op het intranet!",
+            urgency: "Vandaag afhandelen"
+          },
+          wiki: {
+            pages: {
+              home: {
+                title: "Nova Intranet",
+                icon: "\u{1F3E2}",
+                content: [
+                  { type: "banner", text: "Welkom bij Nova! Jouw eerste week begint hier." },
+                  { type: "cards", items: [
+                    { title: "Over Nova", icon: "\u{1F4D6}", link: "about" },
+                    { title: "Tone of Voice", icon: "\u{1F3A8}", link: "tone" },
+                    { title: "Klanten", icon: "\u{1F465}", link: "clients" },
+                    { title: "Tools & Apps", icon: "\u{1F527}", link: "tools" },
+                    { title: "Team", icon: "\u{1F44B}", link: "team" },
+                    { title: "Huisregels", icon: "\u{1F4CB}", link: "rules" }
+                  ]}
+                ]
+              },
+              about: {
+                title: "Over Nova",
+                icon: "\u{1F4D6}",
+                content: [
+                  { type: "text", text: "Nova is een snelgroeiend techbedrijf gespecialiseerd in slimme logistieke oplossingen voor het MKB. Opgericht in 2019, inmiddels 45 medewerkers." },
+                  { type: "text", text: "Onze missie: technologie toegankelijk maken voor bedrijven die geen IT-afdeling hebben. We leveren software, hardware en support als compleet pakket." },
+                  { type: "info", label: "Opgericht", value: "2019" },
+                  { type: "info", label: "Medewerkers", value: "45" },
+                  { type: "info", label: "Kantoor", value: "Amsterdam-Oost" },
+                  { type: "info", label: "Klantenservice", value: "020-1234567" }
+                ]
+              },
+              tone: {
+                title: "Tone of Voice",
+                icon: "\u{1F3A8}",
+                content: [
+                  { type: "heading", text: "Zo schrijven wij bij Nova" },
+                  { type: "text", text: "We zijn professioneel maar warm. We zijn geen bank en geen overheid. We zijn een team van mensen die oprecht geven om onze klanten." },
+                  { type: "do-dont", dos: [
+                    "Beste meneer/mevrouw [achternaam]",
+                    "Hartelijke groet, Team Nova",
+                    "Onze excuses voor het ongemak",
+                    "Neem gerust contact op",
+                    "We doen ons best om..."
+                  ], donts: [
+                    "Geachte heer/mevrouw",
+                    "Hoogachtend",
+                    "Wij zijn niet verantwoordelijk voor...",
+                    "U dient rekening te houden met...",
+                    "Conform onze algemene voorwaarden..."
+                  ]},
+                  { type: "text", text: "Vuistregel: schrijf zoals je zou praten tegen een klant die je kent en respecteert." }
+                ]
+              },
+              clients: {
+                title: "Klanten",
+                icon: "\u{1F465}",
+                content: [
+                  { type: "heading", text: "Klantenportfolio" },
+                  { type: "client", name: "Bakkerij Van Dijk", contact: "Meneer Van Dijk", since: "2021", status: "Actief", note: "Trouwe klant. Altijd op tijd betaald. Behandel met zorg." },
+                  { type: "client", name: "Garage Jansen", contact: "Mevrouw Jansen", since: "2022", status: "Actief", note: "Groot account. Maandelijks overleg." },
+                  { type: "client", name: "Bloemen Zuiderpark", contact: "Fatima El-Amrani", since: "2023", status: "Actief", note: "Nieuw. Nog in onboarding." },
+                  { type: "client", name: "Sportschool FitNow", contact: "Dennis Krul", since: "2020", status: "Inactief", note: "Contract afgelopen. Heractivatie mogelijk." }
+                ]
+              },
+              tools: {
+                title: "Tools & Apps",
+                icon: "\u{1F527}",
+                content: [
+                  { type: "heading", text: "Wat we gebruiken bij Nova" },
+                  { type: "tool", name: "ChatGPT", desc: "Voor emails, samenvattingen, brainstorms. Iedereen heeft een Team-account.", status: "Verplicht" },
+                  { type: "tool", name: "Claude", desc: "Voor langere documenten en analyses. Beschikbaar voor iedereen.", status: "Optioneel" },
+                  { type: "tool", name: "Slack", desc: "Interne communicatie.", status: "Verplicht" },
+                  { type: "tool", name: "Notion", desc: "Documentatie en wiki (dit intranet).", status: "Verplicht" },
+                  { type: "text", text: "Belangrijk: plak NOOIT klantgegevens of wachtwoorden in AI-tools. Gebruik alleen voornaam + achternaam, geen BSN of financiele data." }
+                ]
+              },
+              team: {
+                title: "Team",
+                icon: "\u{1F44B}",
+                content: [
+                  { type: "heading", text: "Je nieuwe collega's" },
+                  { type: "person", name: "Lisa de Vries", role: "Teamlead Klantenservice", note: "Jouw directe manager. Vraag haar alles." },
+                  { type: "person", name: "Tom Bakker", role: "Senior Developer", note: "De AI-nerd van het team. Weet alles over prompts." },
+                  { type: "person", name: "Sarah Chen", role: "Marketing", note: "Gebruikt AI voor content. Goed voorbeeld." },
+                  { type: "person", name: "Jij", role: "Nieuwe medewerker", note: "Welkom! Vandaag is dag 1." }
+                ]
+              },
+              rules: {
+                title: "Huisregels AI-gebruik",
+                icon: "\u{1F4CB}",
+                content: [
+                  { type: "heading", text: "Regels voor AI bij Nova" },
+                  { type: "rule", num: "1", text: "Controleer ALTIJD de output van AI voordat je het verstuurt." },
+                  { type: "rule", num: "2", text: "Deel GEEN klantgegevens, wachtwoorden of financiele data met AI-tools." },
+                  { type: "rule", num: "3", text: "Gebruik de Tone of Voice van Nova. AI kent onze huisstijl niet automatisch." },
+                  { type: "rule", num: "4", text: "Bij twijfel: vraag een collega. AI is een hulpmiddel, geen vervanger van je oordeel." },
+                  { type: "rule", num: "5", text: "Vermeld in belangrijke documenten dat AI is gebruikt als hulpmiddel." }
+                ]
+              }
             }
           },
           checks: [
