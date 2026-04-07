@@ -914,11 +914,119 @@
     const wiki = d.wiki;
     let currentPage = "home";
     let taskShown = false;
+    let openApps = new Set();
 
-    area.innerHTML = `<div class="intranet" id="intranet-container">
-      <div class="intranet-sidebar" id="intranet-nav"></div>
-      <div class="intranet-main" id="intranet-page"></div>
+    // Hide the normal UI, show desktop
+    document.getElementById("header").style.display = "none";
+    area.closest(".screen").style.padding = "0";
+
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
+
+    area.innerHTML = `<div class="desktop" id="macos-desktop">
+      <div class="menubar">
+        <span class="menubar-apple">\uF8FF</span>
+        <span class="menubar-app">Finder</span>
+        <span class="menubar-item">Archief</span>
+        <span class="menubar-item">Wijzig</span>
+        <span class="menubar-item">Weergave</span>
+        <div class="menubar-right">
+          <span>Wi-Fi</span>
+          <span>100%</span>
+          <span>${timeStr}</span>
+        </div>
+      </div>
+
+      <div class="app-window maximized open focused" id="window-intranet">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots">
+            <div class="app-titlebar-dot red" data-action="close" data-window="intranet"></div>
+            <div class="app-titlebar-dot yellow" data-action="minimize" data-window="intranet"></div>
+            <div class="app-titlebar-dot green" data-action="maximize" data-window="intranet"></div>
+          </div>
+          <div class="app-titlebar-title">Nova Intranet - Chrome</div>
+        </div>
+        <div class="app-body">
+          <div class="intranet" id="intranet-container">
+            <div class="intranet-sidebar" id="intranet-nav"></div>
+            <div class="intranet-main" id="intranet-page"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-window open" id="window-chatgpt" style="display:none;top:40px;left:30px;right:30px;bottom:80px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots">
+            <div class="app-titlebar-dot red" data-action="close" data-window="chatgpt"></div>
+            <div class="app-titlebar-dot yellow"></div>
+            <div class="app-titlebar-dot green" data-action="maximize" data-window="chatgpt"></div>
+          </div>
+          <div class="app-titlebar-title">ChatGPT - Chrome</div>
+        </div>
+        <div class="app-body" id="chatgpt-app-body"></div>
+      </div>
+
+      <div class="dock" id="dock">
+        <div class="dock-icon" data-app="finder" style="background:#4A90D9">
+          <div class="dock-tooltip">Finder</div>
+          \u{1F4C1}
+        </div>
+        <div class="dock-icon active" data-app="intranet" style="background:#222">
+          <div class="dock-tooltip">Nova Intranet</div>
+          \u{1F310}
+        </div>
+        <div class="dock-icon" data-app="chatgpt" style="background:#10a37f">
+          <div class="dock-tooltip">ChatGPT</div>
+          \u{1F4AC}
+        </div>
+        <div class="dock-icon" data-app="claude" style="background:#d97706">
+          <div class="dock-tooltip">Claude</div>
+          \u{1F4DD}
+        </div>
+        <div class="dock-icon" data-app="slack" style="background:#4A154B">
+          <div class="dock-tooltip">Slack</div>
+          \u{1F4E8}
+        </div>
+        <div class="dock-icon" data-app="mail" style="background:#007AFF">
+          <div class="dock-tooltip">Mail</div>
+          \u{2709}\uFE0F
+        </div>
+      </div>
+
+      <div id="notification-area"></div>
     </div>`;
+
+    // Dock click handlers
+    area.querySelectorAll(".dock-icon[data-app]").forEach(icon => {
+      icon.addEventListener("click", () => {
+        sfxClick();
+        const app = icon.dataset.app;
+        if (app === "intranet") {
+          document.getElementById("window-intranet").style.display = "flex";
+          document.getElementById("window-intranet").classList.add("focused");
+          document.getElementById("window-chatgpt").classList.remove("focused");
+        } else if (app === "chatgpt") {
+          if (!taskShown) {
+            showDesktopNotification("ChatGPT is beschikbaar zodra je een taak hebt.");
+            return;
+          }
+          document.getElementById("window-chatgpt").style.display = "flex";
+          document.getElementById("window-chatgpt").classList.add("maximized", "focused");
+          document.getElementById("window-intranet").classList.remove("focused");
+        }
+      });
+    });
+
+    // Window dot handlers
+    area.querySelectorAll("[data-action]").forEach(dot => {
+      dot.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const action = dot.dataset.action;
+        const win = document.getElementById("window-" + dot.dataset.window);
+        if (action === "close") win.style.display = "none";
+        else if (action === "maximize") win.classList.toggle("maximized");
+      });
+    });
 
     const navEl = area.querySelector("#intranet-nav");
     const pageEl = area.querySelector("#intranet-page");
@@ -998,59 +1106,183 @@
     renderNav();
     renderPage();
 
-    // Task popup after delay
+    // macOS-style notification after delay
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
-      showTaskPopup(area, d, task);
-    }, d.taskPopupDelay || 15000);
+      showSlackNotification(area, d, task);
+    }, d.taskPopupDelay || 12000);
   }
 
-  function showTaskPopup(area, d, task) {
+  function showDesktopNotification(message) {
+    const notifArea = document.getElementById("notification-area");
+    const notif = document.createElement("div");
+    notif.className = "macos-notification";
+    notif.innerHTML = `
+      <div class="macos-notif-header">
+        <div class="macos-notif-icon">N</div>
+        <div class="macos-notif-app">Nova</div>
+        <div class="macos-notif-time">nu</div>
+      </div>
+      <div class="macos-notif-body">
+        <div class="macos-notif-text">${message}</div>
+      </div>
+    `;
+    notifArea.appendChild(notif);
+    setTimeout(() => notif.remove(), 4000);
+  }
+
+  function showSlackNotification(area, d, task) {
     const tp = d.taskPopup;
-    const overlay = document.createElement("div");
-    overlay.className = "task-popup-overlay";
-    overlay.innerHTML = `
-      <div class="task-popup">
-        <div class="task-popup-header">
-          <span class="task-popup-icon">\u{1F514}</span>
-          <span class="task-popup-title">Nieuwe taak</span>
-          <span class="task-popup-urgency">${tp.urgency}</span>
+    const notifArea = document.getElementById("notification-area");
+    const notif = document.createElement("div");
+    notif.className = "macos-notification";
+    notif.style.cursor = "pointer";
+    notif.innerHTML = `
+      <div class="macos-notif-header">
+        <div class="macos-notif-icon" style="background:#4A154B">S</div>
+        <div class="macos-notif-app">Slack</div>
+        <div class="macos-notif-time">nu</div>
+      </div>
+      <div class="macos-notif-body">
+        <div class="macos-notif-title">${tp.from}</div>
+        <div class="macos-notif-text">${tp.message}</div>
+      </div>
+    `;
+    notifArea.appendChild(notif);
+    sfxClick();
+
+    // Clicking the notification opens ChatGPT
+    notif.addEventListener("click", () => {
+      sfxClick();
+      notif.remove();
+      openChatGPTWindow(area, d, task);
+    });
+
+    // Auto-dismiss after 30s, then show again
+    setTimeout(() => {
+      if (notif.parentElement) {
+        notif.remove();
+        // Remind again
+        setTimeout(() => {
+          if (!document.getElementById("window-chatgpt")?.classList.contains("open-active")) {
+            showSlackNotification(area, d, task);
+          }
+        }, 15000);
+      }
+    }, 30000);
+  }
+
+  function openChatGPTWindow(area, d, task) {
+    const chatgptWindow = document.getElementById("window-chatgpt");
+    const chatgptBody = document.getElementById("chatgpt-app-body");
+    chatgptWindow.style.display = "flex";
+    chatgptWindow.classList.add("maximized", "focused", "open-active");
+    document.getElementById("window-intranet").classList.remove("focused");
+
+    // Highlight ChatGPT in dock
+    area.querySelector('[data-app="chatgpt"]')?.classList.add("active");
+
+    // Render ChatGPT interface inside the window
+    const ui = buildToolWindow(d.tool || "chatgpt");
+    chatgptBody.innerHTML = `
+      <div style="flex:1;display:flex;flex-direction:column;background:#212121">
+        <div class="gpt-topbar">
+          <div class="gpt-topbar-logo">G</div>
+          <div class="gpt-model-select" id="gpt-model-btn">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
+          <div class="gpt-topbar-model" id="gpt-model-label">4o</div>
         </div>
-        <div class="task-popup-body">
-          <div class="task-popup-from">
-            <div class="task-popup-avatar">${tp.avatar}</div>
-            <div><div class="task-popup-from-name">${tp.from}</div><div class="task-popup-from-role">${tp.fromRole}</div></div>
+        <div class="gpt-chat" id="sim-chat" style="flex:1"></div>
+        <div class="gpt-input-area">
+          <div class="gpt-inputbar">
+            <input class="gpt-input" id="gpt-free-input" placeholder="Schrijf hier je prompt voor de klant-email...">
+            <button class="gpt-send" id="gpt-free-send">\u2191</button>
           </div>
-          <div class="task-popup-message">${tp.message}</div>
-          <div class="task-popup-actions">
-            <button class="action-btn" id="task-accept">Open ChatGPT</button>
-            <button class="action-btn secondary" id="task-later">Nog even rondkijken</button>
-          </div>
+          <div class="gpt-disclaimer">ChatGPT kan fouten maken. Controleer belangrijke informatie.</div>
         </div>
       </div>
     `;
-    document.body.appendChild(overlay);
-    sfxClick();
 
-    overlay.querySelector("#task-accept").addEventListener("click", () => {
-      sfxClick();
-      overlay.remove();
-      // Switch to free prompt mode
-      renderFreePromptFromIntranet(area, task);
+    const chatEl = chatgptBody.querySelector("#sim-chat");
+    const inputEl = chatgptBody.querySelector("#gpt-free-input");
+    const sendBtn = chatgptBody.querySelector("#gpt-free-send");
+    let sent = false;
+
+    inputEl.focus();
+    inputEl.addEventListener("input", () => {
+      sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3";
     });
 
-    overlay.querySelector("#task-later").addEventListener("click", () => {
+    function handleSend() {
+      if (sent || inputEl.value.trim().length < 5) return;
+      sent = true;
       sfxClick();
-      overlay.remove();
-      // Show again after 10 more seconds
-      setTimeout(() => showTaskPopup(area, d, task), 10000);
-    });
-  }
 
-  function renderFreePromptFromIntranet(area, task) {
-    const d = task.interaction;
-    renderFreePrompt(area, { ...task, interaction: { ...d, type: "free-prompt", tool: d.tool, briefing: null } });
+      const promptText = inputEl.value.trim();
+      inputEl.setAttribute("readonly", "");
+      sendBtn.disabled = true;
+
+      addChatMsg(chatEl, ui, "user", promptText, false);
+
+      // Validate
+      const text = promptText.toLowerCase();
+      let score = 0, found = 0, missing = [];
+      d.checks.forEach(c => {
+        if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
+          score += c.points;
+          found++;
+        } else {
+          missing.push(c);
+        }
+      });
+
+      let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+      addChatMsg(chatEl, ui, "ai", d.responses[responseKey], true).then(() => {
+        const fb = document.createElement("div");
+        fb.style.cssText = "padding:16px;border-top:1px solid #333";
+
+        if (score >= 90) {
+          sfxCorrect(); addXP(200); state.totalScore++;
+          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend!</div>Je prompt bevatte alle cruciale informatie. Lisa zou trots zijn.</div>`;
+        } else {
+          if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; } else { sfxWrong(); addXP(30); }
+          fb.innerHTML = `<div class="feedback ${score >= 60 ? "warning" : "error"}">
+            <div class="feedback-title">${found}/${d.checks.length} elementen - ${score >= 60 ? "Goed begin" : "De AI miste context"}</div>
+            ${missing.map(m => `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>${m.label}:</strong> ${m.hint}</div>`).join("")}
+            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: alle informatie stond op het Nova intranet. Klik op het intranet-icoon in de dock om terug te kijken.</div>
+          </div>`;
+          fb.innerHTML += `<button class="action-btn secondary" id="retry-btn" style="margin-top:10px">Probeer opnieuw</button>`;
+        }
+
+        fb.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Inzicht</div>${task.insight}</div>`;
+        fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">Volgende \u2192</button>`;
+        chatgptBody.querySelector(".gpt-input-area").before(fb);
+
+        fb.querySelector("#next-from-desktop")?.addEventListener("click", () => {
+          // Clean up desktop, restore normal UI
+          document.getElementById("macos-desktop")?.remove();
+          document.getElementById("header").style.display = "";
+          area.closest(".screen").style.padding = "";
+          sfxClick();
+          nextTask();
+        });
+
+        fb.querySelector("#retry-btn")?.addEventListener("click", () => {
+          sent = false;
+          inputEl.removeAttribute("readonly");
+          sendBtn.disabled = false;
+          chatEl.innerHTML = "";
+          inputEl.value = "";
+          inputEl.focus();
+          fb.remove();
+        });
+      });
+    }
+
+    sendBtn.addEventListener("click", handleSend);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    });
   }
 
   // ─── INTERACTION: Free Prompt ────────────────────────

@@ -20,7 +20,7 @@ const MISSIONS = [
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
-    storyIntro: "Maandagochtend. Je loopt het kantoor van Nova binnen. Nieuwe laptop, nieuw bureau. Je manager Lisa loopt langs: 'Heb je al een ChatGPT account? Je gaat het nodig hebben.' Ze lacht en loopt door. Op je scherm staat een sticky note: 'Bakkerij Van Dijk bellen - bestelling vertraagd. Schrijf een email.' Je opent je browser...",
+    storyIntro: "Maandagochtend. Je zit achter je nieuwe laptop bij Nova. Een techbedrijf dat vorig jaar heeft besloten AI in te zetten voor alles: klantenservice, marketing, documentatie. Jij bent de nieuwste aanwinst. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
     tasks: [
       {
         type: "scenario",
