@@ -36,20 +36,139 @@
   function sfxClick() { tone(500, 0.03, "sine", 0.06); }
   function sfxType() { tone(800 + Math.random() * 400, 0.02, "sine", 0.03); }
 
-  // ─── Persistence ────────────────────────────────────
+  // ─── Persistence (URL-based + localStorage fallback) ─
+  function generateCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+    let code = "";
+    for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  function encodeState() {
+    const data = {
+      n: state.nickname,
+      x: state.xp,
+      s: state.streak,
+      d: state.lastPlayDate,
+      c: state.completed,
+      b: BOARD_TASKS.map(t => t.id + ":" + t.col).join(","),
+      v: 1,
+    };
+    return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  }
+
+  function decodeState(encoded) {
+    try {
+      const json = decodeURIComponent(escape(atob(encoded)));
+      return JSON.parse(json);
+    } catch (e) { return null; }
+  }
+
+  function getSessionUrl() {
+    const code = state.sessionCode || generateCode();
+    state.sessionCode = code;
+    const encoded = encodeState();
+    return window.location.origin + window.location.pathname + "#p=" + code + "." + encoded;
+  }
+
+  function loadFromUrl() {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#p=")) return false;
+    const payload = hash.slice(3);
+    const dotIdx = payload.indexOf(".");
+    if (dotIdx < 1) return false;
+    const code = payload.slice(0, dotIdx);
+    const encoded = payload.slice(dotIdx + 1);
+    const data = decodeState(encoded);
+    if (!data || !data.n) return false;
+    state.sessionCode = code;
+    state.nickname = data.n;
+    state.xp = data.x || 0;
+    state.streak = data.s || 0;
+    state.lastPlayDate = data.d || null;
+    state.completed = data.c || {};
+    // Restore board state
+    if (data.b) {
+      data.b.split(",").forEach(entry => {
+        const [id, col] = entry.split(":");
+        const task = BOARD_TASKS.find(t => t.id === id);
+        if (task && col) task.col = col;
+      });
+    }
+    return true;
+  }
+
   function save() {
     localStorage.setItem("ai-lab-save", JSON.stringify({
       xp: state.xp, streak: state.streak, lastPlayDate: state.lastPlayDate,
       completed: state.completed, nickname: state.nickname, sound: state.sound,
+      sessionCode: state.sessionCode,
     }));
+    // Also update URL silently
+    if (state.nickname) {
+      const url = getSessionUrl();
+      history.replaceState(null, "", url.split(window.location.origin + window.location.pathname)[1]);
+    }
   }
+
   function load() {
+    // Try URL first
+    if (loadFromUrl()) return;
+    // Fallback to localStorage
     try {
       const s = JSON.parse(localStorage.getItem("ai-lab-save") || "{}");
       Object.assign(state, { xp: s.xp || 0, streak: s.streak || 0,
         lastPlayDate: s.lastPlayDate, completed: s.completed || {},
-        nickname: s.nickname || null, sound: s.sound !== false });
+        nickname: s.nickname || null, sound: s.sound !== false,
+        sessionCode: s.sessionCode || null });
     } catch (e) {}
+  }
+
+  function showSaveDialog() {
+    const url = getSessionUrl();
+    save();
+
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px";
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:14px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden">
+        <div style="padding:20px;border-bottom:1px solid #e5e7eb">
+          <div style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:4px">Voortgang opslaan</div>
+          <div style="font-size:0.82rem;color:#6b7280">Bewaar deze link om later verder te gaan waar je gebleven bent.</div>
+        </div>
+        <div style="padding:20px">
+          <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-family:monospace;font-size:0.7rem;color:#374151;word-break:break-all;margin-bottom:14px;max-height:60px;overflow:hidden">${url}</div>
+          <button id="save-copy" style="width:100%;padding:10px;background:#0052cc;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer;margin-bottom:8px">Kopieer link</button>
+          <div id="save-copied" style="display:none;text-align:center;font-size:0.78rem;color:#059669;margin-bottom:8px">Gekopieerd!</div>
+          <div style="display:flex;gap:8px">
+            <input type="email" id="save-email" placeholder="Je emailadres..." style="flex:1;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-family:inherit;font-size:0.82rem;outline:none">
+            <button id="save-mail" style="padding:8px 16px;background:#1e40af;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap">Mail link</button>
+          </div>
+        </div>
+        <div style="padding:12px 20px;border-top:1px solid #e5e7eb;text-align:right">
+          <button id="save-close" style="padding:8px 20px;background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;font-family:inherit;font-size:0.82rem;cursor:pointer;color:#374151">Sluiten</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    overlay.querySelector("#save-copy").addEventListener("click", () => {
+      navigator.clipboard.writeText(url).then(() => {
+        overlay.querySelector("#save-copied").style.display = "block";
+        setTimeout(() => { overlay.querySelector("#save-copied").style.display = "none"; }, 2000);
+      });
+    });
+
+    overlay.querySelector("#save-mail").addEventListener("click", () => {
+      const email = overlay.querySelector("#save-email").value.trim();
+      if (!email) return;
+      const subject = encodeURIComponent("Je AI Lab voortgang - Gemeente Mayostad");
+      const body = encodeURIComponent("Hoi " + (state.nickname || "") + ",\n\nHierbij je link om verder te gaan met de AI-training:\n\n" + url + "\n\nOpen deze link in je browser om verder te gaan waar je gebleven bent.\n\nGroet,\nGemeente Mayostad AI Lab");
+      window.open("mailto:" + email + "?subject=" + subject + "&body=" + body);
+    });
+
+    overlay.querySelector("#save-close").addEventListener("click", () => overlay.remove());
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });
   }
 
   // ─── DOM ────────────────────────────────────────────
@@ -928,8 +1047,8 @@
       <div class="menubar">
         <span class="menubar-apple"><svg viewBox="0 0 17 20" width="12" height="14" fill="white"><path d="M12.15 0c.08.68-.2 1.36-.54 1.86-.38.53-.99.94-1.6.88-.09-.65.24-1.34.56-1.77.38-.5 1.04-.9 1.58-.97zM14.96 7.2c-.04.02-1.6.92-1.58 2.76.02 2.2 1.93 2.93 1.96 2.94-.01.06-.3 1.06-.1 2.22-.56.46-1.1.92-1.97.92-.42 0-.7-.14-1-.28-.32-.15-.66-.3-1.17-.3-.54 0-.9.16-1.24.31-.28.13-.55.25-.92.27-.83.03-1.46-.98-2.03-1.94-.58-.98-1.06-2.5-.44-3.59.3-.54.84-.88 1.44-.89.47-.01.9.17 1.24.32.28.12.5.22.76.22.24 0 .44-.09.72-.22.38-.17.86-.38 1.48-.33.85.03 1.5.46 1.86 1.13-.75.46-1.26 1.23-1.2 2.15.06.98.65 1.82 1.49 2.18-.18.53-.4 1.04-.7 1.51z"/></svg></span>
         <span class="menubar-app">Finder</span>
+        <span class="menubar-item" id="menubar-save" style="cursor:pointer">Opslaan</span>
         <span class="menubar-item">Archief</span>
-        <span class="menubar-item">Wijzig</span>
         <span class="menubar-item">Weergave</span>
         <div class="menubar-right">
           <svg viewBox="0 0 16 12" width="14" height="10"><path d="M8 9.6a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4zm-4.2-3a.6.6 0 01.42.18l.85.84A4.78 4.78 0 018 6.4c1.1 0 2.15.37 3 1.05l.82-.82a.6.6 0 01.85.85l-.83.83A4.78 4.78 0 018 9.6a4.78 4.78 0 01-3.78-1.27l-.84-.84a.6.6 0 01.42-1.02zM1.2 3.6a.6.6 0 01.42.18l1.5 1.5A7.96 7.96 0 018 3.6c1.84 0 3.56.6 4.95 1.72l1.47-1.47a.6.6 0 01.85.85L13.8 6.17A7.96 7.96 0 018 8a7.96 7.96 0 01-5.73-1.8L.77 4.63a.6.6 0 01.42-1.02z" fill="white" opacity="0.9"/></svg>
@@ -1141,6 +1260,9 @@
 
     // Populate WiWa
     renderWiWa(area.querySelector("#wiwa-body"));
+
+    // Save button in menubar
+    area.querySelector("#menubar-save")?.addEventListener("click", () => { sfxClick(); showSaveDialog(); });
 
     // Tasks widget click -> open board
     area.querySelector("#widget-tasks-click")?.addEventListener("click", () => {
