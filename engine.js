@@ -1638,80 +1638,113 @@
     ]},
   ];
 
+  // Avatar colors per person (consistent)
+  const AVATAR_COLORS = [
+    ["#f472b6","#ec4899"], ["#a78bfa","#7c3aed"], ["#60a5fa","#2563eb"],
+    ["#34d399","#059669"], ["#fbbf24","#d97706"], ["#fb923c","#ea580c"],
+    ["#f87171","#dc2626"], ["#38bdf8","#0284c7"], ["#a3e635","#65a30d"],
+    ["#e879f9","#c026d3"], ["#2dd4bf","#0d9488"], ["#818cf8","#4f46e5"],
+  ];
+  function avatarGradient(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    const idx = Math.abs(hash) % AVATAR_COLORS.length;
+    return AVATAR_COLORS[idx];
+  }
+
   function renderWiWa(container) {
-    let selectedDept = null;
+    const allPeople = WIWA_DATA.flatMap(d => d.people.map(p => ({ ...p, dept: d.dept })));
+    let selectedPerson = allPeople[0];
     let searchQuery = "";
 
     function render() {
       const filtered = searchQuery
-        ? WIWA_DATA.flatMap(d => d.people.filter(p =>
+        ? allPeople.filter(p =>
             p.name.toLowerCase().includes(searchQuery) ||
             p.role.toLowerCase().includes(searchQuery) ||
-            p.skills.some(s => s.toLowerCase().includes(searchQuery))
-          ).map(p => ({ ...p, dept: d.dept })))
-        : null;
+            p.dept.toLowerCase().includes(searchQuery) ||
+            p.skills.some(s => s.toLowerCase().includes(searchQuery)))
+        : allPeople;
+
+      const statusColors = { online: "#34d399", bezet: "#f87171", afwezig: "#6b7280", buiten: "#fbbf24", standby: "#38bdf8" };
+      const statusLabels = { online: "Online", bezet: "Bezet", afwezig: "Afwezig", buiten: "Op pad", standby: "Stand-by" };
+
+      const sel = selectedPerson;
+      const selColors = sel ? (sel.bot ? ["#6366f1","#a855f7"] : avatarGradient(sel.name)) : ["#333","#555"];
+      const selInitials = sel ? (sel.bot ? "\u{1F916}" : sel.name.split(" ").map(w => w[0]).join("").slice(0,2)) : "";
 
       container.innerHTML = `
-        <div style="display:flex;flex:1;overflow:hidden;background:#1a1a2e">
-          <div style="width:180px;background:#151528;border-right:1px solid #252545;padding:8px;overflow-y:auto;flex-shrink:0">
-            <div style="padding:8px;margin-bottom:8px">
-              <input type="text" id="wiwa-search" placeholder="Zoek collega..." value="${searchQuery}" style="width:100%;padding:7px 10px;background:#1e1e38;border:1px solid #2a2a4a;border-radius:8px;color:#ccc;font-family:inherit;font-size:0.8rem;outline:none">
+        <div style="display:flex;flex:1;overflow:hidden;background:#f5f5f7;font-family:-apple-system,'Inter',sans-serif">
+          <div style="width:240px;background:#ffffff;border-right:1px solid #e5e5ea;display:flex;flex-direction:column;flex-shrink:0">
+            <div style="padding:10px 12px;border-bottom:1px solid #e5e5ea">
+              <input type="text" id="wiwa-search" placeholder="\u{1F50D} Zoeken..." value="${searchQuery}" style="width:100%;padding:8px 12px;background:#f0f0f5;border:none;border-radius:8px;color:#1d1d1f;font-family:inherit;font-size:0.82rem;outline:none">
             </div>
-            <div style="font-size:0.6rem;font-weight:700;color:#555;padding:4px 8px;text-transform:uppercase;letter-spacing:1px">Afdelingen</div>
-            ${WIWA_DATA.map(d => {
-              const botCount = d.people.filter(p => p.bot).length;
-              const isActive = selectedDept === d.dept;
-              return `<div class="wiwa-dept-item ${isActive ? "active" : ""}" data-dept="${d.dept}" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:6px;font-size:0.8rem;color:${isActive ? "#fff" : "#999"};cursor:pointer;background:${isActive ? "#252550" : "transparent"};margin-bottom:2px">
-                <span>${d.dept}</span>
-                <span style="display:flex;gap:3px;align-items:center">
-                  <span style="font-size:0.65rem;color:#666">${d.people.length}</span>
-                  ${botCount > 0 ? `<span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 4px;border-radius:3px">${botCount} AI</span>` : ""}
-                </span>
-              </div>`;
-            }).join("")}
+            <div style="flex:1;overflow-y:auto" id="wiwa-list">
+              ${WIWA_DATA.map(d => `
+                <div style="padding:6px 14px 2px;font-size:0.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">${d.dept}</div>
+                ${d.people.filter(p => !searchQuery || filtered.includes(allPeople.find(ap => ap.name === p.name && ap.dept === d.dept))).map(p => {
+                  const isSelected = sel && sel.name === p.name && sel.dept === d.dept;
+                  const colors = p.bot ? ["#6366f1","#a855f7"] : avatarGradient(p.name);
+                  const initials = p.bot ? "\u{1F916}" : p.name.split(" ").map(w => w[0]).join("").slice(0,2);
+                  return `<div class="wiwa-person-row" data-name="${p.name}" data-dept="${d.dept}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;border-radius:8px;margin:1px 6px;background:${isSelected ? "#007aff" : "transparent"}">
+                    <div style="position:relative;flex-shrink:0">
+                      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${colors[0]},${colors[1]});display:flex;align-items:center;justify-content:center;font-size:${p.bot ? "1.1rem" : "0.75rem"};font-weight:700;color:white">${initials}</div>
+                      <div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:${statusColors[p.status]};border:2px solid ${isSelected ? "#007aff" : "#fff"}"></div>
+                    </div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-size:0.82rem;font-weight:500;color:${isSelected ? "white" : "#1d1d1f"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+                      <div style="font-size:0.7rem;color:${isSelected ? "rgba(255,255,255,0.7)" : "#86868b"}">${p.role}</div>
+                    </div>
+                    ${p.bot ? `<div style="font-size:0.5rem;background:${isSelected ? "rgba(255,255,255,0.3)" : "#6366f1"};color:white;padding:2px 5px;border-radius:3px;font-weight:700">AI</div>` : ""}
+                  </div>`;
+                }).join("")}
+              `).join("")}
+            </div>
           </div>
-          <div style="flex:1;overflow-y:auto;padding:16px" id="wiwa-people"></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;overflow-y:auto" id="wiwa-detail">
+            ${sel ? `
+              <div style="width:100%;max-width:360px">
+                <div style="background:linear-gradient(135deg,${selColors[0]},${selColors[1]});border-radius:20px;padding:30px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden">
+                  <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,0.15),transparent 60%)"></div>
+                  <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:${sel.bot ? "2.5rem" : "1.8rem"};font-weight:800;color:white;margin:0 auto 12px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.3)">${selInitials}</div>
+                  <div style="font-size:1.2rem;font-weight:700;color:white;margin-bottom:4px">${sel.name}</div>
+                  <div style="font-size:0.82rem;color:rgba(255,255,255,0.8)">${sel.role} \u2022 ${sel.dept}</div>
+                  ${sel.model ? `<div style="margin-top:8px;display:inline-block;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:10px;font-size:0.7rem;color:white;font-weight:600">${sel.model}</div>` : ""}
+                  <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px">
+                    <div style="width:8px;height:8px;border-radius:50%;background:${statusColors[sel.status]}"></div>
+                    <span style="font-size:0.75rem;color:rgba(255,255,255,0.8)">${statusLabels[sel.status] || sel.status}</span>
+                  </div>
+                </div>
+                ${sel.desc ? `<div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1px solid #e5e5ea">
+                  <div style="font-size:0.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Omschrijving</div>
+                  <div style="font-size:0.85rem;color:#1d1d1f;line-height:1.5">${sel.desc}</div>
+                </div>` : ""}
+                <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1px solid #e5e5ea">
+                  <div style="font-size:0.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Skills & verantwoordelijkheden</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    ${sel.skills.map(s => `<span style="font-size:0.75rem;padding:4px 10px;background:#f0f0f5;border-radius:8px;color:#1d1d1f;font-weight:500">${s}</span>`).join("")}
+                  </div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid #e5e5ea">
+                  <div style="font-size:0.65rem;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Contact</div>
+                  <div style="display:flex;gap:8px">
+                    <button style="flex:1;padding:10px;background:#007aff;color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer">MayoChat</button>
+                    <button style="flex:1;padding:10px;background:#f0f0f5;color:#1d1d1f;border:none;border-radius:10px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer">MayoMail</button>
+                  </div>
+                </div>
+              </div>
+            ` : '<div style="color:#86868b;font-size:0.9rem">Selecteer een collega</div>'}
+          </div>
         </div>
       `;
 
-      const peopleEl = container.querySelector("#wiwa-people");
-      const people = filtered || (selectedDept
-        ? WIWA_DATA.find(d => d.dept === selectedDept)?.people.map(p => ({ ...p, dept: selectedDept })) || []
-        : WIWA_DATA.flatMap(d => d.people.map(p => ({ ...p, dept: d.dept }))));
-
-      if (people.length === 0) {
-        peopleEl.innerHTML = '<div style="color:#666;font-size:0.85rem;text-align:center;padding:40px">Selecteer een afdeling of zoek een collega</div>';
-      } else {
-        peopleEl.innerHTML = people.map(p => {
-          const statusColors = { online: "#00ff88", bezet: "#ff6b6b", afwezig: "#666", buiten: "#fbbf24", standby: "#00d4ff" };
-          const initials = p.name.split(" ").map(w => w[0]).join("").slice(0, 2);
-          return `<div style="display:flex;gap:12px;padding:12px;background:#1e1e38;border:1px solid #252550;border-radius:10px;margin-bottom:8px;${p.bot ? "border-left:3px solid #6366f1" : ""}">
-            <div style="position:relative;flex-shrink:0">
-              <div style="width:42px;height:42px;border-radius:50%;background:${p.bot ? "linear-gradient(135deg,#6366f1,#a855f7)" : "#2a2a4a"};display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:${p.bot ? "white" : "#999"}">${p.bot ? "\u{1F916}" : initials}</div>
-              <div style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:${statusColors[p.status] || "#666"};border:2px solid #1e1e38"></div>
-            </div>
-            <div style="flex:1;min-width:0">
-              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-                <span style="font-weight:600;color:#ddd;font-size:0.85rem">${p.name}</span>
-                ${p.bot ? '<span style="font-size:0.55rem;background:#6366f1;color:white;padding:1px 6px;border-radius:3px;font-weight:700">AI</span>' : ""}
-                <span style="font-size:0.7rem;color:#666;margin-left:auto">${p.dept}</span>
-              </div>
-              <div style="font-size:0.75rem;color:#888;margin-bottom:4px">${p.role}${p.model ? " \u2022 " + p.model : ""}</div>
-              <div style="display:flex;flex-wrap:wrap;gap:4px">
-                ${p.skills.map(s => `<span style="font-size:0.6rem;padding:2px 6px;background:#252550;border-radius:4px;color:#aaa">${s}</span>`).join("")}
-              </div>
-              ${p.desc ? `<div style="font-size:0.7rem;color:#777;margin-top:6px;line-height:1.4;font-style:italic">${p.desc}</div>` : ""}
-            </div>
-          </div>`;
-        }).join("");
-      }
-
-      // Dept click handlers
-      container.querySelectorAll("[data-dept]").forEach(item => {
-        item.addEventListener("click", () => {
+      // Person click handlers
+      container.querySelectorAll(".wiwa-person-row").forEach(row => {
+        row.addEventListener("click", () => {
           sfxClick();
-          selectedDept = selectedDept === item.dataset.dept ? null : item.dataset.dept;
-          searchQuery = "";
+          const name = row.dataset.name;
+          const dept = row.dataset.dept;
+          selectedPerson = allPeople.find(p => p.name === name && p.dept === dept) || null;
           render();
         });
       });
@@ -1719,7 +1752,6 @@
       // Search handler
       container.querySelector("#wiwa-search")?.addEventListener("input", (e) => {
         searchQuery = e.target.value.toLowerCase();
-        selectedDept = null;
         render();
       });
     }
