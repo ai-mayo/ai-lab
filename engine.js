@@ -115,72 +115,108 @@
     });
   }
 
-  // ─── Home Screen ────────────────────────────────────
-  function renderHome() {
+  // ─── Story Screen ───────────────────────────────────
+  function findCurrentChapter() {
+    for (let i = 0; i < MISSIONS.length; i++) {
+      if (!state.completed[MISSIONS[i].id]) return i;
+    }
+    return MISSIONS.length; // all done
+  }
+
+  function renderStory() {
     $("#header-xp").textContent = state.xp;
     $("#header-streak").textContent = state.streak;
-
-    // Hero typing animation
-    const heroText = "AI is geen magie. Het is een tool. Leer hem gebruiken.";
-    typeText($("#hero-typing"), heroText, 50);
-
-    // Mission cards — only show unlocked + first locked as teaser
-    const grid = $("#missions-grid");
-    grid.innerHTML = "";
-    let firstIncomplete = null;
-    MISSIONS.forEach((m, i) => {
-      const done = state.completed[m.id];
-      // First mission always unlocked; others need previous completed
-      const prevMission = i > 0 ? MISSIONS[i - 1] : null;
-      const locked = prevMission && !state.completed[prevMission.id];
-      const isNext = !done && !locked && !firstIncomplete;
-      if (isNext) firstIncomplete = m;
-
-      const card = document.createElement("div");
-      card.className = `mission-card${done ? " completed" : ""}${locked ? " locked" : ""}${isNext ? " next" : ""}`;
-      card.innerHTML = `
-        <div class="mission-icon" style="background:${m.colorDim}">${m.icon}</div>
-        <div class="mission-info">
-          <div class="mission-tag" style="color:${m.tagColor};background:${m.colorDim}">${m.tag}</div>
-          <div class="mission-name">${m.name}</div>
-          <div class="mission-desc">${locked ? "Rond de vorige episode af om te unlocken" : m.desc}</div>
-        </div>
-        <div class="mission-meta">
-          <div class="mission-xp">${locked ? "" : m.xp + " XP"}</div>
-          <div class="mission-status">${done ? "\u2705" : locked ? "\u{1F512}" : isNext ? "\u25B6" : "\u25CB"}</div>
-        </div>
-      `;
-      if (!locked) card.addEventListener("click", () => { sfxClick(); startMission(m); });
-      grid.appendChild(card);
-    });
-
-    // Daily challenge
-    const today = new Date().getDay();
-    const daily = DAILY_CHALLENGES[today % DAILY_CHALLENGES.length];
-    $("#daily-body").innerHTML = `
-      <div style="margin-bottom:12px">
-        <strong>${daily.title}</strong>
-        <p style="color:var(--text-dim);font-size:0.85rem;margin-top:4px">${daily.desc}</p>
-      </div>
-      <div style="font-family:var(--mono);font-size:0.8rem;color:var(--cyan)">+${daily.xp} XP</div>
-    `;
 
     // Streak check
     const todayStr = new Date().toDateString();
     if (state.lastPlayDate !== todayStr) {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      if (state.lastPlayDate === yesterday.toDateString()) {
-        state.streak++;
-      } else if (state.lastPlayDate) {
-        state.streak = 1;
-      } else {
-        state.streak = 1;
-      }
+      state.streak = (state.lastPlayDate === yesterday.toDateString()) ? state.streak + 1 : 1;
       state.lastPlayDate = todayStr;
       save();
       $("#header-streak").textContent = state.streak;
     }
+
+    const chapterIdx = findCurrentChapter();
+    const content = $("#story-content");
+
+    // All chapters done
+    if (chapterIdx >= MISSIONS.length) {
+      content.innerHTML = `
+        <div style="text-align:center;padding:60px 0">
+          <div style="font-size:3rem;margin-bottom:16px">\u{1F3C6}</div>
+          <h2 style="color:var(--text);font-size:1.5rem;margin-bottom:8px">Week Voltooid</h2>
+          <p style="color:var(--text-dim);margin-bottom:24px">Je hebt je eerste week bij Nova overleefd. En je weet nu meer over AI dan 90% van je collega's.</p>
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--cyan)">${state.xp} XP verdiend</div>
+        </div>
+      `;
+      return;
+    }
+
+    const chapter = MISSIONS[chapterIdx];
+
+    // Show story intro then start button
+    content.innerHTML = `
+      <div class="story-chapter">
+        <div class="chapter-header">
+          <div class="chapter-tag" style="color:${chapter.tagColor};background:${chapter.colorDim}">${chapter.tag}</div>
+          <div class="chapter-title">${chapter.name}</div>
+        </div>
+        <div class="story-text" id="story-intro-text"></div>
+        <div class="story-progress-row">
+          <div class="story-progress-dots" id="story-dots"></div>
+        </div>
+        <button class="action-btn story-start-btn" id="story-start">Beginnen</button>
+      </div>
+      ${chapterIdx > 0 ? `<div class="story-recap"><div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px">EERDER BIJ NOVA</div>${renderRecap(chapterIdx)}</div>` : ""}
+    `;
+
+    // Type the story intro
+    const introEl = content.querySelector("#story-intro-text");
+    const introText = chapter.storyIntro || chapter.desc;
+    typeStoryText(introEl, introText);
+
+    // Progress dots
+    const dotsEl = content.querySelector("#story-dots");
+    MISSIONS.forEach((m, i) => {
+      const dot = document.createElement("div");
+      dot.className = "story-dot" + (i < chapterIdx ? " done" : i === chapterIdx ? " current" : "");
+      dot.title = m.name;
+      dotsEl.appendChild(dot);
+    });
+
+    content.querySelector("#story-start").addEventListener("click", () => {
+      sfxClick();
+      startMission(chapter);
+    });
+  }
+
+  function renderRecap(upToIdx) {
+    let html = "";
+    for (let i = 0; i < upToIdx; i++) {
+      const m = MISSIONS[i];
+      html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.8rem">
+        <span style="color:var(--green)">\u2713</span>
+        <span style="color:var(--text-dim)">${m.tag}:</span>
+        <span style="color:var(--text)">${m.name}</span>
+      </div>`;
+    }
+    return html;
+  }
+
+  function typeStoryText(el, text) {
+    const words = text.split(" ");
+    let i = 0;
+    el.textContent = "";
+    const iv = setInterval(() => {
+      if (i < words.length) {
+        el.textContent += (i > 0 ? " " : "") + words[i];
+        i++;
+      } else {
+        clearInterval(iv);
+      }
+    }, 60);
   }
 
   // ─── Mission Flow ───────────────────────────────────
@@ -188,7 +224,7 @@
     state.currentMission = mission;
     state.currentTask = 0;
     state.totalScore = 0;
-    show("mission-screen");
+    show("story-screen");
     renderTask();
   }
 
@@ -197,11 +233,12 @@
     const task = mission.tasks[state.currentTask];
     const total = mission.tasks.length;
 
-    $("#mission-step").textContent = `${state.currentTask + 1}/${total}`;
-    $("#mission-progress-fill").style.width = ((state.currentTask) / total * 100) + "%";
-
-    const content = $("#mission-content");
-    content.innerHTML = "";
+    const content = $("#story-content");
+    content.innerHTML = `
+      <div class="task-progress-bar">
+        <div class="task-progress-fill" style="width:${(state.currentTask / total) * 100}%"></div>
+      </div>
+    `;
 
     // Task card
     const card = document.createElement("div");
@@ -256,25 +293,28 @@
     const pct = state.totalScore / mission.tasks.length;
     const grade = pct >= 0.9 ? "S" : pct >= 0.7 ? "A" : pct >= 0.5 ? "B" : "C";
 
-    show("result-screen");
-    $("#result-container").innerHTML = `
-      <div class="result-grade ${grade.toLowerCase()}">${grade}</div>
-      <div class="result-title">Episode Voltooid</div>
-      <div class="result-sub">${mission.name}</div>
-      <div class="result-stats">
-        <div class="stat-card"><div class="stat-value">${mission.xp}</div><div class="stat-label">XP verdiend</div></div>
-        <div class="stat-card"><div class="stat-value">${mission.tasks.length}</div><div class="stat-label">Opdrachten</div></div>
-        <div class="stat-card"><div class="stat-value">${state.streak}</div><div class="stat-label">Dag streak</div></div>
-      </div>
-      <div class="result-insight">
-        <div class="insight-label">Wat je hebt geleerd</div>
-        <div class="insight-text">${mission.tasks.map(t => t.insight).join("<br><br>")}</div>
-      </div>
-      <div class="btn-row" style="justify-content:center">
-        <button class="action-btn" id="result-home">Terug naar Lab</button>
+    const nextChapter = MISSIONS[MISSIONS.indexOf(mission) + 1];
+    const content = $("#story-content");
+    content.innerHTML = `
+      <div style="text-align:center;padding:40px 0">
+        <div class="result-grade ${grade.toLowerCase()}">${grade}</div>
+        <div class="result-title">${mission.tag} voltooid</div>
+        <div class="result-sub">${mission.name}</div>
+        <div class="result-stats">
+          <div class="stat-card"><div class="stat-value">${mission.xp}</div><div class="stat-label">XP verdiend</div></div>
+          <div class="stat-card"><div class="stat-value">${mission.tasks.length}</div><div class="stat-label">Opdrachten</div></div>
+          <div class="stat-card"><div class="stat-value">${state.streak}</div><div class="stat-label">Dag streak</div></div>
+        </div>
+        <div class="result-insight">
+          <div class="insight-label">Wat je vandaag hebt geleerd bij Nova</div>
+          <div class="insight-text">${mission.tasks.map(t => t.insight).join("<br><br>")}</div>
+        </div>
+        <div class="btn-row" style="justify-content:center;margin-top:24px">
+          <button class="action-btn" id="result-continue">${nextChapter ? "Volgende dag \u2192" : "Terug naar overzicht"}</button>
+        </div>
       </div>
     `;
-    $("#result-home").addEventListener("click", () => { renderHome(); show("home-screen"); });
+    content.querySelector("#result-continue").addEventListener("click", () => { sfxClick(); renderStory(); });
     save();
   }
 
@@ -1392,10 +1432,10 @@
   // ─── Init ───────────────────────────────────────────
   function init() {
     load();
-    renderHome();
-    show("home-screen");
+    renderStory();
+    show("story-screen");
 
-    $("#mission-back").addEventListener("click", () => { sfxClick(); renderHome(); show("home-screen"); });
+    // no more mission-back button needed - story flows forward
 
     const soundBtn = $("#sound-btn");
     soundBtn.classList.toggle("muted", !state.sound);

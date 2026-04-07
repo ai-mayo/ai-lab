@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Boot sequence (plays once on first visit) -->
+  <!-- Boot sequence -->
   <div id="boot-screen">
     <div class="boot-container">
       <div class="boot-logo">
@@ -23,7 +23,6 @@
           </circle>
           <circle cx="60" cy="60" r="8" fill="#00d4ff" opacity="0.8">
             <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
           </circle>
         </svg>
       </div>
@@ -36,7 +35,6 @@
   </div>
 
   <div id="app" style="display:none">
-    <!-- Scanlines overlay -->
     <div class="scanlines"></div>
 
     <!-- Header -->
@@ -63,81 +61,9 @@
       </div>
     </header>
 
-    <!-- Home Screen -->
-    <div id="home-screen" class="screen active">
-      <div class="hero">
-        <div class="hero-glow"></div>
-        <div class="hero-orb">
-          <svg viewBox="0 0 200 200" width="140" height="140">
-            <defs>
-              <radialGradient id="orb-grad" cx="50%" cy="40%">
-                <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="80" fill="url(#orb-grad)"/>
-            <circle cx="100" cy="100" r="60" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.3">
-              <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="100" cy="100" r="40" fill="none" stroke="#00d4ff" stroke-width="1" stroke-dasharray="2 6" opacity="0.4">
-              <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="15s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="100" cy="100" r="20" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.5">
-              <animate attributeName="r" values="18;22;18" dur="3s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="100" cy="100" r="5" fill="#00d4ff">
-              <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
-            </circle>
-          </svg>
-        </div>
-        <h1 class="hero-title">
-          <span class="hero-title-small">WELKOM BIJ</span>
-          AI <span class="highlight">LAB</span>
-        </h1>
-        <p class="hero-sub">Kunstmatige intelligentie is overal. In je telefoon. In je werk.<br>In beslissingen die over jou worden genomen.</p>
-        <p class="hero-cta">Het is tijd dat jij begrijpt hoe het werkt.</p>
-
-        <div class="hero-terminal">
-          <div class="terminal-bar">
-            <span class="terminal-dot red"></span>
-            <span class="terminal-dot yellow"></span>
-            <span class="terminal-dot green"></span>
-            <span class="terminal-title">ai.lab v2.0 — neural interface</span>
-          </div>
-          <div class="terminal-body" id="hero-terminal-body">
-            <div class="terminal-line"><span class="terminal-prompt">&gt;</span> <span class="typing" id="hero-typing"></span><span class="cursor">|</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-label">
-        <span class="section-line"></span>
-        <span>BESCHIKBARE MISSIES</span>
-        <span class="section-line"></span>
-      </div>
-
-      <div class="missions-grid" id="missions-grid"></div>
-
-      <div class="daily-challenge" id="daily-challenge">
-        <div class="daily-header">
-          <span class="daily-icon">&#128225;</span>
-          <span class="daily-label">DAGELIJKSE OPDRACHT</span>
-          <span class="daily-timer" id="daily-timer"></span>
-        </div>
-        <div class="daily-body" id="daily-body"></div>
-      </div>
-    </div>
-
-    <!-- Mission Screen -->
-    <div id="mission-screen" class="screen">
-      <div class="mission-header">
-        <button class="back-btn" id="mission-back">&larr; Terug</button>
-        <div class="mission-progress">
-          <div class="mission-progress-bar"><div class="mission-progress-fill" id="mission-progress-fill"></div></div>
-          <span class="mission-step" id="mission-step">1/5</span>
-        </div>
-      </div>
-      <div class="mission-content" id="mission-content"></div>
+    <!-- Story Screen (replaces home + mission screens) -->
+    <div id="story-screen" class="screen active">
+      <div id="story-content"></div>
     </div>
 
     <!-- Result Screen -->
@@ -145,10 +71,7 @@
       <div class="result-container" id="result-container"></div>
     </div>
 
-    <!-- XP Popup -->
     <div class="xp-toast" id="xp-toast"></div>
-
-    <!-- Sound toggle -->
     <button class="sound-btn" id="sound-btn" title="Geluid">&#128266;</button>
   </div>
 

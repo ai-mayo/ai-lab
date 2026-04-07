@@ -2,19 +2,25 @@
 // Missions simulate real AI tools (ChatGPT, Claude, Copilot, Gemini)
 // with hands-on tasks that teach through doing
 
+const STORY = {
+  title: "Eerste Week bij Nova",
+  intro: "Je bent net aangenomen bij Nova, een snelgroeiend techbedrijf. Op je eerste dag ontdek je dat iedereen hier AI gebruikt. Je manager zegt: 'Wij werken niet harder. Wij werken met AI.' Jij hebt nog nooit een AI-tool geopend. Dat gaat vandaag veranderen.",
+};
+
 const MISSIONS = [
-  // ── EPISODE 1: Je Eerste Prompt ─────────────────────
+  // ── DAG 1 ──────────────────────────────────────────
   {
     id: "prompt-lab",
-    name: "Je Eerste Prompt",
-    desc: "Open ChatGPT en ontdek het verschil tussen een slechte en goede prompt",
+    name: "Dag 1: Je Eerste Opdracht",
+    desc: "Je manager vraagt je een klant-email te schrijven. 'Gebruik ChatGPT,' zegt ze. Je opent het.",
     icon: "\u{1F3ED}",
     color: "var(--cyan)",
     colorDim: "var(--cyan-dim)",
-    tag: "EPISODE 1",
+    tag: "DAG 1",
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
+    storyIntro: "Maandagochtend. Je loopt het kantoor van Nova binnen. Nieuwe laptop, nieuw bureau. Je manager Lisa loopt langs: 'Heb je al een ChatGPT account? Je gaat het nodig hebben.' Ze lacht en loopt door. Op je scherm staat een sticky note: 'Bakkerij Van Dijk bellen - bestelling vertraagd. Schrijf een email.' Je opent je browser...",
     tasks: [
       {
         type: "scenario",
@@ -125,18 +131,19 @@ const MISSIONS = [
     ]
   },
 
-  // ── EPISODE 2: AI Liegt ─────────────────────────────
+  // ── DAG 2 ──────────────────────────────────────────
   {
     id: "hallucination-lab",
-    name: "AI Liegt (en weet het niet)",
-    desc: "Ontdek hoe AI overtuigend onzin produceert",
+    name: "Dag 2: De Waarheid Checken",
+    desc: "Je collega stuurt je een AI-rapport. Het ziet er perfect uit. Maar klopt het ook?",
     icon: "\u{1F50D}",
     color: "var(--red)",
     colorDim: "var(--red-dim)",
-    tag: "EPISODE 2",
+    tag: "DAG 2",
     tagColor: "var(--red)",
     xp: 600,
     tool: "claude",
+    storyIntro: "Dinsdagochtend. Je bent trots op gisteren - die email was goed. Bij de koffie zegt je collega Tom: 'Ik heb ChatGPT een heel rapport laten schrijven voor de directie. Kijk eens!' Hij stuurt het naar je. Het ziet er professioneel uit. Maar iets voelt niet helemaal goed...",
     tasks: [
       {
         type: "scenario",
@@ -216,16 +223,16 @@ const MISSIONS = [
   // ── EPISODE 3: Agent Academy ────────────────────────
   {
     id: "agent-academy",
-    name: "Agent Academy",
-    desc: "Bouw je eigen AI-agent met geheugen, skills en grenzen",
+    name: "Dag 3: De Robot Collega",
+    desc: "IT introduceert een AI-agent die taken zelfstandig uitvoert. Jij moet hem configureren.",
     icon: "\u{1F916}",
     color: "var(--purple)",
     colorDim: "var(--purple-dim)",
-    tag: "EPISODE 3",
+    tag: "DAG 3",
     tagColor: "var(--purple)",
     xp: 700,
     tool: "claude",
-    unlockAfter: "hallucination-lab",
+    storyIntro: "Woensdagochtend. Er staat een mail van IT in je inbox: 'Vanaf vandaag heeft elk team een AI-agent voor klantenservice. Configureer hem voor jullie afdeling.' Je opent de link. Een leeg configuratiescherm staart je aan. Lisa loopt langs: 'Wees voorzichtig met wat je hem laat doen. Vorige week heeft het sales-team per ongeluk 40% korting weggegeven via hun agent.'",
     tasks: [
       {
         type: "scenario",
@@ -358,16 +365,16 @@ const MISSIONS = [
   // ── EPISODE 4: Copilot in Actie ─────────────────────
   {
     id: "copilot-lab",
-    name: "AI als Copilot",
-    desc: "Gebruik AI als je assistent bij dagelijkse taken",
+    name: "Dag 4: De Vergadering",
+    desc: "Vrijdag. Grote vergadering. Jij hebt AI. De rest niet.",
     icon: "\u{2708}\uFE0F",
     color: "var(--green)",
     colorDim: "var(--green-dim)",
-    tag: "EPISODE 4",
+    tag: "DAG 4",
     tagColor: "var(--green)",
     xp: 600,
     tool: "copilot",
-    unlockAfter: "agent-academy",
+    storyIntro: "Vrijdagmiddag. Teamvergadering. De manager vraagt: 'Wie maakt de notulen?' Stilte. Je glimlacht en steekt je hand op. Iedereen kijkt verbaasd - jij was altijd degene die notulen haatte. Maar jij hebt iets dat de rest niet heeft. Je opent je laptop...",
     tasks: [
       {
         type: "scenario",
