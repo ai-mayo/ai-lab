@@ -20,7 +20,7 @@ const MISSIONS = [
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
-    storyIntro: "Maandagochtend. Jouw eerste dag als AI-pilot co\u00F6rdinator bij Gemeente Mayostad. De gemeente heeft besloten AI in te zetten bij alle afdelingen \u2014 en jij bent aangenomen om dat te begeleiden. Je loopt elke week mee bij een andere afdeling, helpt collega's op weg, en leert zelf ook waar AI wel en niet werkt. Vandaag begin je bij het KCC. Op je bureaublad staan de apps al klaar. Verken je werkplek.",
+    storyIntro: "Maandagochtend. Jouw eerste dag bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Marco, je teamleider, heeft je werkplek al ingericht. Op je bureaublad staan de apps die je nodig hebt. Verken je werkplek.",
     tasks: [
       {
         type: "scenario",
@@ -32,10 +32,10 @@ const MISSIONS = [
           tool: "chatgpt",
           taskPopupDelay: 15000,
           taskPopup: {
-            from: "Lisa de Vries",
-            fromRole: "Teamleider KCC",
-            avatar: "LV",
-            message: "Hey! Kun je een brief schrijven naar meneer Van Dijk van de bakkerij? Zijn terrasvergunning is vertraagd door een bezwaar van de buurman. Verwacht besluit: 10 april. Hij moet weten dat het langer duurt en waarom. Gebruik ChatGPT, kijk even op het intranet voor onze schrijfwijzer!",
+            from: "Marco Pieterse",
+            fromRole: "Teamleider VTH",
+            avatar: "MP",
+            message: "Hoi! Kun je een brief schrijven naar meneer Van Dijk van Bakkerij Van Dijk? Zijn terrasvergunning is vertraagd door een bezwaar van de buurman. Verwacht besluit: 10 april. Hij moet weten dat het langer duurt en waarom. Gebruik ChatGPT, en check de schrijfwijzer op MayoWiki!",
             urgency: "Vandaag afhandelen"
           },
           wiki: {
@@ -44,7 +44,7 @@ const MISSIONS = [
                 title: "MayoWiki",
                 icon: "\u{1F4DA}",
                 content: [
-                  { type: "banner", text: "MayoWiki \u2014 Kennisbank Gemeente Mayostad. Gebruik de zoekbalk of navigeer via de categorie\u00EBn." },
+                  { type: "banner", text: "MayoWiki \u2014 Kennisbank Gemeente Mayostad. Je bent ingelogd als VTH-medewerker." },
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "", link: "about" },
                     { title: "Schrijfwijzer", icon: "", link: "tone" },

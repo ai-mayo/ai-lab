@@ -2000,11 +2000,13 @@ body {
   top: 34px;
   left: 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
-  gap: 4px;
+  grid-template-columns: repeat(2, 80px);
+  grid-auto-flow: column;
+  grid-template-rows: repeat(auto-fill, 88px);
+  gap: 2px 4px;
   padding: 8px;
   z-index: 103;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 110px);
   overflow: hidden;
 }
 
@@ -2012,12 +2014,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 6px 4px;
+  gap: 3px;
+  padding: 5px 4px;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.12s;
   width: 76px;
+  height: 80px;
 }
 .desktop-icon-item:hover { background: rgba(255,255,255,0.12); }
 .desktop-icon-item:active { background: rgba(255,255,255,0.2); }
