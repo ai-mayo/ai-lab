@@ -1635,39 +1635,7 @@ body {
 .briefing-row span:first-child { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
 .briefing-row strong { color: var(--text); font-weight: 600; }
 
-/* Prompt checklist */
-.prompt-checklist {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  transition: all 0.2s;
-}
-
-.check-icon {
-  font-size: 0.7rem;
-  width: 14px;
-  text-align: center;
-}
-
-.check-item.checked {
-  border-color: var(--green);
-  color: var(--green);
-  background: var(--green-dim);
-}
+/* Prompt checklist - hidden, only shown in feedback */
 
 /* ═══════════════════════════════════════════════════
    Story Mode

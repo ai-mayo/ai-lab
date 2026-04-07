@@ -943,10 +943,6 @@
         </div>
       </div>
 
-      <div class="prompt-checklist" id="prompt-checklist">
-        ${d.checks.map(c => `<div class="check-item" id="check-${c.id}"><span class="check-icon">\u25CB</span><span class="check-label">${c.label}</span></div>`).join("")}
-      </div>
-
       ${buildFullBrowser(d.tool || "chatgpt")}
     `;
 
@@ -970,23 +966,7 @@
       arrow.textContent = open ? "\u25B6" : "\u25BC";
     });
 
-    // Live prompt checking
     inputEl.addEventListener("input", () => {
-      const text = inputEl.value.toLowerCase();
-      let matched = 0;
-      d.checks.forEach(c => {
-        const found = c.keywords.some(kw => text.includes(kw.toLowerCase()));
-        const el = area.querySelector(`#check-${c.id}`);
-        const icon = el.querySelector(".check-icon");
-        if (found) {
-          el.classList.add("checked");
-          icon.textContent = "\u2713";
-          matched++;
-        } else {
-          el.classList.remove("checked");
-          icon.textContent = "\u25CB";
-        }
-      });
       sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3";
     });
 
