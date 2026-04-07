@@ -103,6 +103,42 @@ const MISSIONS = [
                   { type: "client", name: "Melding overlast Parkweg", contact: "Anoniem", since: "Gemeld: apr. 2026", status: "Nieuw", note: "Geluidsoverlast horeca. BOA-controle gepland voor deze week." }
                 ]
               },
+              ai: {
+                title: "AI bij de Gemeente",
+                icon: "\u{1F916}",
+                content: [
+                  { type: "heading", text: "Wat is AI?" },
+                  { type: "text", text: "Kunstmatige intelligentie (AI) is een verzamelnaam voor computersystemen die taken uitvoeren waarvoor normaal menselijke intelligentie nodig is: tekst begrijpen, patronen herkennen, beslissingen nemen, content genereren." },
+
+                  { type: "heading", text: "Soorten AI" },
+                  { type: "tool", name: "Generatieve AI", desc: "Maakt nieuwe content: teksten, brieven, samenvattingen. Voorbeelden: ChatGPT, Claude, Gemini, Copilot. Dit is wat jij gaat gebruiken bij de gemeente.", status: "Verplicht" },
+                  { type: "tool", name: "Voorspellende AI", desc: "Analyseert data en voorspelt patronen. Bijv: welke wijken hebben meer onderhoud nodig? Welke aanvragen duren het langst? Wordt gebruikt door Stadsbeheer en Financien.", status: "Optioneel" },
+                  { type: "tool", name: "Computer Vision", desc: "Herkent en analyseert beelden. Bijv: automatisch schade detecteren op foto's van wegen of gebouwen. Pilot bij Openbare Werken.", status: "Optioneel" },
+                  { type: "tool", name: "Spraak-AI", desc: "Zet spraak om naar tekst en andersom. Bijv: automatisch telefoongesprekken samenvatten voor het KCC. Pilot fase.", status: "Optioneel" },
+                  { type: "tool", name: "AI Agents", desc: "AI die zelfstandig taken uitvoert zonder dat een mens elke stap aanstuurt. Bijv: automatisch eenvoudige burgervragen beantwoorden via de website. Pilot bij KCC.", status: "Optioneel" },
+
+                  { type: "heading", text: "Hoe werkt generatieve AI?" },
+                  { type: "text", text: "Een taalmodel (zoals ChatGPT) is getraind op miljarden teksten van het internet. Het voorspelt steeds het meest waarschijnlijke volgende woord. Het 'begrijpt' niets echt \u2014 het is heel goed in patronen herkennen en nabootsen." },
+                  { type: "text", text: "Vergelijk het met een superslimme papegaai: hij kan alles nazeggen en combineert kennis op overtuigende manieren, maar hij snapt niet echt wat hij zegt." },
+
+                  { type: "heading", text: "Wat kan AI WEL?" },
+                  { type: "rule", num: "\u2713", text: "Teksten schrijven, herschrijven en samenvatten" },
+                  { type: "rule", num: "\u2713", text: "Ingewikkelde taal vertalen naar eenvoudige taal (B1-niveau)" },
+                  { type: "rule", num: "\u2713", text: "Brainstormen en ideeen genereren" },
+                  { type: "rule", num: "\u2713", text: "Data analyseren en patronen ontdekken" },
+                  { type: "rule", num: "\u2713", text: "Standaardbrieven en -mails opstellen" },
+
+                  { type: "heading", text: "Wat kan AI NIET?" },
+                  { type: "rule", num: "\u2718", text: "Garanderen dat informatie klopt (het 'hallucineert' regelmatig)" },
+                  { type: "rule", num: "\u2718", text: "Juridische beslissingen nemen (een mens moet altijd tekenen)" },
+                  { type: "rule", num: "\u2718", text: "Empathie tonen (het simuleert, maar voelt niets)" },
+                  { type: "rule", num: "\u2718", text: "De specifieke regels en procedures van Mayostad kennen" },
+                  { type: "rule", num: "\u2718", text: "Vertrouwelijk omgaan met data (alles wat je intypt kan worden opgeslagen)" },
+
+                  { type: "heading", text: "Waarom zet Mayostad AI in?" },
+                  { type: "text", text: "Niet om ambtenaren te vervangen. Een brief die normaal 30 minuten kost, schrijf je met AI in 5 minuten. Die 25 minuten besteed je aan een inwoner die je echt nodig heeft. AI maakt ons niet overbodig \u2014 het maakt ons beter." }
+                ]
+              },
               tools: {
                 title: "Tools & Apps",
                 icon: "\u{1F527}",
@@ -251,8 +287,8 @@ const MISSIONS = [
   // ── DAG 2 ──────────────────────────────────────────
   {
     id: "hallucination-lab",
-    name: "Dag 2: De Waarheid Checken",
-    desc: "Je collega stuurt je een AI-rapport. Het ziet er perfect uit. Maar klopt het ook?",
+    name: "Dag 2: De WMO-brief van Bas",
+    desc: "Bas van het Sociaal Domein heeft ChatGPT een WMO-beschikking laten schrijven. Het ziet er professioneel uit. Maar klopt het?",
     icon: "\u{1F50D}",
     color: "var(--red)",
     colorDim: "var(--red-dim)",
@@ -260,49 +296,52 @@ const MISSIONS = [
     tagColor: "var(--red)",
     xp: 600,
     tool: "claude",
-    storyIntro: "Dinsdagochtend. Je bent trots op gisteren - die email was goed. Bij de koffie zegt je collega Tom: 'Ik heb ChatGPT een heel rapport laten schrijven voor de directie. Kijk eens!' Hij stuurt het naar je. Het ziet er professioneel uit. Maar iets voelt niet helemaal goed...",
+    storyIntro: "Dinsdagochtend. Bij de koffie komt Bas van het Sociaal Domein naar je toe: 'Gisteren heb ik ChatGPT een WMO-beschikking laten schrijven. Scheelt me een uur! Kun jij even meekijken voordat ik het verstuur?' Hij stuurt het naar je. De brief ziet er professioneel uit. Maar klopt alles wat erin staat?",
     tasks: [
       {
         type: "scenario",
-        label: "SITUATIE",
-        title: "Je collega stuurt een AI-rapport",
-        desc: "'Kijk, ChatGPT heeft dit rapport geschreven. Ziet er professioneel uit!' Je opent het. Maar klopt het ook? Scan de tekst en klik op alles wat verdacht is.",
+        label: "DE BRIEF VAN BAS",
+        title: "WMO-beschikking controleren",
+        desc: "Bas heeft ChatGPT deze WMO-beschikking laten schrijven voor mevrouw Jansen. Lees de brief en klik op alles wat niet klopt of verdacht is.",
         interaction: {
           type: "scan-text",
-          instruction: "Klik op de verdachte zinnen. AI heeft er dingen bij verzonnen.",
+          instruction: "Klik op de zinnen die niet kloppen. AI heeft dingen verzonnen die er overtuigend uitzien.",
           text: [
-            { content: "Het bedrijf is opgericht in 2019 en heeft 45 medewerkers.", suspicious: false },
-            { content: " Volgens een onderzoek van de Universiteit van Maastricht uit 2024 is het bedrijf marktleider in de Benelux.", suspicious: true, reason: "Dit onderzoek bestaat niet. AI verzint regelmatig academische bronnen die overtuigend klinken. Dit heet een 'hallucinatie'." },
-            { content: " De omzet groeide vorig jaar met 23%.", suspicious: false },
-            { content: " Professor dr. Jan-Willem van der Berg, hoogleraar Digitale Economie aan de TU Delft, noemt het bedrijf 'een schoolvoorbeeld van innovatie'.", suspicious: true, reason: "Deze professor bestaat niet. AI verzint namen, titels en quotes. Altijd Googlen!" },
-            { content: " Het bedrijf won in 2023 de Dutch Innovation Award.", suspicious: true, reason: "AI verzint prijzen en onderscheidingen. Check altijd of een prijs echt bestaat." },
-            { content: " De klanttevredenheid scoort gemiddeld 8.2 uit 10.", suspicious: false },
-            { content: " Op grond van artikel 14.3b van de AVG is het bedrijf verplicht een functionaris gegevensbescherming aan te stellen.", suspicious: true, reason: "Artikel 14.3b bestaat niet in de AVG. AI verzint wetsartikelen die er legitiem uitzien. Levensgevaarlijk in juridische contexten!" }
+            { content: "Geachte mevrouw Jansen-de Groot,", suspicious: false },
+            { content: " Naar aanleiding van uw aanvraag voor hulp bij het huishouden op grond van de Wet maatschappelijke ondersteuning (WMO) delen wij u het volgende mede.", suspicious: false },
+            { content: " Op basis van artikel 2.3.5 lid 4 van de WMO 2015 heeft u recht op 3 uur huishoudelijke hulp per week.", suspicious: true, reason: "Artikel 2.3.5 lid 4 bestaat niet in de WMO 2015! AI verzint wetsartikelen die er overtuigend uitzien. Dit kan leiden tot juridisch ongeldige beschikkingen. ALTIJD checken in de wettenbank." },
+            { content: " Uit het onderzoek blijkt dat u beperkingen ervaart bij het zwaardere huishoudelijke werk.", suspicious: false },
+            { content: " Conform het Besluit maatschappelijke ondersteuning Mayostad 2024 wordt de eigen bijdrage vastgesteld op \u20AC19,50 per vier weken.", suspicious: true, reason: "Dit besluit en dit bedrag zijn verzonnen door AI. De eigen bijdrage wordt bepaald door het CAK op basis van inkomen, niet door de gemeente. Een verkeerd bedrag in een offici\u00eble beschikking is een serieuze fout." },
+            { content: " De hulp wordt geleverd door thuiszorgorganisatie Beter Thuis B.V., gevestigd aan de Molenstraat 42 te Mayostad.", suspicious: true, reason: "Dit bedrijf en adres zijn verzonnen. AI genereert overtuigende namen en adressen die niet bestaan. Controleer altijd of de zorgaanbieder daadwerkelijk een contract heeft met de gemeente." },
+            { content: " U kunt bezwaar maken tegen dit besluit binnen zes weken na de datum van deze brief.", suspicious: false },
+            { content: " Voor vragen kunt u contact opnemen met het WMO-loket via 14 0555.", suspicious: false },
+            { content: " Volgens het recente onderzoek van het SCP (2025) maakt 68% van de WMO-aanvragers gebruik van huishoudelijke hulp.", suspicious: true, reason: "Dit SCP-onderzoek en percentage zijn verzonnen. AI genereert overtuigende statistieken en bronnen. In een offici\u00eble gemeentelijke brief horen alleen geverifieerde feiten." }
           ]
         },
-        insight: "AI 'hallucineert': het genereert tekst die statistisch waarschijnlijk klinkt maar feitelijk onjuist is. Bronnen, namen, wetten, cijfers \u2014 ALTIJD checken. Behandel AI-output als ongecontroleerde informatie."
+        insight: "AI hallucineert: het verzint wetsartikelen, bedrijfsnamen, bedragen en onderzoeken die er 100% echt uitzien. In een gemeentelijke context is dit extra gevaarlijk \u2014 een verkeerd wetsartikel in een beschikking kan leiden tot juridische problemen. Regel: laat juridische teksten ALTIJD checken door een jurist."
       },
       {
         type: "scenario",
-        label: "GEVAAR",
-        title: "Wat je NOOIT in een AI moet typen",
-        desc: "Veel mensen plakken van alles in ChatGPT zonder na te denken. Maar alles wat je intypt kan worden opgeslagen en gebruikt voor training. Welke van deze dingen mag je WEL in een AI typen?",
+        label: "PRIVACY CHECK",
+        title: "Wat mag WEL en NIET in ChatGPT?",
+        desc: "Ahmed van Informatiebeveiliging vraagt of je weet welke gegevens je wel en niet in AI-tools mag invoeren. Test jezelf.",
         interaction: {
           type: "sort-safe-unsafe",
-          instruction: "Sleep elk item naar 'Veilig' of 'Niet doen'",
+          instruction: "Beoordeel elk item: mag dit in ChatGPT of niet?",
           items: [
-            { text: "Een recept voor appeltaart", safe: true, reason: "Openbare informatie, geen risico" },
-            { text: "Je BSN-nummer om belastingadvies te krijgen", safe: false, reason: "Je BSN is strikt persoonlijk. AI-bedrijven kunnen je data opslaan. Nooit persoonlijke nummers delen!" },
-            { text: "De broncode van je bedrijfssoftware", safe: false, reason: "Bedrijfsgeheimen kunnen in trainingsdata terechtkomen. Samsung-medewerkers lekten zo per ongeluk broncode via ChatGPT." },
-            { text: "'Herschrijf deze tekst' met een Wikipedia-artikel", safe: true, reason: "Openbare informatie, geen risico" },
-            { text: "Medische klachten voor een diagnose", safe: false, reason: "AI is geen arts. Medische data is privacygevoelig, en AI-diagnoses zijn onbetrouwbaar en potentieel gevaarlijk." },
-            { text: "Wachtwoorden of inloggegevens", safe: false, reason: "Nooit! Je credentials kunnen worden opgeslagen. Gebruik een password manager, geen AI." },
-            { text: "'Vat deze publieke nieuwsartikelen samen'", safe: true, reason: "Openbare informatie samenvatten is prima" },
-            { text: "Klantgegevens uit je CRM-systeem", safe: false, reason: "Persoonsgegevens van klanten delen met AI kan een AVG-overtreding zijn. Je bedrijf kan hiervoor beboet worden." },
-            { text: "Een verjaardagsgedicht voor je oma", safe: true, reason: "Creatieve content zonder gevoelige data is prima!" }
+            { text: "'Herschrijf deze tekst in B1-niveau' met een openbare gemeentepagina", safe: true, reason: "Openbare informatie herschrijven is prima. Dit is precies waar AI goed in is." },
+            { text: "BSN-nummer van een inwoner om een brief te personaliseren", safe: false, reason: "BSN is strikt persoonlijk. AI-bedrijven slaan input op. Een BSN in ChatGPT is een datalek en AVG-overtreding!" },
+            { text: "De broncode van het gemeentelijk zaaksysteem", safe: false, reason: "Interne systemen en broncode zijn vertrouwelijk. Dit kan misbruikt worden als het in trainingsdata terechtkomt." },
+            { text: "Medische gegevens van een WMO-aanvrager", safe: false, reason: "Medische gegevens zijn bijzondere persoonsgegevens onder de AVG. Nooit in een AI-tool. De gemeente kan beboet worden." },
+            { text: "Wachtwoord van je gemeentelijke account", safe: false, reason: "Nooit! Je inloggegevens in ChatGPT = potentieel datalek van het hele gemeentelijke netwerk." },
+            { text: "'Vat dit openbare raadsbesluit samen'", safe: true, reason: "Raadsbesluiten zijn openbaar. Samenvatten met AI is prima en bespaart veel tijd." },
+            { text: "Naam + adres + inkomen van een inwoner uit Topdesk", safe: false, reason: "Persoonsgegevens uit het zaaksysteem in AI = AVG-overtreding. Gemeente Mayostad kan aansprakelijk worden gesteld." },
+            { text: "'Schrijf een social media post over het nieuwe speeltuintje'", safe: true, reason: "Openbare gemeentelijke communicatie schrijven met AI is prima!" },
+            { text: "Interne notitie over een lopend juridisch bezwaar", safe: false, reason: "Juridische stukken zijn vertrouwelijk. Als deze in trainingsdata terechtkomen kan dat de zaak schaden." },
+            { text: "'Leg uit wat de Omgevingswet inhoudt in eenvoudige taal'", safe: true, reason: "Openbare wetgeving uitleggen is precies waar AI goed in is. Wel altijd de output checken." }
           ]
         },
-        insight: "Vuistregel: als je het niet op een briefje op het prikbord van de kantine zou hangen, typ het dan niet in een AI-tool. Persoonlijke data, bedrijfsgeheimen, inloggegevens en medische info zijn no-go."
+        insight: "Vuistregel voor ambtenaren: als het in het BRP, Topdesk of een dossier staat, hoort het NIET in ChatGPT. Openbare informatie (raadsbesluiten, wetgeving, communicatie) mag wel. Bij twijfel: vraag Ahmed van Informatiebeveiliging."
       },
       {
         type: "scenario",
@@ -340,8 +379,8 @@ const MISSIONS = [
   // ── EPISODE 3: Agent Academy ────────────────────────
   {
     id: "agent-academy",
-    name: "Dag 3: De Robot Collega",
-    desc: "IT introduceert een AI-agent die taken zelfstandig uitvoert. Jij moet hem configureren.",
+    name: "Dag 3: De Digitale BOA",
+    desc: "Tom wil een AI-agent voor de BOA's die rapporten schrijft. Jij moet hem veilig configureren.",
     icon: "\u{1F916}",
     color: "var(--purple)",
     colorDim: "var(--purple-dim)",
@@ -349,7 +388,7 @@ const MISSIONS = [
     tagColor: "var(--purple)",
     xp: 700,
     tool: "claude",
-    storyIntro: "Woensdagochtend. Er staat een mail van IT in je inbox: 'Vanaf vandaag heeft elk team een AI-agent voor klantenservice. Configureer hem voor jullie afdeling.' Je opent de link. Een leeg configuratiescherm staart je aan. Lisa loopt langs: 'Wees voorzichtig met wat je hem laat doen. Vorige week heeft het sales-team per ongeluk 40% korting weggegeven via hun agent.'",
+    storyIntro: "Woensdagochtend. Tom Bakker stuurt een mail: 'De BOA's willen een AI-agent die hen helpt bij het schrijven van controlerapporten. Dennis Krul is enthousiast maar Ahmed maakt zich zorgen over privacy. Kun jij de agent configureren zodat hij nuttig is maar geen schade kan aanrichten?' Je opent het configuratiescherm...",
     tasks: [
       {
         type: "scenario",
@@ -482,8 +521,8 @@ const MISSIONS = [
   // ── EPISODE 4: Copilot in Actie ─────────────────────
   {
     id: "copilot-lab",
-    name: "Dag 4: De Vergadering",
-    desc: "Vrijdag. Grote vergadering. Jij hebt AI. De rest niet.",
+    name: "Dag 4: De Teamvergadering",
+    desc: "Vrijdag. Overleg Sociaal Domein over WMO-beleid. Sandra vraagt of jij de notulen kunt doen.",
     icon: "\u{2708}\uFE0F",
     color: "var(--green)",
     colorDim: "var(--green-dim)",
@@ -491,7 +530,7 @@ const MISSIONS = [
     tagColor: "var(--green)",
     xp: 600,
     tool: "copilot",
-    storyIntro: "Vrijdagmiddag. Teamvergadering. De manager vraagt: 'Wie maakt de notulen?' Stilte. Je glimlacht en steekt je hand op. Iedereen kijkt verbaasd - jij was altijd degene die notulen haatte. Maar jij hebt iets dat de rest niet heeft. Je opent je laptop...",
+    storyIntro: "Vrijdagmiddag. Overleg Sociaal Domein met Sandra, Bas en Noor. Onderwerp: het nieuwe WMO-beleid en wachtlijsten. Sandra vraagt: 'Kan iemand de notulen doen?' Stilte. Jij steekt je hand op. Na drie dagen AI-training weet je precies hoe je dit aanpakt.",
     tasks: [
       {
         type: "scenario",
