@@ -41,18 +41,25 @@ const MISSIONS = [
           wiki: {
             pages: {
               home: {
-                title: "Gemeente Mayostad Intranet",
-                icon: "\u{1F3E2}",
+                title: "MayoWiki",
+                icon: "\u{1F4DA}",
                 content: [
-                  { type: "banner", text: "Welkom bij Gemeente Mayostad! Jij bent de nieuwe AI-pilot co\u00F6rdinator. Deze week loop je mee bij verschillende afdelingen om collega's te helpen met AI." },
+                  { type: "banner", text: "MayoWiki \u2014 Kennisbank Gemeente Mayostad. Gebruik de zoekbalk of navigeer via de categorie\u00EBn." },
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "\u{1F3DB}", link: "about" },
                     { title: "Schrijfwijzer", icon: "\u{1F3A8}", link: "tone" },
                     { title: "Lopende Zaken", icon: "\u{1F4C2}", link: "clients" },
                     { title: "AI bij de Gemeente", icon: "\u{1F916}", link: "ai" },
                     { title: "Tools & Apps", icon: "\u{1F527}", link: "tools" },
-                    { title: "Organisatie", icon: "\u{1F3E2}", link: "team" },
-                    { title: "AI Huisregels", icon: "\u{1F4CB}", link: "rules" }
+                    { title: "AI Huisregels", icon: "\u{1F4CB}", link: "rules" },
+                    { title: "Parkeerbeleid", icon: "\u{1F697}", link: "parking" },
+                    { title: "Kantine & Lunch", icon: "\u{2615}", link: "kantine" },
+                    { title: "BHV & Veiligheid", icon: "\u{1F6D1}", link: "bhv" },
+                    { title: "Vergaderruimtes", icon: "\u{1F4C5}", link: "vergader" },
+                    { title: "Declaraties", icon: "\u{1F4B3}", link: "declaraties" },
+                    { title: "Verlof & Ziekte", icon: "\u{1F3D6}", link: "verlof" },
+                    { title: "Huisvesting", icon: "\u{1F3E2}", link: "huisvesting" },
+                    { title: "Duurzaamheid", icon: "\u{1F33F}", link: "duurzaam" }
                   ]}
                 ]
               },
@@ -210,6 +217,118 @@ const MISSIONS = [
                   { type: "rule", num: "3", text: "Gebruik de Tone of Voice van Gemeente Mayostad. AI kent onze huisstijl niet automatisch." },
                   { type: "rule", num: "4", text: "Bij twijfel: vraag een collega. AI is een hulpmiddel, geen vervanger van je oordeel." },
                   { type: "rule", num: "5", text: "Vermeld in belangrijke documenten dat AI is gebruikt als hulpmiddel." }
+                ]
+              },
+              parking: {
+                title: "Parkeerbeleid Medewerkers",
+                icon: "\u{1F697}",
+                content: [
+                  { type: "heading", text: "Parkeren bij het gemeentehuis" },
+                  { type: "text", text: "Medewerkers kunnen parkeren op parkeerterrein P2 (achterzijde gebouw). Maximaal 1 parkeervergunning per medewerker. Aanvragen via Facilitaire Zaken." },
+                  { type: "info", label: "Locatie", value: "Parkeerterrein P2, Raadhuisplein 1" },
+                  { type: "info", label: "Kosten", value: "\u20AC25 per maand (ingehouden op salaris)" },
+                  { type: "info", label: "Fietsenstalling", value: "Gratis, overdekt, bij hoofdingang" },
+                  { type: "info", label: "OV-vergoeding", value: "100% vergoeding woon-werkverkeer OV" },
+                  { type: "text", text: "Let op: het parkeerterrein is op dinsdag en donderdag vol na 8:30. Overweeg de fiets of OV op deze dagen." },
+                  { type: "text", text: "Elektrisch laden: 4 laadpalen beschikbaar op P2. Laden is gratis voor medewerkers. Verplaats je auto na het laden." }
+                ]
+              },
+              kantine: {
+                title: "Kantine & Lunchfaciliteiten",
+                icon: "\u{2615}",
+                content: [
+                  { type: "heading", text: "Restaurant De Raadszaal" },
+                  { type: "text", text: "De bedrijfskantine bevindt zich op de 1e verdieping. Dagelijks verse lunch, soep en warme gerechten." },
+                  { type: "info", label: "Openingstijden", value: "07:30 - 14:00" },
+                  { type: "info", label: "Lunch", value: "11:30 - 13:30" },
+                  { type: "info", label: "Betaling", value: "Medewerkerspas (saldo opwaarderen bij receptie)" },
+                  { type: "heading", text: "Prijzen" },
+                  { type: "text", text: "Koffie/thee: gratis. Broodje: \u20AC2,50. Warme maaltijd: \u20AC5,00. Soep: \u20AC1,50." },
+                  { type: "heading", text: "Allergenen" },
+                  { type: "text", text: "Alle gerechten zijn gelabeld met allergeneninformatie. Speciaal dieet? Meld dit bij de kantinebeheerder (Ria, toestel 2240)." },
+                  { type: "text", text: "Op vrijdag is er taart als iemand jarig is geweest die week. Meld verjaardagen bij je teamleider." }
+                ]
+              },
+              bhv: {
+                title: "BHV & Veiligheid",
+                icon: "\u{1F6D1}",
+                content: [
+                  { type: "heading", text: "Bedrijfshulpverlening" },
+                  { type: "text", text: "Elke verdieping heeft minimaal 2 BHV'ers. Bij een alarm: volg de groene vluchtrouteborden naar het verzamelpunt op het Raadhuisplein." },
+                  { type: "info", label: "Verzamelpunt", value: "Raadhuisplein, bij de fontein" },
+                  { type: "info", label: "BHV-co\u00F6rdinator", value: "Peter de Graaf (toestel 2201)" },
+                  { type: "info", label: "EHBO-koffer", value: "Bij elke receptie en in de kantine" },
+                  { type: "heading", text: "Brandoefening" },
+                  { type: "text", text: "2x per jaar onaangekondigde brandoefening. Neem altijd je spullen mee naar buiten. Lift NIET gebruiken bij alarm." },
+                  { type: "heading", text: "AED-locaties" },
+                  { type: "text", text: "Begane grond: receptie. 1e verdieping: gang bij vergaderruimte Rembrandt. 2e verdieping: koffiehoek." }
+                ]
+              },
+              vergader: {
+                title: "Vergaderruimtes Reserveren",
+                icon: "\u{1F4C5}",
+                content: [
+                  { type: "heading", text: "Beschikbare ruimtes" },
+                  { type: "client", name: "Rembrandt (1e verdieping)", contact: "12 personen", since: "Beamer, whiteboard, videoconferencing", status: "Beschikbaar", note: "Grote vergaderingen en presentaties" },
+                  { type: "client", name: "Vermeer (1e verdieping)", contact: "6 personen", since: "Scherm, whiteboard", status: "Beschikbaar", note: "Teamoverleg en workshops" },
+                  { type: "client", name: "Mondriaan (2e verdieping)", contact: "4 personen", since: "Scherm", status: "Beschikbaar", note: "Kleine overleggen en 1-op-1 gesprekken" },
+                  { type: "client", name: "De Stijl (begane grond)", contact: "20 personen", since: "Beamer, geluidsinstallatie, podium", status: "Op aanvraag", note: "Raadsvergaderingen en grote bijeenkomsten" },
+                  { type: "text", text: "Reserveren via de Agenda-app op je werkplek. Minimaal 1 dag van tevoren. Ruim na gebruik de ruimte op en wis het whiteboard." }
+                ]
+              },
+              declaraties: {
+                title: "Declaraties & Onkosten",
+                icon: "\u{1F4B3}",
+                content: [
+                  { type: "heading", text: "Wat kun je declareren?" },
+                  { type: "text", text: "Reiskosten (buiten woon-werk), representatiekosten, cursuskosten en kleine aankopen voor het werk (max \u20AC50 zonder goedkeuring vooraf)." },
+                  { type: "info", label: "Indienen", value: "Via het declaratieformulier op MayoWiki" },
+                  { type: "info", label: "Deadline", value: "Uiterlijk de 5e van de volgende maand" },
+                  { type: "info", label: "Goedkeuring", value: "Door je direct leidinggevende" },
+                  { type: "info", label: "Uitbetaling", value: "Bij het eerstvolgende salaris" },
+                  { type: "text", text: "Bewaar altijd het originele bonnetje of de factuur. Digitale kopie (foto) is toegestaan." }
+                ]
+              },
+              verlof: {
+                title: "Verlof & Ziekte",
+                icon: "\u{1F3D6}",
+                content: [
+                  { type: "heading", text: "Verlofaanvraag" },
+                  { type: "text", text: "Verlof aanvragen via het HR-portaal. Minimaal 2 weken van tevoren voor vakanties langer dan 3 dagen." },
+                  { type: "info", label: "Verlofuren", value: "180 uur per jaar (fulltime)" },
+                  { type: "info", label: "ADV-dagen", value: "12 per jaar" },
+                  { type: "info", label: "Bijzonder verlof", value: "Huwelijk (2 dagen), verhuizing (1 dag), overlijden (4 dagen)" },
+                  { type: "heading", text: "Ziekmelding" },
+                  { type: "text", text: "Ziekmelden v\u00F3\u00F3r 9:00 bij je leidinggevende \u00E9n via het HR-portaal. Na 3 dagen ziekte neemt de bedrijfsarts contact op." },
+                  { type: "text", text: "Langdurig ziek? Na 6 weken volgt een plan van aanpak samen met je leidinggevende en HR." }
+                ]
+              },
+              huisvesting: {
+                title: "Huisvesting & Faciliteiten",
+                icon: "\u{1F3E2}",
+                content: [
+                  { type: "heading", text: "Gemeentehuis Mayostad" },
+                  { type: "info", label: "Adres", value: "Raadhuisplein 1, 2800 AA Mayostad" },
+                  { type: "info", label: "Openingstijden", value: "Ma-vr 08:30-17:00" },
+                  { type: "info", label: "Receptie", value: "Begane grond, toestel 0" },
+                  { type: "heading", text: "Verdiepingen" },
+                  { type: "text", text: "BG: Receptie, Burgerzaken, KCC. 1e: Sociaal Domein, VTH, vergaderruimtes. 2e: ICT, Communicatie, directie. 3e: BOA's, Buitendienst." },
+                  { type: "heading", text: "Thuiswerken" },
+                  { type: "text", text: "Maximaal 2 dagen per week thuiswerken in overleg met je leidinggevende. Thuiswerkvergoeding: \u20AC2,35 per dag. Aanvragen via HR-portaal." },
+                  { type: "text", text: "Let op: bij thuiswerken geen vertrouwelijke documenten printen. Gebruik altijd VPN voor toegang tot gemeentelijke systemen." }
+                ]
+              },
+              duurzaam: {
+                title: "Duurzaamheidsbeleid",
+                icon: "\u{1F33F}",
+                content: [
+                  { type: "heading", text: "Mayostad Groen 2030" },
+                  { type: "text", text: "Gemeente Mayostad streeft naar klimaatneutraliteit in 2030. Als medewerker draag je hieraan bij." },
+                  { type: "rule", num: "1", text: "Dubbelzijdig printen is standaard. Print alleen als het echt nodig is." },
+                  { type: "rule", num: "2", text: "Afval scheiden: papier, plastic, restafval. Containers op elke verdieping." },
+                  { type: "rule", num: "3", text: "Verlichting gaat automatisch uit na 19:00. Vergeet niet je scherm uit te zetten." },
+                  { type: "rule", num: "4", text: "OV en fiets worden aangemoedigd. E-bike leaseregeling beschikbaar via HR." },
+                  { type: "text", text: "Idee\u00EBn voor verduurzaming? Mail het Groene Team: groen@mayostad.nl" }
                 ]
               }
             }

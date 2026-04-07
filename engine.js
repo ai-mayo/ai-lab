@@ -945,7 +945,7 @@
             <div class="app-titlebar-dot yellow" data-action="minimize" data-window="intranet"></div>
             <div class="app-titlebar-dot green" data-action="maximize" data-window="intranet"></div>
           </div>
-          <div class="app-titlebar-title">Gemeente Mayostad - Intranet</div>
+          <div class="app-titlebar-title">MayoWiki \u2014 Kennisbank</div>
           <div class="app-titlebar-controls">
             <div class="app-titlebar-ctrl" data-action="minimize" data-window="intranet">\u2014</div>
             <div class="app-titlebar-ctrl" data-action="maximize" data-window="intranet">\u25A1</div>
@@ -1004,7 +1004,7 @@
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="5" fill="#fbbf24"/><path d="M57 72h6" stroke="#6366f1" stroke-width="1.5"/><path d="M60 69v6" stroke="#6366f1" stroke-width="1.5"/></svg>
         </div>
         <div class="dock-icon" data-app="intranet">
-          <div class="dock-tooltip">Gemeente Mayostad</div><div class="dock-label">Intranet</div>
+          <div class="dock-tooltip">MayoWiki</div><div class="dock-label">MayoWiki</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1a1a2e"/><path d="M30 85V50l30-20 30 20v35" fill="none" stroke="#7dd3fc" stroke-width="3"/><rect x="48" y="60" width="24" height="25" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2.5"/><line x1="60" y1="60" x2="60" y2="85" stroke="#7dd3fc" stroke-width="2"/><line x1="48" y1="72" x2="72" y2="72" stroke="#7dd3fc" stroke-width="2"/><path d="M55 35h10v10l-5 5-5-5z" fill="#7dd3fc"/></svg>
         </div>
         <div class="dock-icon" data-app="chatgpt">
