@@ -181,7 +181,7 @@ body {
 }
 
 #app {
-  max-width: 520px;
+  max-width: 900px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
@@ -999,7 +999,9 @@ body {
    ═══════════════════════════════════════════════════ */
 .gpt-browser {
   display: flex;
-  height: 520px;
+  height: calc(100vh - 180px);
+  min-height: 400px;
+  max-height: 700px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #333;
@@ -1228,7 +1230,9 @@ body {
    ═══════════════════════════════════════════════════ */
 .claude-browser {
   display: flex;
-  height: 520px;
+  height: calc(100vh - 180px);
+  min-height: 400px;
+  max-height: 700px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #3d3c37;
@@ -1374,7 +1378,9 @@ body {
    ═══════════════════════════════════════════════════ */
 .gemini-browser {
   display: flex;
-  height: 520px;
+  height: calc(100vh - 180px);
+  min-height: 400px;
+  max-height: 700px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #333537;
