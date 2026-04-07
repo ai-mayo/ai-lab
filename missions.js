@@ -42,7 +42,7 @@ const MISSIONS = [
             pages: {
               home: {
                 title: "MayoWiki",
-                icon: "\u{1F4DA}",
+                icon: "",
                 content: [
                   { type: "banner", text: "MayoWiki \u2014 Kennisbank Gemeente Mayostad. Je bent ingelogd als VTH-medewerker." },
                   { type: "cards", items: [
@@ -65,7 +65,7 @@ const MISSIONS = [
               },
               about: {
                 title: "Over Gemeente Mayostad",
-                icon: "\u{1F4D6}",
+                icon: "",
                 content: [
                   { type: "text", text: "Gemeente Mayostad is een snelgroeiend techbedrijf gespecialiseerd in slimme logistieke oplossingen voor het MKB. Opgericht in 2019, inmiddels 45 medewerkers." },
                   { type: "text", text: "Onze missie: technologie toegankelijk maken voor bedrijven die geen IT-afdeling hebben. We leveren software, hardware en support als compleet pakket." },
@@ -77,7 +77,7 @@ const MISSIONS = [
               },
               tone: {
                 title: "Tone of Voice",
-                icon: "\u{1F3A8}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Zo schrijven wij bij Gemeente Mayostad" },
                   { type: "text", text: "We zijn professioneel maar warm. We zijn geen bank en geen overheid. We zijn een team van mensen die oprecht geven om onze klanten." },
@@ -99,7 +99,7 @@ const MISSIONS = [
               },
               clients: {
                 title: "Lopende Zaken",
-                icon: "\u{1F4C2}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Recente zaken op jouw afdeling" },
                   { type: "client", name: "Terrasvergunning Bakkerij Van Dijk", contact: "Dhr. H. van Dijk", since: "Aangevraagd: feb. 2026", status: "Vertraagd", note: "Bezwaar van buurman ontvangen. Verwacht besluit: 10 april. Inwoner moet ge\u00EFnformeerd worden over vertraging." },
@@ -112,7 +112,7 @@ const MISSIONS = [
               },
               ai: {
                 title: "AI bij de Gemeente",
-                icon: "\u{1F916}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Wat is AI?" },
                   { type: "text", text: "Kunstmatige intelligentie (AI) is een verzamelnaam voor computersystemen die taken uitvoeren waarvoor normaal menselijke intelligentie nodig is: tekst begrijpen, patronen herkennen, beslissingen nemen, content genereren." },
@@ -148,7 +148,7 @@ const MISSIONS = [
               },
               tools: {
                 title: "Tools & Apps",
-                icon: "\u{1F527}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Gemeentelijke systemen" },
                   { type: "tool", name: "Zaaksysteem", desc: "Centrale registratie van alle inwonersverzoeken, meldingen en aanvragen.", status: "Verplicht" },
@@ -169,7 +169,7 @@ const MISSIONS = [
               },
               team: {
                 title: "Organisatie Gemeente Mayostad",
-                icon: "\u{1F3E2}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Afdelingen & Collega's" },
                   { type: "text", text: "Gemeente Mayostad heeft 650 medewerkers verdeeld over 8 afdelingen. Hieronder de afdelingen die meedoen aan de AI-pilot." },
@@ -209,7 +209,7 @@ const MISSIONS = [
               },
               rules: {
                 title: "Huisregels AI-gebruik",
-                icon: "\u{1F4CB}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Regels voor AI bij Gemeente Mayostad" },
                   { type: "rule", num: "1", text: "Controleer ALTIJD de output van AI voordat je het verstuurt." },
@@ -221,7 +221,7 @@ const MISSIONS = [
               },
               parking: {
                 title: "Parkeerbeleid Medewerkers",
-                icon: "\u{1F697}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Parkeren bij het gemeentehuis" },
                   { type: "text", text: "Medewerkers kunnen parkeren op parkeerterrein P2 (achterzijde gebouw). Maximaal 1 parkeervergunning per medewerker. Aanvragen via Facilitaire Zaken." },
@@ -235,7 +235,7 @@ const MISSIONS = [
               },
               kantine: {
                 title: "Kantine & Lunchfaciliteiten",
-                icon: "\u{2615}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Restaurant De Raadszaal" },
                   { type: "text", text: "De bedrijfskantine bevindt zich op de 1e verdieping. Dagelijks verse lunch, soep en warme gerechten." },
@@ -251,7 +251,7 @@ const MISSIONS = [
               },
               bhv: {
                 title: "BHV & Veiligheid",
-                icon: "\u{1F6D1}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Bedrijfshulpverlening" },
                   { type: "text", text: "Elke verdieping heeft minimaal 2 BHV'ers. Bij een alarm: volg de groene vluchtrouteborden naar het verzamelpunt op het Raadhuisplein." },
@@ -266,7 +266,7 @@ const MISSIONS = [
               },
               vergader: {
                 title: "Vergaderruimtes Reserveren",
-                icon: "\u{1F4C5}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Beschikbare ruimtes" },
                   { type: "client", name: "Rembrandt (1e verdieping)", contact: "12 personen", since: "Beamer, whiteboard, videoconferencing", status: "Beschikbaar", note: "Grote vergaderingen en presentaties" },
@@ -278,7 +278,7 @@ const MISSIONS = [
               },
               declaraties: {
                 title: "Declaraties & Onkosten",
-                icon: "\u{1F4B3}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Wat kun je declareren?" },
                   { type: "text", text: "Reiskosten (buiten woon-werk), representatiekosten, cursuskosten en kleine aankopen voor het werk (max \u20AC50 zonder goedkeuring vooraf)." },
@@ -291,7 +291,7 @@ const MISSIONS = [
               },
               verlof: {
                 title: "Verlof & Ziekte",
-                icon: "\u{1F3D6}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Verlofaanvraag" },
                   { type: "text", text: "Verlof aanvragen via het HR-portaal. Minimaal 2 weken van tevoren voor vakanties langer dan 3 dagen." },
@@ -305,7 +305,7 @@ const MISSIONS = [
               },
               huisvesting: {
                 title: "Huisvesting & Faciliteiten",
-                icon: "\u{1F3E2}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Gemeentehuis Mayostad" },
                   { type: "info", label: "Adres", value: "Raadhuisplein 1, 2800 AA Mayostad" },
@@ -320,7 +320,7 @@ const MISSIONS = [
               },
               duurzaam: {
                 title: "Duurzaamheidsbeleid",
-                icon: "\u{1F33F}",
+                icon: "",
                 content: [
                   { type: "heading", text: "Mayostad Groen 2030" },
                   { type: "text", text: "Gemeente Mayostad streeft naar klimaatneutraliteit in 2030. Als medewerker draag je hieraan bij." },
