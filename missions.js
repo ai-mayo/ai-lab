@@ -143,12 +143,21 @@ const MISSIONS = [
                 title: "Tools & Apps",
                 icon: "\u{1F527}",
                 content: [
-                  { type: "heading", text: "Wat we gebruiken bij Gemeente Mayostad" },
-                  { type: "tool", name: "ChatGPT", desc: "Voor emails, samenvattingen, brainstorms. Iedereen heeft een Team-account.", status: "Verplicht" },
-                  { type: "tool", name: "Claude", desc: "Voor langere documenten en analyses. Beschikbaar voor iedereen.", status: "Optioneel" },
-                  { type: "tool", name: "MayoChat", desc: "Interne berichten en groepsgesprekken. Open source, draait op eigen servers.", status: "Verplicht" },
-                  { type: "tool", name: "MayoWiki", desc: "Interne kennisbank en documentatie (dit intranet). Open source.", status: "Verplicht" },
-                  { type: "text", text: "Belangrijk: plak NOOIT klantgegevens of wachtwoorden in AI-tools. Gebruik alleen voornaam + achternaam, geen BSN of financiele data." }
+                  { type: "heading", text: "Gemeentelijke systemen" },
+                  { type: "tool", name: "Zaaksysteem", desc: "Centrale registratie van alle inwonersverzoeken, meldingen en aanvragen.", status: "Verplicht" },
+                  { type: "tool", name: "Vergunningtool", desc: "Aanvragen, beoordelen en verlenen van vergunningen (omgeving, horeca, evenementen).", status: "Verplicht" },
+                  { type: "tool", name: "KCC-software", desc: "Telefonie, wachtrij en gespreksregistratie voor het Klant Contact Centrum.", status: "Verplicht" },
+                  { type: "tool", name: "Sociaal Domein Hub", desc: "WMO-aanvragen, jeugdhulp, schuldhulpverlening. Bevat gevoelige persoonsgegevens.", status: "Verplicht" },
+                  { type: "heading", text: "Communicatie & kennisdeling" },
+                  { type: "tool", name: "MayoChat", desc: "Interne berichten en groepsgesprekken. Open source, eigen servers.", status: "Verplicht" },
+                  { type: "tool", name: "MayoMail", desc: "E-mail voor interne en externe communicatie.", status: "Verplicht" },
+                  { type: "tool", name: "MayoWiki", desc: "Interne kennisbank en documentatie (dit intranet).", status: "Verplicht" },
+                  { type: "tool", name: "WiWa", desc: "Wie is Wa \u2014 collegaregister met afdelingen, skills en AI-collega\u2019s.", status: "Verplicht" },
+                  { type: "heading", text: "AI-tools" },
+                  { type: "tool", name: "ChatGPT (Team)", desc: "Generatieve AI voor brieven, samenvattingen, brainstorms. Alle pilot-deelnemers hebben toegang.", status: "Pilot" },
+                  { type: "tool", name: "Claude", desc: "Generatieve AI voor langere documenten en analyses.", status: "Pilot" },
+                  { type: "tool", name: "NotebookLM", desc: "AI-onderzoekstool voor het samenvatten en doorzoeken van documenten.", status: "Pilot" },
+                  { type: "text", text: "LET OP: Plak NOOIT BSN-nummers, medische gegevens of financi\u00eble data in AI-tools. Gebruik alleen voornaam + achternaam. De gemeente is verantwoordelijk onder de AVG." }
                 ]
               },
               team: {
@@ -335,13 +344,13 @@ const MISSIONS = [
             { text: "Medische gegevens van een WMO-aanvrager", safe: false, reason: "Medische gegevens zijn bijzondere persoonsgegevens onder de AVG. Nooit in een AI-tool. De gemeente kan beboet worden." },
             { text: "Wachtwoord van je gemeentelijke account", safe: false, reason: "Nooit! Je inloggegevens in ChatGPT = potentieel datalek van het hele gemeentelijke netwerk." },
             { text: "'Vat dit openbare raadsbesluit samen'", safe: true, reason: "Raadsbesluiten zijn openbaar. Samenvatten met AI is prima en bespaart veel tijd." },
-            { text: "Naam + adres + inkomen van een inwoner uit Topdesk", safe: false, reason: "Persoonsgegevens uit het zaaksysteem in AI = AVG-overtreding. Gemeente Mayostad kan aansprakelijk worden gesteld." },
+            { text: "Naam + adres + inkomen van een inwoner uit het zaaksysteem", safe: false, reason: "Persoonsgegevens uit het zaaksysteem in AI = AVG-overtreding. Gemeente Mayostad kan aansprakelijk worden gesteld." },
             { text: "'Schrijf een social media post over het nieuwe speeltuintje'", safe: true, reason: "Openbare gemeentelijke communicatie schrijven met AI is prima!" },
             { text: "Interne notitie over een lopend juridisch bezwaar", safe: false, reason: "Juridische stukken zijn vertrouwelijk. Als deze in trainingsdata terechtkomen kan dat de zaak schaden." },
             { text: "'Leg uit wat de Omgevingswet inhoudt in eenvoudige taal'", safe: true, reason: "Openbare wetgeving uitleggen is precies waar AI goed in is. Wel altijd de output checken." }
           ]
         },
-        insight: "Vuistregel voor ambtenaren: als het in het BRP, Topdesk of een dossier staat, hoort het NIET in ChatGPT. Openbare informatie (raadsbesluiten, wetgeving, communicatie) mag wel. Bij twijfel: vraag Ahmed van Informatiebeveiliging."
+        insight: "Vuistregel voor ambtenaren: als het in het BRP, het zaaksysteem of een dossier staat, hoort het NIET in ChatGPT. Openbare informatie (raadsbesluiten, wetgeving, communicatie) mag wel. Bij twijfel: vraag Ahmed van Informatiebeveiliging."
       },
       {
         type: "scenario",

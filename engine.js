@@ -1317,10 +1317,22 @@
     // Highlight ChatGPT in dock
     area.querySelector('[data-app="chatgpt"]')?.classList.add("active");
 
-    // Render ChatGPT interface inside the window
+    // Render ChatGPT interface inside the window with task bar on top
+    const tp = d.taskPopup;
     const ui = buildToolWindow(d.tool || "chatgpt");
     chatgptBody.innerHTML = `
       <div style="flex:1;display:flex;flex-direction:column;background:#212121">
+        <div id="task-reminder" style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155;font-size:0.8rem;cursor:pointer;flex-shrink:0" onclick="this.querySelector('#task-detail').style.display=this.querySelector('#task-detail').style.display==='none'?'block':'none'">
+          <div style="background:#2563eb;color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0">${tp.avatar}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-weight:600;color:#e2e8f0">${tp.from}</span>
+              <span style="font-size:0.65rem;color:#64748b">${tp.fromRole}</span>
+              <span style="margin-left:auto;font-size:0.6rem;background:#dc2626;color:white;padding:2px 6px;border-radius:4px;font-weight:700">${tp.urgency}</span>
+            </div>
+            <div id="task-detail" style="color:#94a3b8;line-height:1.5;margin-top:6px">${tp.message}</div>
+          </div>
+        </div>
         <div class="gpt-topbar">
           <div class="gpt-topbar-logo">G</div>
           <div class="gpt-model-select" id="gpt-model-btn">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
@@ -2487,15 +2499,19 @@
         "GEMEENTE MAYOSTAD \u2014 AI WERKPLEK v2.0",
         `Gebruiker: ${nickname} \u2014 AI-pilot co\u00F6rdinator`,
         "Verbinding maken met gemeentelijk netwerk...",
-        "AI-tools laden: ChatGPT Team, Claude, Gemini...",
+        "Zaaksysteem laden...",
+        "Vergunningtool synchroniseren...",
+        "KCC-software koppelen...",
+        "Sociaal Domein Hub verbinden...",
+        "AI-tools laden: ChatGPT, Claude, Gemini...",
         "Beveiligingsprotocol AVG activeren...",
-        "Zaaksysteem Topdesk synchroniseren...",
-        "Intranet laden...",
+        "WiWa adresboek synchroniseren...",
+        "MayoChat verbinden...",
         "",
         "WAARSCHUWING: AI-output altijd controleren.",
         "Jij bent verantwoordelijk, niet de AI.",
         "",
-        `Systeem gereed. Fijne eerste dag, ${nickname}.`
+        `Systeem gereed. Welkom, ${nickname}.`
       ];
 
     const bootText = document.getElementById("boot-text");
