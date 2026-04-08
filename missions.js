@@ -48,7 +48,6 @@ const MISSIONS = [
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "", link: "about" },
                     { title: "Schrijfwijzer", icon: "", link: "tone" },
-                    { title: "Lopende Zaken", icon: "", link: "clients" },
                     { title: "AI bij de Gemeente", icon: "", link: "ai" },
                     { title: "Tools & Apps", icon: "", link: "tools" },
                     { title: "AI Huisregels", icon: "", link: "rules" },
@@ -95,19 +94,6 @@ const MISSIONS = [
                     "Conform onze algemene voorwaarden..."
                   ]},
                   { type: "text", text: "Vuistregel: schrijf zoals je zou praten tegen een klant die je kent en respecteert." }
-                ]
-              },
-              clients: {
-                title: "Lopende Zaken",
-                icon: "",
-                content: [
-                  { type: "heading", text: "Recente zaken op jouw afdeling" },
-                  { type: "client", name: "Terrasvergunning Bakkerij Van Dijk", contact: "Dhr. H. van Dijk", since: "Aangevraagd: feb. 2026", status: "Vertraagd", note: "Bezwaar van buurman ontvangen. Verwacht besluit: 10 april. Inwoner moet ge\u00EFnformeerd worden over vertraging." },
-                  { type: "client", name: "WMO-aanvraag Fam. Jansen", contact: "Mevr. R. Jansen-de Groot", since: "Aangevraagd: mrt. 2026", status: "In behandeling", note: "Hulp bij huishouden aangevraagd. Wacht op indicatiestelling. Mevrouw is 78 en woont alleen." },
-                  { type: "client", name: "Subsidie Buurtvereniging Zuiderpark", contact: "F. El-Amrani (voorzitter)", since: "Aangevraagd: jan. 2026", status: "Toegekend", note: "Subsidie buurtfeest goedgekeurd (\u20AC2.500). Bevestigingsbrief moet nog verstuurd." },
-                  { type: "client", name: "Bezwaar parkeerboete D. Krul", contact: "D. Krul", since: "Ingediend: jan. 2026", status: "Afgehandeld", note: "Bezwaar ongegrond verklaard. Beschikking is verstuurd." },
-                  { type: "client", name: "Omgevingsvergunning Sportschool FitNow", contact: "Dhr. J. de Boer", since: "Aangevraagd: mrt. 2026", status: "In behandeling", note: "Uitbreiding pand. Welstandscommissie moet nog adviseren." },
-                  { type: "client", name: "Melding overlast Parkweg", contact: "Anoniem", since: "Gemeld: apr. 2026", status: "Nieuw", note: "Geluidsoverlast horeca. BOA-controle gepland voor deze week." }
                 ]
               },
               ai: {

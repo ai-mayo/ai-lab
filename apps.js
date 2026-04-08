@@ -61,7 +61,7 @@ const APP_RENDERERS = {
   // ─── Vergunningtool (met kaart) ──────────────────────
   vergunning(container) {
     const vergunningen = [
-      {title:"Terrasvergunning Bakkerij Van Dijk",id:"VG-2026-042",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",lat:52.078,lng:4.315,adres:"Dorpsstraat 23",aanvrager:"H. van Dijk",date:"12-02-2026",note:"Bezwaar buurman ontvangen. Hoorzitting gepland 8 april.",plan:"Terras van 6x3m aan de voorzijde. 8 tafels, 16 stoelen. Openingstijden: 08:00-22:00. Parasols in huisstijl gemeente."},
+      {title:"Terrasvergunning Bakkerij Van Dijk",id:"VG-2026-042",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",lat:52.078,lng:4.315,adres:"Dorpsstraat 23",aanvrager:"H. van Dijk",date:"12-02-2026",note:"Bezwaar omwonende ontvangen op 15 maart. Behandeling duurt langer dan gepland. Verwacht besluit: 10 april. Inwoner nog niet geinformeerd over vertraging.",plan:"Terras van 6x3m aan de voorzijde van het pand. 8 tafels, 16 stoelen. Openingstijden: 08:00-22:00. Parasols in huisstijl gemeente. Aanvrager: dhr. H. van Dijk, eigenaar Bakkerij Van Dijk sinds 2003. Trouwe ondernemer, woont al 30 jaar in Mayostad."},
       {title:"Omgevingsvergunning Sportschool FitNow",id:"VG-2026-048",status:"In behandeling",statusColor:"#d97706",type:"Bouw",lat:52.082,lng:4.320,adres:"Industrieweg 5",aanvrager:"J. de Boer",date:"18-03-2026",note:"Wacht op advies welstandscommissie.",plan:"Uitbreiding bestaand pand met 200m\u00B2. Nieuwe sportzaal + kleedkamers. Bouwlaag: 1. Materiaal: staal/glas."},
       {title:"Kapvergunning Esdoorn Kerkstraat",id:"VG-2026-045",status:"Verleend",statusColor:"#059669",type:"Kap",lat:52.076,lng:4.312,adres:"Kerkstraat 41",aanvrager:"Gemeente Mayostad",date:"25-03-2026",note:"Herplantplicht: 2 nieuwe bomen binnen 1 jaar.",plan:"Kap van 1 esdoorn (omtrek 180cm). Reden: wortelopdruk trottoir. Herplant: 2 lindes."},
       {title:"Evenementenvergunning Koningsdag",id:"VG-2026-038",status:"Verleend",statusColor:"#059669",type:"Evenement",lat:52.079,lng:4.318,adres:"Marktplein 1",aanvrager:"Oranjevereniging Mayostad",date:"10-02-2026",note:"Inclusief geluidsontheffing tot 23:00.",plan:"Koningsmarkt 08:00-18:00, live muziek 14:00-23:00. Verwacht: 5.000 bezoekers. Verkeersmaatregelen: afsluiting centrum."},
@@ -245,9 +245,9 @@ const APP_RENDERERS = {
       "# vth": {
         members: 5,
         messages: [
-          {user:"Marco Pieterse",time:"08:50",text:"Team, de terrasvergunning Van Dijk heeft een bezwaar gekregen. Moet vandaag een brief uit.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
-          {user:"Anouk Willems",time:"09:05",text:"Ik heb de welstandscommissie gebeld over FitNow. Advies komt vrijdag.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
-          {user:"Marco Pieterse",time:"09:10",text:"Onze nieuwe collega gaat de brief voor Van Dijk oppakken. Met ChatGPT als ondersteuning.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+          {user:"Marco Pieterse",time:"08:50",text:"Er moet vandaag een brief uit naar een inwoner. Nieuwe collega, kun jij dit oppakken? Check de vergunningtool voor de details.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+          {user:"Anouk Willems",time:"09:05",text:"Welkom! Als je vragen hebt over vergunningen, vraag gerust.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
+          {user:"Marco Pieterse",time:"09:10",text:"Gebruik gerust ChatGPT voor de brief, maar check wel de schrijfwijzer op MayoWiki.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
         ]
       },
       "# sociaal-domein": {
