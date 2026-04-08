@@ -1895,9 +1895,9 @@
 
   // ─── MayoBoard - Kanban ──────────────────────────────
   const BOARD_TASKS = [
-    { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente en hoe je moet schrijven naar inwoners. Bekijk ook de AI-regels.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad. Lees de pagina's: Over Gemeente Mayostad, Schrijfwijzer (Tone of Voice), AI bij de Gemeente, en Huisregels AI-gebruik. De rest is handig maar niet verplicht.", action:null },
-    { id:"VTH-041", title:"WiWa bekijken", desc:"Leer je collega's kennen. Er zitten ook AI-assistenten tussen \u2014 die werken op bepaalde afdelingen.", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad. Klik op de afdelingen in de linkerzijbalk. Let op de collega's met een paars AI-label \u2014 dat zijn robot-collega's.", action:null },
-    { id:"VTH-042", title:"Brief terrasvergunning Bakkerij Van Dijk", desc:"Meneer Van Dijk heeft een terrasvergunning aangevraagd. Door een bezwaar van de buurman is de behandeling vertraagd. Verwacht besluit: 10 april. Schrijf een brief om hem te informeren.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Stap 1: Ga naar MayoWiki > Schrijfwijzer om te zien hoe de gemeente schrijft.\nStap 2: Ga naar MayoWiki > Lopende Zaken voor de details over Van Dijk.\nStap 3: Open ChatGPT en schrijf een prompt om de brief te laten maken.", action:"chatgpt" },
+    { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente. Hoe schrijf je naar inwoners? Welke regels gelden er voor AI?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad.", action:null },
+    { id:"VTH-041", title:"WiWa bekijken", desc:"Wie zijn je collega's? En wie zijn de robot-collega's?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad.", action:null },
+    { id:"VTH-042", title:"Brief schrijven voor Marco", desc:"Marco heeft een opdracht voor je. Check MayoChat voor details.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Kijk in MayoChat wat Marco precies vraagt.", action:"chatgpt" },
   ];
 
   function renderBoard(container, d, task, showNewTask) {

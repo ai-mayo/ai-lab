@@ -35,7 +35,7 @@ const MISSIONS = [
             from: "Marco Pieterse",
             fromRole: "Teamleider VTH",
             avatar: "MP",
-            message: "Hoi! Kun je een brief schrijven naar meneer Van Dijk van Bakkerij Van Dijk? Zijn terrasvergunning is vertraagd door een bezwaar van de buurman. Verwacht besluit: 10 april. Hij moet weten dat het langer duurt en waarom. Gebruik ChatGPT, en check de schrijfwijzer op MayoWiki!",
+            message: "Hoi! Er moet een brief uit naar een inwoner. Ik heb de details in MayoChat gezet. Kun jij dit oppakken? Gebruik ChatGPT als je wilt, maar check wel even de schrijfwijzer.",
             urgency: "Vandaag afhandelen"
           },
           wiki: {
