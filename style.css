@@ -2022,8 +2022,9 @@ body {
   width: 76px;
   height: 80px;
 }
-.desktop-icon-item:hover { background: rgba(255,255,255,0.12); }
-.desktop-icon-item:active { background: rgba(255,255,255,0.2); }
+.desktop-icon-item:hover:not(.disabled) { background: rgba(255,255,255,0.12); }
+.desktop-icon-item:active:not(.disabled) { background: rgba(255,255,255,0.2); }
+.desktop-icon-item.disabled { opacity: 0.4; cursor: not-allowed; }
 
 .desktop-icon-item svg { width: 48px; height: 48px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
 
