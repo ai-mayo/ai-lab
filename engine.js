@@ -1901,7 +1901,7 @@
   const BOARD_TASKS = [
     { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente. Hoe schrijf je naar inwoners? Welke regels gelden er voor AI?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad.", action:null },
     { id:"VTH-041", title:"WiWa bekijken", desc:"Wie zijn je collega's? En wie zijn de robot-collega's?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad.", action:null },
-    { id:"VTH-042", title:"Zaak VG-2026-042: reactie naar inwoner", desc:"Inwoner is nog niet geinformeerd over de status van zijn aanvraag. Stel een brief op.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Open de Vergunningtool en zoek zaak VG-2026-042.", action:"chatgpt" },
+    { id:"VTH-042", title:"Zaak VG-2026-042: reactie naar inwoner", desc:"Inwoner is nog niet geinformeerd over de status van zijn aanvraag. Stel een brief op.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Open de Vergunningtool en zoek zaak VG-2026-042.", action:null },
   ];
 
   function renderBoard(container, d, task, showNewTask) {
