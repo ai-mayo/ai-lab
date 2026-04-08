@@ -7,197 +7,454 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter',sans-serif; background:#f8f9fa; color:#1a1a2e; padding:12px; }
-    .container { max-width:1000px; margin:0 auto; }
-    @media (max-width:600px) {
-      body { padding:8px; }
-      h1 { font-size:1.2rem; }
-      .card-header { padding:10px 12px; flex-wrap:wrap; gap:6px; }
-      .card-body { padding:12px; }
-      table { font-size:0.7rem; display:block; overflow-x:auto; }
-      .response-box { font-size:0.7rem; }
-      .nav { gap:4px; }
-      .nav a { font-size:0.7rem; padding:4px 10px; }
-    }
-    h1 { font-size:1.5rem; margin-bottom:4px; }
-    .subtitle { color:#6b7280; font-size:0.85rem; margin-bottom:24px; }
-    .card { background:#fff; border:1px solid #e5e7eb; border-radius:10px; margin-bottom:16px; overflow:hidden; }
-    .card-header { display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid #f3f4f6; cursor:pointer; }
+    body { font-family:'Inter',sans-serif; background:#f8f9fa; color:#1a1a2e; padding:10px; font-size:14px; }
+    .container { max-width:900px; margin:0 auto; }
+    h1 { font-size:1.3rem; margin-bottom:2px; }
+    .subtitle { color:#6b7280; font-size:0.8rem; margin-bottom:16px; }
+
+    /* Tabs */
+    .tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; position:sticky; top:0; background:#f8f9fa; padding:6px 0; z-index:10; }
+    .tab { padding:6px 14px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; font-size:0.75rem; color:#374151; cursor:pointer; font-weight:500; font-family:inherit; }
+    .tab.active { background:#1e40af; color:#fff; border-color:#1e40af; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* Cards */
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:10px; overflow:hidden; }
+    .card-header { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid #f3f4f6; cursor:pointer; flex-wrap:wrap; }
     .card-header:hover { background:#f9fafb; }
-    .card-tag { font-size:0.65rem; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; }
-    .card-tag.dag1 { background:#dbeafe; color:#1e40af; }
-    .card-tag.dag2 { background:#fee2e2; color:#991b1b; }
-    .card-tag.dag3 { background:#ede9fe; color:#5b21b6; }
-    .card-tag.dag4 { background:#d1fae5; color:#065f46; }
-    .card-title { font-weight:700; font-size:0.95rem; flex:1; }
-    .card-status { font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:600; }
-    .card-status.active { background:#d1fae5; color:#065f46; }
-    .card-status.draft { background:#fef3c7; color:#92400e; }
-    .card-arrow { color:#9ca3af; transition:transform 0.2s; }
-    .card-arrow.open { transform:rotate(90deg); }
-    .card-body { display:none; padding:18px; border-top:1px solid #f3f4f6; }
+    .tag { font-size:0.6rem; font-weight:700; padding:2px 7px; border-radius:3px; text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; }
+    .tag.blue { background:#dbeafe; color:#1e40af; }
+    .tag.red { background:#fee2e2; color:#991b1b; }
+    .tag.purple { background:#ede9fe; color:#5b21b6; }
+    .tag.green { background:#d1fae5; color:#065f46; }
+    .tag.orange { background:#fef3c7; color:#92400e; }
+    .tag.gray { background:#f3f4f6; color:#4b5563; }
+    .card-title { font-weight:700; font-size:0.88rem; flex:1; min-width:0; }
+    .card-count { font-size:0.65rem; color:#9ca3af; }
+    .arrow { color:#9ca3af; transition:transform 0.2s; font-size:0.7rem; }
+    .arrow.open { transform:rotate(90deg); }
+    .card-body { display:none; padding:12px 14px; }
     .card-body.open { display:block; }
-    .section { margin-bottom:16px; }
-    .section-label { font-size:0.65rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-    .section-text { font-size:0.85rem; color:#374151; line-height:1.6; }
-    .check-list { list-style:none; }
-    .check-list li { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:1px solid #f9fafb; font-size:0.82rem; }
-    .check-list li:last-child { border-bottom:none; }
-    .check-badge { font-size:0.6rem; font-weight:700; padding:2px 6px; border-radius:3px; white-space:nowrap; }
-    .check-badge.must { background:#fee2e2; color:#991b1b; }
-    .check-badge.nice { background:#dbeafe; color:#1e40af; }
-    .points { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:#6b7280; margin-left:auto; }
-    table { width:100%; border-collapse:collapse; font-size:0.8rem; }
-    th { text-align:left; padding:8px; background:#f9fafb; color:#6b7280; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #e5e7eb; }
-    td { padding:8px; border-bottom:1px solid #f3f4f6; }
-    .flow-step { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #f9fafb; }
-    .flow-num { width:24px; height:24px; border-radius:50%; background:#eff6ff; color:#1e40af; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; }
-    .flow-text { font-size:0.82rem; color:#374151; }
-    .hint-box { background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:10px; font-size:0.8rem; color:#92400e; margin-top:8px; }
-    .response-box { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:10px; font-size:0.78rem; color:#166534; margin-top:4px; font-family:'JetBrains Mono',monospace; white-space:pre-wrap; }
-    .nav { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
-    .nav a { padding:6px 14px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; font-size:0.78rem; color:#374151; text-decoration:none; font-weight:500; }
-    .nav a:hover { border-color:#1e40af; color:#1e40af; }
+
+    /* Sections */
+    .lbl { font-size:0.6rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin:12px 0 6px; }
+    .lbl:first-child { margin-top:0; }
+    .txt { font-size:0.82rem; color:#374151; line-height:1.6; margin-bottom:8px; }
+    .mono { font-family:'JetBrains Mono',monospace; font-size:0.72rem; }
+
+    /* Tables */
+    table { width:100%; border-collapse:collapse; font-size:0.75rem; margin-bottom:8px; }
+    th { text-align:left; padding:6px 8px; background:#f9fafb; color:#6b7280; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.3px; border-bottom:1px solid #e5e7eb; }
+    td { padding:6px 8px; border-bottom:1px solid #f3f4f6; vertical-align:top; }
+    td code { background:#f3f4f6; padding:1px 4px; border-radius:2px; font-size:0.68rem; }
+
+    /* Boxes */
+    .hint-box { background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:8px 10px; font-size:0.78rem; color:#1e3a5f; margin:6px 0; line-height:1.5; }
+    .warn-box { background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:8px 10px; font-size:0.78rem; color:#991b1b; margin:6px 0; }
+    .ok-box { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:8px 10px; font-size:0.78rem; color:#166534; margin:6px 0; font-family:'JetBrains Mono',monospace; white-space:pre-wrap; word-break:break-word; }
+
+    /* Steps */
+    .step { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid #f9fafb; }
+    .step-num { width:22px; height:22px; border-radius:50%; background:#eff6ff; color:#1e40af; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; flex-shrink:0; }
+    .step-text { font-size:0.8rem; color:#374151; line-height:1.4; }
+
+    /* Item list */
+    .item { display:flex; align-items:flex-start; gap:6px; padding:5px 0; border-bottom:1px solid #f9fafb; font-size:0.78rem; }
+    .item:last-child { border-bottom:none; }
+
+    /* Wiki content preview */
+    .wiki-preview { background:#fafafa; border:1px solid #e5e7eb; border-radius:6px; padding:10px; margin:6px 0; font-size:0.78rem; line-height:1.5; color:#555; max-height:200px; overflow-y:auto; }
+
+    /* App preview */
+    .app-info { display:flex; gap:8px; padding:8px 0; border-bottom:1px solid #f3f4f6; align-items:center; }
+    .app-icon { width:36px; height:36px; border-radius:8px; flex-shrink:0; }
+    .app-name { font-weight:600; font-size:0.85rem; }
+    .app-desc { font-size:0.72rem; color:#6b7280; }
+
+    @media (max-width:600px) {
+      .tabs { gap:3px; }
+      .tab { padding:5px 10px; font-size:0.68rem; }
+      table { display:block; overflow-x:auto; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>AI Lab - Admin Panel</h1>
-    <p class="subtitle">Overzicht van alle opdrachten, checks en score-criteria. Gemeente Mayostad.</p>
+    <p class="subtitle">Gemeente Mayostad \u2022 Overzicht taken, apps, wiki en leerdoelen</p>
 
-    <div class="nav">
-      <a href="index.html">Terug naar game</a>
-      <a href="ONTWERP.md">Ontwerpdocument</a>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="overzicht">Overzicht</button>
+      <button class="tab" data-tab="apps">Apps & Software</button>
+      <button class="tab" data-tab="wiki">MayoWiki Inhoud</button>
+      <button class="tab" data-tab="dag1">Dag 1</button>
+      <button class="tab" data-tab="dag2">Dag 2</button>
+      <button class="tab" data-tab="dag3">Dag 3</button>
+      <button class="tab" data-tab="dag4">Dag 4</button>
+      <button class="tab" data-tab="board">MayoBoard</button>
     </div>
 
-    <div id="admin-content"></div>
+    <!-- OVERZICHT -->
+    <div class="tab-panel active" id="panel-overzicht">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">De gebruiker</div>
+        <div class="txt">Nieuwe medewerker bij afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. Doet mee aan de AI-pilot. Heeft nog nooit een AI-tool gebruikt.</div>
+
+        <div class="lbl">Teamleider</div>
+        <div class="txt">Marco Pieterse (VTH)</div>
+
+        <div class="lbl">Leerpad (volgorde)</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Rondkijken</strong> — Desktop verkennen, WiWa, MayoWiki doorlezen (onboarding)</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Eerste ChatGPT taak</strong> — Brief schrijven terrasvergunning Bakkerij Van Dijk</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Hallucinaties</strong> — WMO-beschikking van Bas controleren op verzonnen feiten</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Privacy & AVG</strong> — Wat mag wel/niet in AI-tools</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text"><strong>Andere AI-tools</strong> — Copilot, Claude (risico's: data naar cloud, geen EU-garantie)</div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-text"><strong>GAIMS</strong> — Lokale AI (Open WebUI + n8n), veilig alternatief, RAG met eigen documenten</div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-text"><strong>Agents</strong> — Wat is een agent, configureren, testen, red-teaming</div></div>
+        <div class="step"><div class="step-num">8</div><div class="step-text"><strong>Periodiek</strong> — Terugkerende opdrachten per afdeling (5 Moments of Need)</div></div>
+
+        <div class="lbl">Ontwerpprincipes</div>
+        <div class="item"><span class="tag green">DOE</span> Altijd doe-opdrachten, geen quizjes</div>
+        <div class="item"><span class="tag green">ZELF</span> Gebruiker schrijft zelf, niet kiezen uit opties</div>
+        <div class="item"><span class="tag green">ZOEK</span> Info verspreid over wiki/apps, niet voorgeschoteld</div>
+        <div class="item"><span class="tag green">ONZIN</span> Irrelevante info ertussen (parkeerbeleid, kantine)</div>
+        <div class="item"><span class="tag green">ACHTERAF</span> Feedback pas na inleveren</div>
+        <div class="item"><span class="tag green">AGENT</span> Model, temperature, tools zichtbaar per opdracht</div>
+        <div class="item"><span class="tag green">ECHT</span> Desktop voelt als echte werkplek</div>
+
+        <div class="lbl">5 Moments of Need</div>
+        <table>
+          <tr><th>Moment</th><th>Wanneer</th><th>In de game</th></tr>
+          <tr><td>1. Nieuw</td><td>Eerste keer leren</td><td>Dag 1-4 (basis)</td></tr>
+          <tr><td>2. Meer</td><td>Verdiepen</td><td>Terugkerende opdrachten</td></tr>
+          <tr><td>3. Toepassen</td><td>In de praktijk</td><td>Echte taken uitvoeren</td></tr>
+          <tr><td>4. Problemen</td><td>Als iets misgaat</td><td>Hallucinaties, fouten</td></tr>
+          <tr><td>5. Verandering</td><td>Iets verandert</td><td>Nieuwsfeed, nieuwe tools</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <!-- APPS & SOFTWARE -->
+    <div class="tab-panel" id="panel-apps">
+      <div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="tag blue">DESKTOP</span><span class="card-title">Apps op het bureaublad</span><span class="arrow">&#9654;</span></div><div class="card-body">
+        <table>
+          <tr><th>App</th><th>Functie</th><th>Heeft UI?</th><th>Inhoud</th></tr>
+          <tr><td><strong>MayoBoard</strong></td><td>Kanban takenbord</td><td>Ja</td><td>3 taken (2 onboarding + 1 brief), 4 kolommen, drag-drop, popup met details+hints</td></tr>
+          <tr><td><strong>Vergunningen</strong></td><td>Vergunningtool + kaart</td><td>Ja</td><td>6 vergunningen op OpenStreetMap, klikbaar met plan/details per aanvraag</td></tr>
+          <tr><td><strong>Zaaksysteem</strong></td><td>Alle zaken tabel</td><td>Ja</td><td>10 zaken met zaaknr, status, behandelaar, datum. 847 totaal.</td></tr>
+          <tr><td><strong>ChatGPT</strong></td><td>AI-tool (extern)</td><td>Ja</td><td>Volledige UI met sidebar, model selector, inputbar. Opent bij taak.</td></tr>
+          <tr><td><strong>GAIMS</strong></td><td>Lokale AI (Open WebUI + n8n)</td><td>Ja</td><td>AVG-proof, geen data naar buiten, RAG met eigen documenten. Suggesties.</td></tr>
+          <tr><td><strong>Copilot</strong></td><td>Microsoft AI</td><td>Ja</td><td>Enterprise interface met suggesties.</td></tr>
+          <tr><td><strong>MayoWiki</strong></td><td>Kennisbank (BookStack)</td><td>Ja</td><td>14 pagina's. Blauwe topbar, sidebar, breadcrumbs. Zie tab "MayoWiki".</td></tr>
+          <tr><td><strong>WiWa</strong></td><td>Wie is Waarvan</td><td>Ja</td><td>15 collega's + 5 AI-robots. macOS Contacts stijl. Foto's, skills, status.</td></tr>
+          <tr><td><strong>MayoMail</strong></td><td>Email</td><td>Ja</td><td>7 emails (welkom, handleiding, protocol). Inbox + email reader.</td></tr>
+          <tr><td><strong>MayoChat</strong></td><td>Interne chat</td><td>Ja</td><td>6 kanalen (#algemeen, #ai-pilot, #vth, #sociaal-domein, #boa-team, #grappig). Klikbaar.</td></tr>
+          <tr><td><strong>NotebookLM</strong></td><td>Document research</td><td>Ja</td><td>8 bronnen (schrijfwijzer, WMO-plan, APV, etc). Zoekbalk + suggesties.</td></tr>
+        </table>
+      </div></div>
+
+      <div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="tag purple">CHAT</span><span class="card-title">MayoChat kanalen</span><span class="arrow">&#9654;</span></div><div class="card-body">
+        <table>
+          <tr><th>Kanaal</th><th>Berichten</th><th>Inhoud</th></tr>
+          <tr><td># algemeen</td><td>3</td><td>HR reminder brandoefening, koffiemachine gerepareerd, welkom nieuwe collega</td></tr>
+          <tr><td># ai-pilot</td><td>6</td><td>Tom over ChatGPT, Sarah over persbericht, Ahmed BSN-waarschuwing, Priya sceptisch, discussie</td></tr>
+          <tr><td># vth</td><td>3</td><td>Marco over terrasvergunning Van Dijk, Anouk over FitNow, nieuwe collega gaat brief schrijven</td></tr>
+          <tr><td># sociaal-domein</td><td>3</td><td>Sandra teamoverleg, Bas WMO-schrijver update, Noor privacy-zorgen</td></tr>
+          <tr><td># boa-team</td><td>2</td><td>Dennis controle Parkweg, Youssef test BOA-Rapporteur AI</td></tr>
+          <tr><td># grappig</td><td>3</td><td>Remco AI-koffie grap, Sarah haiku over vergaderen, Dennis rapport-humor</td></tr>
+        </table>
+      </div></div>
+
+      <div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="tag blue">MAIL</span><span class="card-title">MayoMail inbox</span><span class="arrow">&#9654;</span></div><div class="card-body">
+        <table>
+          <tr><th>Van</th><th>Onderwerp</th><th>Ongelezen</th></tr>
+          <tr><td>Lisa de Vries</td><td>Welkom bij het team!</td><td>Ja</td></tr>
+          <tr><td>Tom Bakker</td><td>AI-pilot: handleiding ChatGPT</td><td>Ja</td></tr>
+          <tr><td>Ahmed Hassan</td><td>Beveiligingsprotocol AI-tools</td><td>Ja</td></tr>
+          <tr><td>HR</td><td>Arbeidsvoorwaarden en huisregels</td><td>Nee</td></tr>
+          <tr><td>Facilitaire Zaken</td><td>Parkeervergunning en toegangspas</td><td>Nee</td></tr>
+          <tr><td>ICT Servicedesk</td><td>Inloggegevens werkplek</td><td>Nee</td></tr>
+          <tr><td>Sarah Chen</td><td>Schrijfwijzer Gemeente Mayostad</td><td>Nee</td></tr>
+        </table>
+      </div></div>
+
+      <div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="tag purple">WIWA</span><span class="card-title">WiWa - Collega's en AI-robots</span><span class="arrow">&#9654;</span></div><div class="card-body">
+        <table>
+          <tr><th>Afdeling</th><th>Mensen</th><th>AI-robots</th></tr>
+          <tr><td>KCC</td><td>Lisa de Vries, Remco van Dam, Priya Sharma</td><td>KCC-Bot (GPT-4o)</td></tr>
+          <tr><td>Burgerzaken</td><td>Henk Visser, Fatima El-Amrani</td><td>BZ-Vertaler (Claude)</td></tr>
+          <tr><td>Sociaal Domein</td><td>Sandra Mulder, Bas van den Berg, Noor de Jong</td><td>WMO-Schrijver (GPT-4o)</td></tr>
+          <tr><td>VTH</td><td>Marco Pieterse, Anouk Willems</td><td>-</td></tr>
+          <tr><td>BOA</td><td>Dennis Krul, Youssef Amrani</td><td>BOA-Rapporteur (GPT-4o+Vision)</td></tr>
+          <tr><td>Communicatie</td><td>Sarah Chen</td><td>Content-AI (Claude)</td></tr>
+          <tr><td>ICT</td><td>Tom Bakker, Ahmed Hassan</td><td>-</td></tr>
+        </table>
+      </div></div>
+
+      <div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="tag green">KAART</span><span class="card-title">Vergunningtool - Aanvragen</span><span class="arrow">&#9654;</span></div><div class="card-body">
+        <table>
+          <tr><th>ID</th><th>Titel</th><th>Status</th><th>Adres</th><th>Plan</th></tr>
+          <tr><td>VG-042</td><td>Terrasvergunning Bakkerij Van Dijk</td><td style="color:#dc2626">Vertraagd</td><td>Dorpsstraat 23</td><td>6x3m, 8 tafels, 16 stoelen, 08-22u</td></tr>
+          <tr><td>VG-048</td><td>Omgevingsvergunning Sportschool FitNow</td><td style="color:#d97706">In behandeling</td><td>Industrieweg 5</td><td>200m2 uitbreiding, staal/glas</td></tr>
+          <tr><td>VG-045</td><td>Kapvergunning Esdoorn</td><td style="color:#059669">Verleend</td><td>Kerkstraat 41</td><td>1 esdoorn kap, 2 lindes herplant</td></tr>
+          <tr><td>VG-038</td><td>Evenement Koningsdag</td><td style="color:#059669">Verleend</td><td>Marktplein 1</td><td>5000 bezoekers, muziek tot 23u</td></tr>
+          <tr><td>VG-051</td><td>Terras Cafe Het Hoekje</td><td style="color:#2563eb">Nieuw</td><td>Havenstraat 1</td><td>4x5m, verwarming</td></tr>
+          <tr><td>VG-049</td><td>Reclame AH XL</td><td style="color:#d97706">In behandeling</td><td>Winkelcentrum 12</td><td>LED gevelreclame 8x1.5m</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <!-- MAYOWIKI INHOUD -->
+    <div class="tab-panel" id="panel-wiki">
+      <div id="wiki-pages"></div>
+    </div>
+
+    <!-- DAG 1 -->
+    <div class="tab-panel" id="panel-dag1">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">Dag 1: De Brief (VTH)</div>
+        <div class="txt"><strong>Verhaallijn:</strong> Eerste dag bij VTH. Marco vraagt je een brief te schrijven aan Bakkerij Van Dijk over de vertraagde terrasvergunning.</div>
+
+        <div class="lbl">Wat de gebruiker moet DOEN</div>
+        <div class="step"><div class="step-num">1</div><div class="step-text">Desktop verkennen - WiWa openen, MayoWiki doorlezen, rondklikken</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Na 12 sec: melding "Nieuwe taak op MayoBoard"</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">MayoBoard openen, taak VTH-042 aanklikken, hint lezen</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text">MayoWiki > Schrijfwijzer lezen (hoe schrijft de gemeente?)</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text">MayoWiki > Lopende Zaken lezen (details Van Dijk: bezwaar, 10 april)</div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-text">ChatGPT openen via de taak of bureaublad</div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-text">Zelf een prompt schrijven met alle gevonden informatie</div></div>
+        <div class="step"><div class="step-num">8</div><div class="step-text">Feedback ontvangen op basis van score</div></div>
+
+        <div class="lbl">Wat de gebruiker moet VINDEN</div>
+        <table>
+          <tr><th>Info</th><th>Waar te vinden</th><th>Check-element</th></tr>
+          <tr><td>Naam: meneer Van Dijk / Bakkerij</td><td>MayoWiki > Lopende Zaken, Vergunningtool, MayoBoard hint</td><td>Keywords: van dijk, bakkerij</td></tr>
+          <tr><td>Terrasvergunning</td><td>MayoWiki > Lopende Zaken, Vergunningtool</td><td>Keywords: terrasvergunning, vergunning</td></tr>
+          <tr><td>Bezwaar buurman = reden vertraging</td><td>MayoWiki > Lopende Zaken, Vergunningtool, MayoChat #vth</td><td>Keywords: bezwaar, vertraag, langer duurt</td></tr>
+          <tr><td>Verwacht besluit: 10 april</td><td>MayoWiki > Lopende Zaken, MayoBoard hint</td><td>Keywords: 10 april, april</td></tr>
+          <tr><td>Toon: begrip tonen, excuses</td><td>MayoWiki > Schrijfwijzer</td><td>Keywords: excus, begrip, ongemak, vervelend</td></tr>
+          <tr><td>Contact: 14 0555</td><td>MayoWiki > Over Mayostad</td><td>Keywords: 14 0555, bel, contact</td></tr>
+          <tr><td>Afsluiting: Gemeente Mayostad</td><td>MayoWiki > Schrijfwijzer</td><td>Keywords: gemeente, mayostad, vriendelijke groet</td></tr>
+        </table>
+
+        <div class="lbl">Score-systeem</div>
+        <table>
+          <tr><th>Element</th><th>Punten</th><th>Gewicht</th></tr>
+          <tr><td>Ontvanger</td><td>20</td><td>Essentieel</td></tr>
+          <tr><td>Onderwerp (terrasvergunning)</td><td>15</td><td>Essentieel</td></tr>
+          <tr><td>Reden vertraging</td><td>20</td><td>Essentieel</td></tr>
+          <tr><td>Datum (10 april)</td><td>15</td><td>Belangrijk</td></tr>
+          <tr><td>Toon/excuses</td><td>10</td><td>Belangrijk</td></tr>
+          <tr><td>Contactgegevens</td><td>10</td><td>Handig</td></tr>
+          <tr><td>Afsluiting gemeente</td><td>10</td><td>Handig</td></tr>
+        </table>
+
+        <div class="lbl">AI Responses</div>
+        <div class="txt"><strong>90%+ (perfect):</strong></div>
+        <div class="ok-box">Beste meneer Van Dijk,
+
+U heeft een terrasvergunning aangevraagd voor Bakkerij Van Dijk. Helaas is er een bezwaar ingediend door een omwonende, waardoor de behandeling meer tijd nodig heeft.
+
+Het verwachte besluit is nu donderdag 10 april. Wij begrijpen dat dit vervelend is.
+
+Neem bij vragen contact op via 14 0555.
+
+Met vriendelijke groet,
+Gemeente Mayostad</div>
+        <div class="txt"><strong>60-89% (goed):</strong> Brief met meeste details maar mist iets (datum/contact/toon)</div>
+        <div class="txt"><strong>30-59% (matig):</strong> Vage brief zonder specifieke details</div>
+        <div class="txt"><strong>&lt;30% (slecht):</strong> "Geachte aanvrager, Uw aanvraag is in behandeling. Hoogachtend"</div>
+
+        <div class="lbl">Leermomenten</div>
+        <div class="hint-box">
+          <strong>Inzicht:</strong> Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), HOE (toon), en FORMAAT (lengte). Hoe specifieker je bent, hoe bruikbaarder het resultaat.
+        </div>
+      </div></div>
+    </div>
+
+    <!-- DAG 2 -->
+    <div class="tab-panel" id="panel-dag2">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">Dag 2: Hallucinaties + Privacy (Sociaal Domein)</div>
+        <div class="txt"><strong>Verhaallijn:</strong> Bas van het Sociaal Domein heeft ChatGPT een WMO-beschikking laten schrijven. Het ziet er professioneel uit maar er zitten fouten in.</div>
+
+        <div class="lbl">Opdracht 1: WMO-beschikking controleren</div>
+        <div class="txt">Gebruiker klikt op verdachte zinnen in de brief.</div>
+        <table>
+          <tr><th>Zin</th><th>Verdacht?</th><th>Reden</th></tr>
+          <tr><td>Geachte mevrouw Jansen-de Groot</td><td>Nee</td><td>-</td></tr>
+          <tr><td>Op basis van artikel 2.3.5 lid 4 van de WMO 2015...</td><td style="color:#dc2626">JA</td><td>Artikel bestaat niet! AI verzint wetsartikelen.</td></tr>
+          <tr><td>Uit het onderzoek blijkt dat u beperkingen ervaart...</td><td>Nee</td><td>-</td></tr>
+          <tr><td>Conform Besluit maatschappelijke ondersteuning... eigen bijdrage 19,50</td><td style="color:#dc2626">JA</td><td>Besluit en bedrag verzonnen. CAK bepaalt bijdrage.</td></tr>
+          <tr><td>Thuiszorgorganisatie Beter Thuis B.V., Molenstraat 42</td><td style="color:#dc2626">JA</td><td>Bedrijf en adres bestaan niet.</td></tr>
+          <tr><td>U kunt bezwaar maken binnen zes weken...</td><td>Nee</td><td>-</td></tr>
+          <tr><td>Contact via 14 0555</td><td>Nee</td><td>-</td></tr>
+          <tr><td>Volgens SCP (2025) maakt 68% gebruik van...</td><td style="color:#dc2626">JA</td><td>Onderzoek en percentage verzonnen.</td></tr>
+        </table>
+
+        <div class="hint-box"><strong>Nieuw idee:</strong> Toon ook de chatgeschiedenis van Bas erbij - welke prompt hij gebruikte, welk model, temperature, geen bronnen gekoppeld. Dan snapt de gebruiker WAAROM het fout ging.</div>
+
+        <div class="lbl">Opdracht 2: Privacy - wat mag wel/niet in AI?</div>
+        <table>
+          <tr><th>Item</th><th>Veilig?</th><th>Uitleg</th></tr>
+          <tr><td>Openbare gemeentepagina herschrijven in B1</td><td style="color:#059669">Veilig</td><td>Openbare info</td></tr>
+          <tr><td>BSN-nummer inwoner</td><td style="color:#dc2626">NIET</td><td>AVG-overtreding, datalek</td></tr>
+          <tr><td>Broncode zaaksysteem</td><td style="color:#dc2626">NIET</td><td>Vertrouwelijk</td></tr>
+          <tr><td>Medische gegevens WMO-aanvrager</td><td style="color:#dc2626">NIET</td><td>Bijzondere persoonsgegevens</td></tr>
+          <tr><td>Wachtwoord gemeentelijk account</td><td style="color:#dc2626">NIET</td><td>Datalek risico</td></tr>
+          <tr><td>Openbaar raadsbesluit samenvatten</td><td style="color:#059669">Veilig</td><td>Openbare info</td></tr>
+          <tr><td>Naam+adres+inkomen uit zaaksysteem</td><td style="color:#dc2626">NIET</td><td>AVG, gemeente aansprakelijk</td></tr>
+          <tr><td>Social media post over speeltuintje</td><td style="color:#059669">Veilig</td><td>Openbare communicatie</td></tr>
+          <tr><td>Interne notitie juridisch bezwaar</td><td style="color:#dc2626">NIET</td><td>Vertrouwelijk juridisch</td></tr>
+          <tr><td>Omgevingswet uitleggen in eenvoudige taal</td><td style="color:#059669">Veilig</td><td>Openbare wetgeving</td></tr>
+        </table>
+
+        <div class="lbl">Opdracht 3: Bias simulator</div>
+        <div class="txt">3 rondes: gebruiker ziet hoe AI vooroordelen overneemt (weer-voorbeeld). Leerpunt: AI versterkt wat je erin stopt.</div>
+
+        <div class="lbl">Leermomenten</div>
+        <div class="hint-box">AI hallucineert (wetsartikelen, bedrijven, cijfers). Juridische teksten ALTIJD door jurist laten checken. Geen persoonsgegevens in AI. Vuistregel: als het in een dossier staat, hoort het niet in ChatGPT.</div>
+      </div></div>
+    </div>
+
+    <!-- DAG 3 -->
+    <div class="tab-panel" id="panel-dag3">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">Dag 3: De BOA-Agent</div>
+        <div class="txt"><strong>Verhaallijn:</strong> Tom wil een AI-agent voor de BOA's. Dennis is enthousiast, Ahmed maakt zich zorgen. Jij configureert hem.</div>
+
+        <div class="lbl">Opdracht 1: Chatbot vs Agent vergelijking</div>
+        <div class="txt">Twee scenario's naast elkaar. Chatbot geeft advies, agent handelt zelf. Vraag: wat is het risico van de agent?</div>
+        <div class="warn-box">Correct antwoord: De agent heeft zonder bevestiging je creditcard gebruikt en een taxi geboekt die je niet vroeg.</div>
+
+        <div class="lbl">Opdracht 2: Agent configureren</div>
+        <div class="txt">Gebruiker vult 5 velden in voor de BOA-agent:</div>
+        <table>
+          <tr><th>Veld</th><th>Wat invullen</th><th>Waarom</th></tr>
+          <tr><td>Rol</td><td>Bijv: "Assistent voor BOA-rapporten"</td><td>Geeft context aan de AI</td></tr>
+          <tr><td>Kennis (geheugen)</td><td>Bijv: "APV Mayostad, controle-procedures"</td><td>Wat de agent altijd weet</td></tr>
+          <tr><td>Mag wel</td><td>Bijv: "Rapporten opstellen, foto's analyseren"</td><td>Toegestane acties</td></tr>
+          <tr><td>Mag NIET</td><td>Bijv: "Geen boetes opleggen, geen juridische conclusies"</td><td>Veiligheidsgrenzen</td></tr>
+          <tr><td>Escalatie</td><td>Bijv: "Bij twijfel over overtreding, bij klachten"</td><td>Wanneer mens inschakelen</td></tr>
+        </table>
+        <div class="txt">Agent wordt getest met 3 gesprekken (standaard, grensoverschrijdend, complex).</div>
+
+        <div class="lbl">Opdracht 3: Ontspoorde agent (red-teaming)</div>
+        <div class="txt">Gebruiker bekijkt een slecht geconfigureerde agent en vindt 4 fouten:</div>
+        <table>
+          <tr><th>Fout</th><th>Fix</th></tr>
+          <tr><td>Geen scope - beantwoordt alles</td><td>Beperk tot webshop-vragen</td></tr>
+          <tr><td>Geen privacyregels</td><td>NOOIT klantgegevens delen</td></tr>
+          <tr><td>Geen financiele grenzen</td><td>Geen kortingen zonder goedkeuring</td></tr>
+          <tr><td>"Wees altijd positief" = onverantwoord</td><td>"Wees eerlijk. Zeg nee als iets niet kan."</td></tr>
+        </table>
+
+        <div class="lbl">Leermomenten</div>
+        <div class="hint-box">Verschil chatbot vs agent. Agent = medewerker met bankpas. Grenzen zijn cruciaal. Red-teaming: test altijd voor deployment. GAIMS als veilig alternatief (lokaal, geen internet, RAG).</div>
+      </div></div>
+    </div>
+
+    <!-- DAG 4 -->
+    <div class="tab-panel" id="panel-dag4">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">Dag 4: De Vergadering (Sociaal Domein)</div>
+        <div class="txt"><strong>Verhaallijn:</strong> Vrijdag. Overleg Sociaal Domein. Sandra vraagt of jij de notulen doet. Jij gebruikt AI.</div>
+
+        <div class="lbl">Opdracht 1: Vergadernotities structureren</div>
+        <div class="txt">Input: rommelige notities. Output: gestructureerde samenvatting via AI. Checkpoints:</div>
+        <table>
+          <tr><th>Check</th><th>Aanwezig?</th><th>Opmerking</th></tr>
+          <tr><td>Alle actiepunten erin?</td><td>Ja</td><td>-</td></tr>
+          <tr><td>Deadline klopt?</td><td>Ja</td><td>-</td></tr>
+          <tr><td>Namen correct?</td><td>Ja</td><td>-</td></tr>
+          <tr><td>AI heeft iets TOEGEVOEGD?</td><td style="color:#dc2626">Check!</td><td>AI voegt soms details toe die er niet stonden</td></tr>
+        </table>
+
+        <div class="lbl">Opdracht 2: De kracht van rollen</div>
+        <div class="txt">Dezelfde vraag ("Beoordeel dit business plan") met 3 verschillende rollen:</div>
+        <table>
+          <tr><th>Rol</th><th>Resultaat</th><th>Analyse</th></tr>
+          <tr><td>Geen rol</td><td>"Leuk idee! Succes!"</td><td>Oppervlakkig</td></tr>
+          <tr><td>Strenge investeerder</td><td>Diepgaande kritische analyse</td><td>Bruikbare feedback</td></tr>
+          <tr><td>Marketing-expert</td><td>Praktisch actieplan Instagram</td><td>Direct toepasbaar</td></tr>
+        </table>
+
+        <div class="lbl">Leermomenten</div>
+        <div class="hint-box">AI als notuleerder: altijd controleren op volledigheid en toegevoegde details. Rollen veranderen fundamenteel het type antwoord. Geen rol = oppervlakkig. Specifieke rol = diepgaand.</div>
+      </div></div>
+    </div>
+
+    <!-- MAYOBOARD -->
+    <div class="tab-panel" id="panel-board">
+      <div class="card"><div class="card-body open">
+        <div class="lbl">MayoBoard - Kanban taken</div>
+        <table>
+          <tr><th>ID</th><th>Titel</th><th>Start kolom</th><th>Prioriteit</th><th>Hint</th><th>Actie</th></tr>
+          <tr><td>VTH-040</td><td>MayoWiki doorlezen</td><td>In uitvoering</td><td>Onboarding</td><td>Lees: Over Mayostad, Schrijfwijzer, AI bij de Gemeente, Huisregels</td><td>-</td></tr>
+          <tr><td>VTH-041</td><td>WiWa bekijken</td><td>In uitvoering</td><td>Onboarding</td><td>Klik door afdelingen, let op AI-collega's met paars label</td><td>-</td></tr>
+          <tr><td>VTH-042</td><td>Brief terrasvergunning Van Dijk</td><td>Te doen (na 12s)</td><td>Urgent</td><td>Stap 1: Schrijfwijzer. Stap 2: Lopende Zaken. Stap 3: ChatGPT.</td><td>Open ChatGPT</td></tr>
+        </table>
+        <div class="txt">Taken zijn draggable tussen kolommen (Te doen, In uitvoering, Review, Afgerond). Klik op taak = popup met details + hints.</div>
+      </div></div>
+    </div>
   </div>
 
   <script src="missions.js"></script>
   <script>
-    const container = document.getElementById("admin-content");
-
-    // Render all missions
-    MISSIONS.forEach((mission, mi) => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const dagNum = mi + 1;
-      const tagClass = `dag${Math.min(dagNum, 4)}`;
-
-      let bodyHTML = "";
-
-      // Story intro
-      if (mission.storyIntro) {
-        bodyHTML += `<div class="section"><div class="section-label">Verhaallijn</div><div class="section-text">${mission.storyIntro}</div></div>`;
-      }
-
-      // Tasks
-      mission.tasks.forEach((task, ti) => {
-        bodyHTML += `<div class="card" style="margin-bottom:12px;border-color:#e5e7eb">
-          <div style="padding:12px 16px;background:#f9fafb;border-bottom:1px solid #f3f4f6">
-            <div style="display:flex;align-items:center;gap:8px">
-              <span class="check-badge must">${task.label}</span>
-              <strong style="font-size:0.88rem">${task.title}</strong>
-            </div>
-            <div style="font-size:0.8rem;color:#6b7280;margin-top:4px">${task.desc}</div>
-          </div>
-          <div style="padding:14px 16px">`;
-
-        // Interaction details
-        const inter = task.interaction;
-        bodyHTML += `<div class="section"><div class="section-label">Type interactie</div><div class="section-text"><code>${inter.type}</code>${inter.tool ? ` — Tool: <strong>${inter.tool}</strong>` : ""}</div></div>`;
-
-        // Checks (for free-prompt type)
-        if (inter.checks) {
-          bodyHTML += `<div class="section"><div class="section-label">Score-criteria (wat wordt gecheckt)</div><table><thead><tr><th>Element</th><th>Keywords</th><th>Hint bij missen</th><th>Punten</th></tr></thead><tbody>`;
-          inter.checks.forEach(c => {
-            bodyHTML += `<tr><td><strong>${c.label}</strong></td><td><code>${c.keywords.join(", ")}</code></td><td>${c.hint}</td><td>${c.points}</td></tr>`;
-          });
-          bodyHTML += `</tbody></table></div>`;
-        }
-
-        // Responses
-        if (inter.responses && typeof inter.responses === "object" && !Array.isArray(inter.responses)) {
-          bodyHTML += `<div class="section"><div class="section-label">AI Responses per score</div>`;
-          Object.entries(inter.responses).forEach(([key, val]) => {
-            const text = typeof val === "string" ? val : val.output || JSON.stringify(val);
-            bodyHTML += `<div style="margin-bottom:6px"><span class="check-badge ${key === "perfect" || key === "good" ? "nice" : "must"}">${key}</span><div class="response-box">${text.slice(0, 300)}${text.length > 300 ? "..." : ""}</div></div>`;
-          });
-          bodyHTML += `</div>`;
-        }
-
-        // Scan text items
-        if (inter.text && Array.isArray(inter.text)) {
-          bodyHTML += `<div class="section"><div class="section-label">Scan-items (verdacht/niet verdacht)</div><ul class="check-list">`;
-          inter.text.forEach(t => {
-            bodyHTML += `<li><span class="check-badge ${t.suspicious ? "must" : "nice"}">${t.suspicious ? "VERDACHT" : "OK"}</span><span>${t.content.slice(0, 100)}${t.content.length > 100 ? "..." : ""}</span>${t.reason ? `<span class="points">${t.reason.slice(0, 60)}...</span>` : ""}</li>`;
-          });
-          bodyHTML += `</ul></div>`;
-        }
-
-        // Sort items
-        if (inter.items && Array.isArray(inter.items) && inter.items[0]?.safe !== undefined) {
-          bodyHTML += `<div class="section"><div class="section-label">Veilig/Onveilig items</div><ul class="check-list">`;
-          inter.items.forEach(item => {
-            bodyHTML += `<li><span class="check-badge ${item.safe ? "nice" : "must"}">${item.safe ? "VEILIG" : "NIET DOEN"}</span><span>${item.text}</span></li>`;
-          });
-          bodyHTML += `</ul></div>`;
-        }
-
-        // Insight
-        if (task.insight) {
-          bodyHTML += `<div class="hint-box"><strong>Inzicht:</strong> ${task.insight}</div>`;
-        }
-
-        bodyHTML += `</div></div>`;
+    // Tab switching
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
       });
-
-      // Wiki pages summary
-      if (mission.tasks[0]?.interaction?.wiki) {
-        const wiki = mission.tasks[0].interaction.wiki;
-        bodyHTML += `<div class="section"><div class="section-label">MayoWiki pagina's (beschikbaar voor gebruiker)</div><ul class="check-list">`;
-        Object.entries(wiki.pages).forEach(([key, page]) => {
-          bodyHTML += `<li><strong>${page.title}</strong> <span class="points">${page.content.length} blokken</span></li>`;
-        });
-        bodyHTML += `</ul></div>`;
-      }
-
-      card.innerHTML = `
-        <div class="card-header" onclick="this.querySelector('.card-arrow').classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-          <span class="card-tag ${tagClass}">Dag ${dagNum}</span>
-          <span class="card-title">${mission.name}</span>
-          <span class="card-status active">${mission.tasks.length} opdrachten</span>
-          <span class="card-arrow">&#9654;</span>
-        </div>
-        <div class="card-body">${bodyHTML}</div>
-      `;
-      container.appendChild(card);
     });
 
-    // Board tasks
-    const boardCard = document.createElement("div");
-    boardCard.className = "card";
-    boardCard.innerHTML = `
-      <div class="card-header" onclick="this.querySelector('.card-arrow').classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-        <span class="card-tag dag1" style="background:#ddd;color:#666">BOARD</span>
-        <span class="card-title">MayoBoard taken</span>
-        <span class="card-status draft">Kanban</span>
-        <span class="card-arrow">&#9654;</span>
-      </div>
-      <div class="card-body">
-        <div class="section-label">Taken op het bord</div>
-        <table>
-          <thead><tr><th>ID</th><th>Titel</th><th>Kolom</th><th>Prioriteit</th><th>Actie</th></tr></thead>
-          <tbody>
-            <tr><td>VTH-040</td><td>MayoWiki doorlezen</td><td>In uitvoering</td><td>Onboarding</td><td>-</td></tr>
-            <tr><td>VTH-041</td><td>WiWa bekijken</td><td>In uitvoering</td><td>Onboarding</td><td>-</td></tr>
-            <tr><td>VTH-042</td><td>Brief terrasvergunning</td><td>Te doen (verschijnt na 12s)</td><td>Urgent</td><td>Open ChatGPT</td></tr>
-          </tbody>
-        </table>
-      </div>
-    `;
-    container.appendChild(boardCard);
+    function toggleCard(header) {
+      header.querySelector(".arrow")?.classList.toggle("open");
+      header.nextElementSibling?.classList.toggle("open");
+    }
+
+    // Render wiki pages
+    const wikiContainer = document.getElementById("wiki-pages");
+    if (MISSIONS[0]?.tasks[0]?.interaction?.wiki?.pages) {
+      const pages = MISSIONS[0].tasks[0].interaction.wiki.pages;
+      Object.entries(pages).forEach(([key, page]) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        let contentHTML = "";
+        page.content.forEach(block => {
+          if (block.type === "banner") contentHTML += `<div class="hint-box">${block.text}</div>`;
+          else if (block.type === "text") contentHTML += `<div class="txt">${block.text}</div>`;
+          else if (block.type === "heading") contentHTML += `<div class="lbl" style="margin-top:10px">${block.text}</div>`;
+          else if (block.type === "info") contentHTML += `<div class="item"><span class="tag gray">${block.label}</span> ${block.value}</div>`;
+          else if (block.type === "cards") contentHTML += `<div class="txt"><em>${block.items.length} links: ${block.items.map(i => i.title).join(", ")}</em></div>`;
+          else if (block.type === "do-dont") {
+            contentHTML += `<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">`;
+            contentHTML += `<div style="flex:1;min-width:150px"><div class="lbl" style="color:#059669">Wel doen</div>${block.dos.map(d => `<div class="item"><span class="tag green">V</span>${d}</div>`).join("")}</div>`;
+            contentHTML += `<div style="flex:1;min-width:150px"><div class="lbl" style="color:#dc2626">Niet doen</div>${block.donts.map(d => `<div class="item"><span class="tag red">X</span>${d}</div>`).join("")}</div>`;
+            contentHTML += `</div>`;
+          }
+          else if (block.type === "client") contentHTML += `<div class="item"><span class="tag ${block.status === "Vertraagd" ? "red" : block.status === "Nieuw" ? "blue" : "gray"}">${block.status}</span><strong>${block.name}</strong> — ${block.contact}${block.note ? ` <em>(${block.note})</em>` : ""}</div>`;
+          else if (block.type === "tool") contentHTML += `<div class="item"><span class="tag ${block.status === "Verplicht" ? "blue" : block.status === "Pilot" ? "purple" : "orange"}">${block.status}</span><strong>${block.name}</strong> — ${block.desc}</div>`;
+          else if (block.type === "person") contentHTML += `<div class="item"><span class="tag gray">${block.role}</span><strong>${block.name}</strong>${block.note ? ` — <em>${block.note}</em>` : ""}</div>`;
+          else if (block.type === "rule") contentHTML += `<div class="item"><span class="tag blue">${block.num}</span>${block.text}</div>`;
+        });
+
+        card.innerHTML = `
+          <div class="card-header" onclick="toggleCard(this)">
+            <span class="tag gray">${key}</span>
+            <span class="card-title">${page.title}</span>
+            <span class="card-count">${page.content.length} blokken</span>
+            <span class="arrow">&#9654;</span>
+          </div>
+          <div class="card-body">${contentHTML}</div>
+        `;
+        wikiContainer.appendChild(card);
+      });
+    }
   </script>
 </body>
 </html>
