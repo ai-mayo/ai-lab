@@ -1333,7 +1333,20 @@
                   } else {
                     if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
                     fb.innerHTML = '<div class="feedback '+(score>=60?"warning":"error")+'"><div class="feedback-title">'+ found+'/'+checks.length+' elementen</div>'+missing.map(m=>'<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>'+m.label+':</strong> '+m.hint+'</div>').join("")+'</div>';
-                    fb.innerHTML += '<button class="action-btn secondary" style="margin-top:10px" onclick="this.closest(\\'[id]\\').querySelector(\\'#gpt-free-input\\').removeAttribute(\\'readonly\\');this.closest(\\'[id]\\').querySelector(\\'#gpt-free-send\\').disabled=false;this.parentElement.remove()">Opnieuw proberen</button>';
+                    const retryBtn = document.createElement("button");
+                    retryBtn.className = "action-btn secondary";
+                    retryBtn.style.marginTop = "10px";
+                    retryBtn.textContent = "Opnieuw proberen";
+                    retryBtn.addEventListener("click", () => {
+                      sent = false;
+                      inputEl.removeAttribute("readonly");
+                      sendBtn.disabled = false;
+                      chatEl.innerHTML = "";
+                      inputEl.value = "";
+                      inputEl.focus();
+                      retryBtn.parentElement.remove();
+                    });
+                    fb.appendChild(retryBtn);
                   }
                   chatBody.querySelector(".gpt-input-area").before(fb);
                 }
