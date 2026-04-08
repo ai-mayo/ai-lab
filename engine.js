@@ -1119,7 +1119,8 @@
             <div class="app-titlebar-dot yellow"></div>
             <div class="app-titlebar-dot green" data-action="maximize" data-window="chatgpt"></div>
           </div>
-          <div class="app-titlebar-title">ChatGPT - Chrome</div>
+          <div class="app-titlebar-drag"></div>
+          <div class="app-titlebar-title">ChatGPT</div>
           <div class="app-titlebar-controls">
             <div class="app-titlebar-ctrl" data-action="minimize" data-window="chatgpt">\u2014</div>
             <div class="app-titlebar-ctrl" data-action="maximize" data-window="chatgpt">\u25A1</div>
@@ -1127,6 +1128,9 @@
           </div>
         </div>
         <div class="app-body" id="chatgpt-app-body"></div>
+        <div class="edge-left"></div>
+        <div class="edge-right"></div>
+        <div class="edge-bottom"></div>
       </div>
 
       <div class="dock" id="dock">
@@ -1220,6 +1224,36 @@
 
     // Populate WiWa
     renderWiWa(area.querySelector("#wiwa-body"));
+
+    // Edge resize handlers for all windows
+    area.querySelectorAll(".app-window").forEach(win => {
+      ["edge-left","edge-right","edge-bottom"].forEach(cls => {
+        const edge = win.querySelector("." + cls);
+        if (!edge) return;
+        let resizing = false, startX, startY, startW, startH, startL;
+        edge.addEventListener("mousedown", (e) => {
+          if (win.classList.contains("maximized")) return;
+          resizing = true;
+          const r = win.getBoundingClientRect();
+          startX = e.clientX; startY = e.clientY;
+          startW = r.width; startH = r.height; startL = r.left;
+          win.style.right = "auto"; win.style.bottom = "auto";
+          win.style.width = r.width + "px"; win.style.height = r.height + "px";
+          win.style.left = r.left + "px"; win.style.top = r.top + "px";
+          e.preventDefault();
+          const onMove = (ev) => {
+            if (!resizing) return;
+            const dx = ev.clientX - startX, dy = ev.clientY - startY;
+            if (cls === "edge-right") win.style.width = Math.max(350, startW + dx) + "px";
+            else if (cls === "edge-left") { win.style.width = Math.max(350, startW - dx) + "px"; win.style.left = (startL + dx) + "px"; }
+            else if (cls === "edge-bottom") win.style.height = Math.max(250, startH + dy) + "px";
+          };
+          const onUp = () => { resizing = false; document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
+          document.addEventListener("mousemove", onMove);
+          document.addEventListener("mouseup", onUp);
+        });
+      });
+    });
 
     // Save button in menubar
     area.querySelector("#menubar-save")?.addEventListener("click", () => { sfxClick(); showSaveDialog(); });

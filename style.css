@@ -1929,6 +1929,48 @@ body {
   min-height: 250px;
 }
 
+/* Resize cursors on edges */
+.app-window:not(.maximized)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  z-index: 20;
+}
+
+.app-window:not(.maximized) .edge-right {
+  position: absolute;
+  right: -4px;
+  top: 38px;
+  bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 15;
+}
+
+.app-window:not(.maximized) .edge-left {
+  position: absolute;
+  left: -4px;
+  top: 38px;
+  bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 15;
+}
+
+.app-window:not(.maximized) .edge-bottom {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: ns-resize;
+  z-index: 15;
+}
+
 /* Resize handles on all edges */
 .resize-handle {
   position: absolute;
@@ -1943,8 +1985,24 @@ body {
 .resize-handle.sw { bottom: -3px; left: -3px; width: 12px; height: 12px; cursor: sw-resize; }
 .resize-handle.se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: se-resize; }
 
-.app-titlebar {
-  cursor: move;
+.app-window:not(.maximized) .app-titlebar {
+  cursor: grab;
+}
+.app-window:not(.maximized) .app-titlebar:active {
+  cursor: grabbing;
+}
+/* Drag dots indicator in titlebar */
+.app-titlebar-drag {
+  display: none;
+  margin: 0 auto;
+  opacity: 0.3;
+  width: 36px;
+  height: 6px;
+  background-image: radial-gradient(circle, #999 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+.app-window:not(.maximized) .app-titlebar-drag {
+  display: block;
 }
 
 .app-titlebar {
