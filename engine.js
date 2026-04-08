@@ -1130,69 +1130,29 @@
       </div>
 
       <div class="dock" id="dock">
-        <div class="dock-icon" data-app="finder">
-          <div class="dock-tooltip">Finder</div><div class="dock-label">Finder</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#1565C0"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#fg)"/><path d="M35 30h50v60H35z" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="52" r="4" fill="white"/><path d="M44 75c0-8 7-15 16-15s16 7 16 15" fill="none" stroke="white" stroke-width="3"/></svg>
-        </div>
         <div class="dock-icon" data-app="board">
           <div class="dock-tooltip">MayoBoard</div><div class="dock-label">MayoBoard</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0052cc"/><rect x="20" y="30" width="22" height="60" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="49" y="30" width="22" height="45" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="78" y="30" width="22" height="35" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="23" y="34" width="16" height="10" rx="2" fill="white"/><rect x="23" y="48" width="16" height="10" rx="2" fill="white"/><rect x="52" y="34" width="16" height="10" rx="2" fill="white"/><rect x="81" y="34" width="16" height="10" rx="2" fill="white"/></svg>
-        </div>
-        <div class="dock-icon active" data-app="wiwa">
-          <div class="dock-tooltip">WiWa - Wie is Wa</div><div class="dock-label">WiWa</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="5" fill="#fbbf24"/><path d="M57 72h6" stroke="#6366f1" stroke-width="1.5"/><path d="M60 69v6" stroke="#6366f1" stroke-width="1.5"/></svg>
-        </div>
-        <div class="dock-icon" data-app="intranet">
-          <div class="dock-tooltip">MayoWiki</div><div class="dock-label">MayoWiki</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1a1a2e"/><path d="M30 85V50l30-20 30 20v35" fill="none" stroke="#7dd3fc" stroke-width="3"/><rect x="48" y="60" width="24" height="25" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2.5"/><line x1="60" y1="60" x2="60" y2="85" stroke="#7dd3fc" stroke-width="2"/><line x1="48" y1="72" x2="72" y2="72" stroke="#7dd3fc" stroke-width="2"/><path d="M55 35h10v10l-5 5-5-5z" fill="#7dd3fc"/></svg>
-        </div>
-        <div class="dock-icon" data-app="chatgpt">
-          <div class="dock-tooltip">ChatGPT</div><div class="dock-label">ChatGPT</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>
-        </div>
-        <div class="dock-icon" data-app="claude">
-          <div class="dock-tooltip">Claude</div><div class="dock-label">Claude</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#d97706"/><circle cx="60" cy="55" r="20" fill="none" stroke="white" stroke-width="4"/><circle cx="52" cy="50" r="3" fill="white"/><circle cx="68" cy="50" r="3" fill="white"/><path d="M50 62c4 6 16 6 20 0" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
-        <div class="dock-icon" data-app="gaims">
-          <div class="dock-tooltip">GAIMS</div><div class="dock-label">GAIMS</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0c1222"/><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect x="30" y="30" width="60" height="60" rx="14" fill="url(#gg)"/><text x="60" y="68" text-anchor="middle" fill="white" font-size="28" font-weight="900" font-family="sans-serif">G</text></svg>
-        </div>
-        <div class="dock-icon" data-app="copilot">
-          <div class="dock-tooltip">Copilot</div><div class="dock-label">Copilot</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2d2d2d"/><circle cx="60" cy="60" r="24" fill="none" stroke="#0078d4" stroke-width="4"/><circle cx="60" cy="60" r="12" fill="#0078d4"/><circle cx="60" cy="60" r="5" fill="white"/></svg>
-        </div>
-        <div class="dock-icon" data-app="notebooklm">
-          <div class="dock-tooltip">NotebookLM</div><div class="dock-label">NotebookLM</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#EA8B47"/><rect x="32" y="30" width="56" height="60" rx="4" fill="none" stroke="white" stroke-width="3"/><line x1="42" y1="45" x2="78" y2="45" stroke="white" stroke-width="2.5" opacity="0.7"/><line x1="42" y1="55" x2="72" y2="55" stroke="white" stroke-width="2.5" opacity="0.5"/><line x1="42" y1="65" x2="68" y2="65" stroke="white" stroke-width="2.5" opacity="0.4"/><circle cx="82" cy="78" r="14" fill="#EA8B47" stroke="white" stroke-width="3"/><path d="M78 78h8M82 74v8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="dock-icon" data-app="mail">
-          <div class="dock-tooltip">MayoMail</div><div class="dock-label">MayoMail</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
-        </div>
-        <div class="dock-icon" data-app="chat">
-          <div class="dock-tooltip">MayoChat</div><div class="dock-label">MayoChat</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/><circle cx="50" cy="57" r="3" fill="white"/><circle cx="60" cy="57" r="3" fill="white"/><circle cx="70" cy="57" r="3" fill="white"/></svg>
-        </div>
-        <div class="dock-icon" data-app="zaaksysteem">
-          <div class="dock-tooltip">Zaaksysteem</div><div class="dock-label">Zaaksysteem</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0f766e"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5" opacity="0.7"/><circle cx="82" cy="38" r="12" fill="#fbbf24"/><path d="M78 38h8M82 34v8" stroke="#0f766e" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <div class="dock-icon" data-app="vergunning">
           <div class="dock-tooltip">Vergunningtool</div><div class="dock-label">Vergunning</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#7c3aed"/><rect x="30" y="25" width="50" height="65" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M42 40h26M42 50h20M42 60h24" stroke="white" stroke-width="2" opacity="0.6"/><circle cx="80" cy="75" r="16" fill="#7c3aed" stroke="white" stroke-width="3"/><path d="M74 75l4 4 8-8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
         </div>
-        <div class="dock-icon" data-app="kcc">
-          <div class="dock-tooltip">KCC-software</div><div class="dock-label">KCC</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0369a1"/><path d="M35 75c0-12 10-20 25-20s25 8 25 20" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="42" r="14" fill="none" stroke="white" stroke-width="3"/><path d="M82 55l12 12" stroke="white" stroke-width="3" stroke-linecap="round"/><circle cx="90" cy="40" r="8" fill="none" stroke="white" stroke-width="2" opacity="0.5"/></svg>
+        <div class="dock-icon" data-app="chatgpt">
+          <div class="dock-tooltip">ChatGPT</div><div class="dock-label">ChatGPT</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#10a37f"/><circle cx="60" cy="55" r="22" fill="none" stroke="white" stroke-width="4"/><path d="M60 77v12" stroke="white" stroke-width="4"/><circle cx="60" cy="55" r="8" fill="white"/></svg>
         </div>
-        <div class="dock-icon" data-app="sociaal">
-          <div class="dock-tooltip">Sociaal Domein Hub</div><div class="dock-label">Sociaal</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#be185d"/><circle cx="45" cy="45" r="10" fill="none" stroke="white" stroke-width="2.5"/><circle cx="75" cy="45" r="10" fill="none" stroke="white" stroke-width="2.5"/><circle cx="60" cy="72" r="10" fill="none" stroke="white" stroke-width="2.5"/><line x1="52" y1="52" x2="55" y2="65" stroke="white" stroke-width="2"/><line x1="68" y1="52" x2="65" y2="65" stroke="white" stroke-width="2"/><line x1="55" y1="42" x2="65" y2="42" stroke="white" stroke-width="2"/></svg>
+        <div class="dock-icon" data-app="intranet">
+          <div class="dock-tooltip">MayoWiki</div><div class="dock-label">MayoWiki</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg>
         </div>
-        <div class="dock-icon" data-app="settings">
-          <div class="dock-tooltip">Instellingen</div><div class="dock-label">Instellingen</div>
-          <svg viewBox="0 0 120 120" width="42" height="42"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#636366"/><stop offset="100%" stop-color="#48484A"/></linearGradient></defs><rect width="120" height="120" rx="26" fill="url(#sg)"/><circle cx="60" cy="60" r="18" fill="none" stroke="white" stroke-width="3"/><circle cx="60" cy="60" r="7" fill="white"/><line x1="60" y1="30" x2="60" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="82" x2="60" y2="90" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="60" x2="38" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/><line x1="82" y1="60" x2="90" y2="60" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
+        <div class="dock-icon active" data-app="wiwa">
+          <div class="dock-tooltip">WiWa</div><div class="dock-label">WiWa</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg>
+        </div>
+        <div class="dock-icon" data-app="mail">
+          <div class="dock-tooltip">MayoMail</div><div class="dock-label">MayoMail</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
       </div>
 
@@ -1311,13 +1271,80 @@
           area.querySelectorAll(".app-window").forEach(ww => ww.classList.remove("focused"));
           w.classList.add("focused");
         } else if (app === "chatgpt") {
-          if (!taskShown) {
-            showDesktopNotification("ChatGPT is beschikbaar zodra je een taak hebt. Verken eerst het intranet!");
-            return;
+          const chatWin = document.getElementById("window-chatgpt");
+          const chatBody = document.getElementById("chatgpt-app-body");
+          // If not yet rendered, show empty ChatGPT
+          if (!chatBody.innerHTML.trim()) {
+            const ui = buildToolWindow("chatgpt");
+            chatBody.innerHTML = `
+              <div style="flex:1;display:flex;flex-direction:column;background:#212121">
+                <div class="gpt-topbar">
+                  <div class="gpt-topbar-logo">G</div>
+                  <div class="gpt-model-select">ChatGPT <span style="font-size:0.6rem">\u25BC</span></div>
+                  <div class="gpt-topbar-model">4o</div>
+                </div>
+                <div class="gpt-chat" id="sim-chat" style="flex:1;display:flex;align-items:center;justify-content:center">
+                  <div style="text-align:center;color:#666;font-size:0.9rem">
+                    <div style="font-size:2rem;margin-bottom:8px;opacity:0.3">G</div>
+                    Waar kan ik je mee helpen?
+                  </div>
+                </div>
+                <div class="gpt-input-area">
+                  <div class="gpt-inputbar">
+                    <input class="gpt-input" id="gpt-free-input" placeholder="Stuur een bericht...">
+                    <button class="gpt-send" id="gpt-free-send">\u2191</button>
+                  </div>
+                  <div class="gpt-disclaimer">ChatGPT kan fouten maken. Controleer belangrijke informatie.</div>
+                </div>
+              </div>`;
+            // Wire up the free input for the task
+            const inputEl = chatBody.querySelector("#gpt-free-input");
+            const sendBtn = chatBody.querySelector("#gpt-free-send");
+            const chatEl = chatBody.querySelector("#sim-chat");
+            let sent = false;
+            inputEl.addEventListener("input", () => { sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3"; });
+            function handleSend() {
+              if (sent || inputEl.value.trim().length < 5) return;
+              sent = true;
+              sfxClick();
+              const promptText = inputEl.value.trim();
+              inputEl.setAttribute("readonly", "");
+              sendBtn.disabled = true;
+              chatEl.innerHTML = "";
+              addChatMsg(chatEl, ui, "user", promptText, false);
+              // Validate against checks
+              const text = promptText.toLowerCase();
+              let score = 0, found = 0, missing = [];
+              const checks = d?.checks || [];
+              checks.forEach(c => {
+                if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { score += c.points; found++; }
+                else { missing.push(c); }
+              });
+              const responses = d?.responses || {};
+              let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+              const response = responses[responseKey] || "Ik heb je prompt ontvangen. Hier is mijn antwoord op basis van de informatie die je hebt gegeven.";
+              addChatMsg(chatEl, ui, "ai", response, true).then(() => {
+                if (checks.length > 0) {
+                  const fb = document.createElement("div");
+                  fb.style.cssText = "padding:16px;border-top:1px solid #333";
+                  if (score >= 90) {
+                    sfxCorrect(); addXP(200);
+                    fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie.</div>';
+                  } else {
+                    if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
+                    fb.innerHTML = '<div class="feedback '+(score>=60?"warning":"error")+'"><div class="feedback-title">'+ found+'/'+checks.length+' elementen</div>'+missing.map(m=>'<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>'+m.label+':</strong> '+m.hint+'</div>').join("")+'</div>';
+                    fb.innerHTML += '<button class="action-btn secondary" style="margin-top:10px" onclick="this.closest(\\'[id]\\').querySelector(\\'#gpt-free-input\\').removeAttribute(\\'readonly\\');this.closest(\\'[id]\\').querySelector(\\'#gpt-free-send\\').disabled=false;this.parentElement.remove()">Opnieuw proberen</button>';
+                  }
+                  chatBody.querySelector(".gpt-input-area").before(fb);
+                }
+              });
+            }
+            sendBtn.addEventListener("click", handleSend);
+            inputEl.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } });
           }
-          document.getElementById("window-chatgpt").style.display = "flex";
-          document.getElementById("window-chatgpt").classList.add("maximized", "focused");
-          document.getElementById("window-intranet")?.classList.remove("focused");
+          chatWin.style.display = "flex";
+          chatWin.classList.add("maximized", "focused");
+          area.querySelectorAll(".app-window").forEach(ww => { if (ww !== chatWin) ww.classList.remove("focused"); });
         } else if (typeof APP_RENDERERS !== "undefined" && APP_RENDERERS[app]) {
           // Open app in a new window or reuse existing
           let win = document.getElementById("window-app-" + app);

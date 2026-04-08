@@ -82,6 +82,9 @@ const APP_RENDERERS = {
             <div id="vg-map" style="flex:1;min-height:300px"></div>
             <div style="width:320px;background:#fff;border-left:1px solid #e5e7eb;overflow-y:auto;flex-shrink:0" id="vg-detail">
               ${sel ? `
+                <div style="padding:8px 16px;border-bottom:1px solid #e5e7eb">
+                  <button id="vg-back" style="background:none;border:1px solid #d1d5db;border-radius:6px;padding:4px 12px;font-size:0.75rem;color:#6b7280;cursor:pointer;font-family:inherit">&larr; Alle vergunningen</button>
+                </div>
                 <div style="padding:16px;border-bottom:1px solid #e5e7eb">
                   <div style="display:flex;justify-content:space-between;margin-bottom:6px">
                     <span style="font-family:monospace;font-size:0.7rem;color:#9ca3af">${sel.id}</span>
@@ -141,6 +144,9 @@ const APP_RENDERERS = {
 
         setTimeout(() => map.invalidateSize(), 100);
       } catch(e) {}
+
+      // Back button
+      container.querySelector("#vg-back")?.addEventListener("click", () => { selectedId = null; renderVG(); });
 
       // List item clicks
       container.querySelectorAll("[data-vgid]").forEach(item => {
