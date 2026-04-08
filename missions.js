@@ -355,57 +355,57 @@ const MISSIONS = [
         type: "scenario",
         label: "EXPERIMENT",
         title: "Temperature: de creativiteitsknop",
-        desc: "Onder de motorkap heeft elk AI-model een instelling genaamd 'temperature'. Die bepaalt hoe creatief of strikt het antwoord is.",
+        desc: "Elk AI-model heeft een verborgen instelling: temperature. Op 0 is het strikt en zakelijk. Op 1 wordt het creatief en onvoorspelbaar. Draai aan de knop en zie het verschil.",
         interaction: {
           type: "temperature-slider",
-          prompt: "Beschrijf het weer in Amsterdam vandaag",
+          prompt: "Schrijf een bericht aan inwoners over het nieuwe afvalbeleid",
           outputs: {
-            0: "Het is bewolkt in Amsterdam met een temperatuur van 12\u00B0C. Er is 60% kans op regen. Wind uit het westen, 15 km/u.",
-            0.3: "Amsterdam heeft vandaag typisch Hollands weer \u2014 overwegend bewolkt met af en toe een waterig zonnetje. Pak een paraplu mee.",
-            0.5: "Amsterdam baadt vandaag in die kenmerkende grijze gloed die de stad zo fotogeniek maakt. De wolken hangen laag als een deken van oud zilver boven de grachten.",
-            0.7: "De hemel boven Amsterdam speelt pokerspel met de voetgangers \u2014 het ene moment een blauwe flirt, het volgende een stortbui die je fiets in een onderzee\u00EBr verandert.",
-            1.0: "Amsterdam heeft het weer van een existentialistische roman: de wolken zijn geschreven door Camus, de regen smaakt naar espresso en verloren illusies, en ergens in de Jordaan huilt een duif van schoonheid."
+            0: "Vanaf 1 mei 2026 verandert het afvalbeleid in Mayostad. Restafval wordt tweewekelijks opgehaald in plaats van wekelijks. GFT-afval wordt wekelijks opgehaald. Meer informatie vindt u op mayostad.nl/afval.",
+            0.3: "Beste inwoners van Mayostad, vanaf 1 mei verandert de afvalinzameling. Restafval halen we voortaan om de week op, terwijl GFT-afval wekelijks wordt opgehaald. Zo maken we samen Mayostad groener. Kijk op mayostad.nl/afval voor de nieuwe kalender.",
+            0.5: "Mayostad gaat groener! Vanaf mei scheiden we nog beter: restafval om de week, GFT elke week. Het klinkt als een kleine verandering, maar samen besparen we zo duizenden kilo\u2019s CO2. Benieuwd naar je nieuwe ophaaldata? Check mayostad.nl/afval!",
+            0.7: "Stel je voor: een Mayostad waar elke bananenschil en koffiepad een tweede leven krijgt. Dat begint in mei! We gooien het roer om \u2014 letterlijk. Restafval halveert, groen gaat voorop. Jouw GFT-bak wordt de held van de straat.",
+            1.0: "De vuilniswagen van morgen rijdt op dromen en composthoop-po\u00EBzie. Mayostad zegt vaarwel tegen de wekelijkse grijze bak-blues en omarmt een toekomst waarin wormenbakken koninklijk worden behandeld en je bananenschil applaus krijgt van de hele wijk."
           }
         },
-        insight: "Temperature bepaalt creativiteit vs. betrouwbaarheid. Voor een zakelijke email: laag (0.1). Voor een gedicht: hoog (0.8). De meeste AI-tools verbergen deze instelling, maar het is goed om te weten dat het bestaat."
+        insight: "Temperature bepaalt creativiteit vs. betrouwbaarheid. Beschikking of vergunningsbrief? Laag (0.1). Social media post? Middel (0.5). Brainstorm? Hoog (0.8). Voor de gemeente geldt: offici\u00EBle brieven ALTIJD op lage temperature."
       },
       {
         type: "scenario",
         label: "VERGELIJK",
-        title: "ChatGPT vs Claude vs Gemini",
-        desc: "Dezelfde prompt, drie verschillende AI-modellen. Welke geeft het beste antwoord? En waarom?",
+        title: "ChatGPT vs Claude vs Copilot",
+        desc: "Dezelfde prompt in drie AI-tools. Elk model reageert anders. Welke past het best bij een gemeentelijke brief?",
         interaction: {
           type: "model-compare",
-          prompt: "Leg uit wat blockchain is in 2 zinnen voor iemand van 70",
+          prompt: "Leg aan een inwoner uit waarom de gemeente AI gaat gebruiken, in 3 zinnen, begrijpelijk voor iedereen",
           models: [
             {
               name: "ChatGPT",
-              icon: "\u{1F7E2}",
+              icon: "",
               color: "#10a37f",
-              output: "Blockchain is als een digitaal kasboek dat door duizenden computers tegelijk wordt bijgehouden, zodat niemand er stiekem iets in kan veranderen. Stel je voor dat elke transactie in een glazen kluis staat die iedereen kan bekijken maar niemand kan openmaken.",
-              strengths: ["Goede metafoor (kasboek)", "Toegankelijke taal"],
-              weaknesses: ["Tweede zin is wat abstract"]
+              output: "De gemeente gaat AI gebruiken om u sneller en beter te kunnen helpen. Denk aan kortere wachttijden bij het KCC, snellere verwerking van uw aanvragen en brieven die makkelijker te begrijpen zijn. Uw gegevens blijven beschermd en een medewerker controleert altijd het werk van de AI.",
+              strengths: ["Compleet", "Noemt privacy", "Concrete voorbeelden"],
+              weaknesses: ["Iets lang voor 3 zinnen"]
             },
             {
               name: "Claude",
-              icon: "\u{1F7E0}",
+              icon: "",
               color: "#d97706",
-              output: "Blockchain is een soort gedeeld huishoudboekje op internet: als u iets koopt of verkoopt, schrijven heel veel computers dat tegelijk op, waardoor niemand kan sjoemelen. Het is de technologie achter Bitcoin, maar wordt ook gebruikt voor andere dingen zoals het bijhouden van eigendomsbewijzen.",
-              strengths: ["Heel toegankelijk (huishoudboekje)", "Geeft context (Bitcoin)"],
-              weaknesses: ["Iets langer dan gevraagd"]
+              output: "Gemeente Mayostad zet AI in als hulpmiddel voor onze medewerkers, zodat zij meer tijd hebben voor persoonlijk contact met u. AI helpt bijvoorbeeld bij het schrijven van brieven en het beantwoorden van veelgestelde vragen. Een mens controleert altijd de uitkomst voordat u iets ontvangt.",
+              strengths: ["Nadruk op menselijk contact", "Gerustellend", "Precies 3 zinnen"],
+              weaknesses: ["Minder concrete voorbeelden"]
             },
             {
-              name: "Gemini",
-              icon: "\u{1F535}",
-              color: "#4285f4",
-              output: "Blockchain is een digitaal logboek dat op veel computers tegelijk staat, waardoor het heel moeilijk te vervalsen is. Het wordt vooral gebruikt voor digitaal geld zoals Bitcoin.",
-              strengths: ["Kort en bondig", "Precies 2 zinnen"],
-              weaknesses: ["Minder beeldend, wat droger"]
+              name: "Copilot",
+              icon: "",
+              color: "#0078d4",
+              output: "AI helpt de gemeente om effici\u00EBnter te werken en u sneller van dienst te zijn. Het wordt ingezet voor taken zoals het samenvatten van documenten en het beantwoorden van standaardvragen. Medewerkers houden altijd de controle.",
+              strengths: ["Beknopt", "Zakelijk", "Duidelijk"],
+              weaknesses: ["Wat kaal", "Minder persoonlijk"]
             }
           ],
-          question: "Welk model volgt de opdracht het beste op? (2 zinnen, voor iemand van 70)",
+          question: "Welk model past het best bij een brief aan inwoners van de gemeente?",
           correctModel: "Claude",
-          explanation: "Alle drie zijn bruikbaar, maar Claude combineert de meest begrijpelijke taal ('huishoudboekje') met praktische context. ChatGPT is creatiever, Gemini is het kortst. Er is geen 'beste' model \u2014 het hangt af van wat je nodig hebt."
+          explanation: "Claude benadrukt menselijk contact en is geruststellend \u2014 precies wat inwoners willen horen. ChatGPT is completer maar langer. Copilot is zakelijk maar mist warmte. Let op: ALLE drie hallucieren en sturen data naar de cloud (VS). Gebruik GAIMS voor gevoelige data."
         },
         insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. ChatGPT is vaak creatief, Claude is voorzichtig en precies, Gemini is beknopt. Tip: probeer belangrijke vragen in meerdere tools en vergelijk de antwoorden."
       }
