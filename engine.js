@@ -1363,7 +1363,28 @@
                   fb.style.cssText = "padding:16px;border-top:1px solid #333";
                   if (score >= 90) {
                     sfxCorrect(); addXP(200);
-                    fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie.</div>';
+                    // Move task to done on board
+                    const boardTask = BOARD_TASKS.find(t => t.id === "VTH-042");
+                    if (boardTask) boardTask.col = "done";
+                    save();
+                    fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie. De taak is afgerond op MayoBoard.</div>';
+                    // Next step button
+                    const nextBtn = document.createElement("button");
+                    nextBtn.className = "action-btn";
+                    nextBtn.style.marginTop = "12px";
+                    nextBtn.style.width = "100%";
+                    nextBtn.textContent = "Volgende opdracht: Temperature \u2192";
+                    nextBtn.addEventListener("click", () => {
+                      sfxClick();
+                      // Close ChatGPT, go to next task in story
+                      document.getElementById("window-chatgpt").style.display = "none";
+                      document.getElementById("macos-desktop")?.remove();
+                      document.getElementById("header").style.display = "";
+                      const storyScreen = document.querySelector("#story-content")?.closest(".screen");
+                      if (storyScreen) storyScreen.style.padding = "";
+                      nextTask();
+                    });
+                    fb.appendChild(nextBtn);
                   } else {
                     if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
                     fb.innerHTML = '<div class="feedback '+(score>=60?"warning":"error")+'"><div class="feedback-title">'+ found+'/'+checks.length+' elementen</div>'+missing.map(m=>'<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>'+m.label+':</strong> '+m.hint+'</div>').join("")+'</div>';
