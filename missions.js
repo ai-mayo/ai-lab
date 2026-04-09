@@ -358,14 +358,14 @@ const MISSIONS = [
       {
         type: "scenario",
         label: "VERGELIJK",
-        title: "ChatGPT vs Claude vs Copilot",
-        desc: "Dezelfde prompt in drie AI-tools. Elk model reageert anders. Welke past het best bij een gemeentelijke brief?",
+        title: "Drie modellen, drie antwoorden",
+        desc: "Dezelfde prompt, maar elk AI-model reageert anders. GPT-4o, Claude en Llama \u2014 welke past het best?",
         interaction: {
           type: "model-compare",
           prompt: "Leg aan een inwoner uit waarom de gemeente AI gaat gebruiken, in 3 zinnen, begrijpelijk voor iedereen",
           models: [
             {
-              name: "ChatGPT",
+              name: "GPT-4o",
               icon: "",
               color: "#10a37f",
               output: "De gemeente gaat AI gebruiken om u sneller en beter te kunnen helpen. Denk aan kortere wachttijden bij het KCC, snellere verwerking van uw aanvragen en brieven die makkelijker te begrijpen zijn. Uw gegevens blijven beschermd en een medewerker controleert altijd het werk van de AI.",
@@ -377,23 +377,46 @@ const MISSIONS = [
               icon: "",
               color: "#d97706",
               output: "Gemeente Mayostad zet AI in als hulpmiddel voor onze medewerkers, zodat zij meer tijd hebben voor persoonlijk contact met u. AI helpt bijvoorbeeld bij het schrijven van brieven en het beantwoorden van veelgestelde vragen. Een mens controleert altijd de uitkomst voordat u iets ontvangt.",
-              strengths: ["Nadruk op menselijk contact", "Gerustellend", "Precies 3 zinnen"],
+              strengths: ["Nadruk op menselijk contact", "Geruststellend", "Precies 3 zinnen"],
               weaknesses: ["Minder concrete voorbeelden"]
             },
             {
-              name: "Copilot",
+              name: "Llama",
               icon: "",
-              color: "#0078d4",
-              output: "AI helpt de gemeente om effici\u00EBnter te werken en u sneller van dienst te zijn. Het wordt ingezet voor taken zoals het samenvatten van documenten en het beantwoorden van standaardvragen. Medewerkers houden altijd de controle.",
-              strengths: ["Beknopt", "Zakelijk", "Duidelijk"],
-              weaknesses: ["Wat kaal", "Minder persoonlijk"]
+              color: "#6366f1",
+              output: "De gemeente gebruikt AI om sneller te werken en u beter te helpen. Denk aan het beantwoorden van veelgestelde vragen en het schrijven van duidelijke brieven. Medewerkers controleren altijd het resultaat.",
+              strengths: ["Open source", "Beknopt", "Draait lokaal"],
+              weaknesses: ["Minder detail", "Wat standaard"]
             }
           ],
           question: "Welk model past het best bij een brief aan inwoners van de gemeente?",
           correctModel: "Claude",
-          explanation: "Claude benadrukt menselijk contact en is geruststellend \u2014 precies wat inwoners willen horen. ChatGPT is completer maar langer. Copilot is zakelijk maar mist warmte. Let op: ALLE drie hallucieren en sturen data naar de cloud (VS). Gebruik GAIMS voor gevoelige data."
+          explanation: "Elk model heeft een eigen stijl. Claude is warm en geruststellend \u2014 goed voor inwonerbrieven. GPT-4o is completer. Llama is beknopt en draait lokaal. Het juiste model hangt af van de taak."
         },
-        insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. ChatGPT is vaak creatief, Claude is voorzichtig en precies, Gemini is beknopt. Tip: probeer belangrijke vragen in meerdere tools en vergelijk de antwoorden."
+        insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. Het juiste model kiezen is net zo belangrijk als een goede prompt. Voor offici\u00EBle brieven: Claude. Voor brainstorms: GPT-4o. Voor snelle taken: Llama."
+      },
+      {
+        type: "scenario",
+        label: "PREVIEW",
+        title: "GAIMS: jouw lokale AI",
+        desc: "Tom Bakker stuurt je een bericht.",
+        interaction: {
+          type: "chat-simulator",
+          tool: "chatgpt",
+          steps: [{
+            instruction: "Tom Bakker (ICT): \u201CGoede eerste dag! Je hebt nu met ChatGPT gewerkt. Maar wist je dat GAIMS dezelfde modellen heeft \u2014 GPT-4o, Claude, Llama \u2014 maar dan op onze eigen servers? Geen data naar de cloud. En per agent stellen we de temperature apart in: laag voor beschikkingen, hoger voor communicatie. Daar gaan we later mee werken.\u201D",
+            prefilledOptions: [
+              { text: "Interessant! Wanneer gaan we daarmee aan de slag?", quality: "good" }
+            ],
+            responses: {
+              good: {
+                output: "Binnenkort! Eerst leer je de basis met ChatGPT. Daarna schakelen we over naar GAIMS voor het echte werk met gevoelige gemeentedata.",
+                feedback: { type: "info", title: "GAIMS komt later", text: "GAIMS (Generatieve AI Mayostad) draait lokaal op gemeentelijke servers. Dezelfde modellen, maar veilig. Per agent wordt de temperature apart ingesteld. Daar leer je later meer over." }
+              }
+            }
+          }]
+        },
+        insight: "GAIMS biedt dezelfde modellen als ChatGPT (GPT-4o, Claude, Llama) maar draait lokaal. Geen data naar de cloud. Per agent wordt de temperature apart ingesteld: laag voor juridische stukken, hoger voor creatieve teksten."
       }
     ]
   },
