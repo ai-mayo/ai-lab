@@ -1335,78 +1335,98 @@
             const inputEl = chatBody.querySelector("#gpt-free-input");
             const sendBtn = chatBody.querySelector("#gpt-free-send");
             const chatEl = chatBody.querySelector("#sim-chat");
+            // Get mission data from current context
+            const missionData = state.currentMission;
+            const taskData = missionData?.tasks?.[0]?.interaction || {};
+            const checks = taskData.checks || [];
+            const responses = taskData.responses || {};
             let sent = false;
+
             inputEl.addEventListener("input", () => { sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3"; });
+
             function handleSend() {
               if (sent || inputEl.value.trim().length < 5) return;
               sent = true;
               sfxClick();
               const promptText = inputEl.value.trim();
+
+              // Clear welcome message and reset chat layout
+              chatEl.style.display = "block";
+              chatEl.style.alignItems = "";
+              chatEl.style.justifyContent = "";
+              chatEl.innerHTML = "";
+
+              // Clear input
+              inputEl.value = "";
               inputEl.setAttribute("readonly", "");
               sendBtn.disabled = true;
-              chatEl.innerHTML = "";
+
+              // Show user message
               addChatMsg(chatEl, ui, "user", promptText, false);
-              // Validate against checks
+
+              // Validate
               const text = promptText.toLowerCase();
               let score = 0, found = 0, missing = [];
-              const checks = d?.checks || [];
               checks.forEach(c => {
                 if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { score += c.points; found++; }
                 else { missing.push(c); }
               });
-              const responses = d?.responses || {};
               let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
-              const response = responses[responseKey] || "Ik heb je prompt ontvangen. Hier is mijn antwoord op basis van de informatie die je hebt gegeven.";
+              const response = responses[responseKey] || "Bedankt voor je bericht. Ik heb je prompt verwerkt.";
+
+              // Show AI response with typing animation
               addChatMsg(chatEl, ui, "ai", response, true).then(() => {
-                if (checks.length > 0) {
-                  const fb = document.createElement("div");
-                  fb.style.cssText = "padding:16px;border-top:1px solid #333";
-                  if (score >= 90) {
-                    sfxCorrect(); addXP(200);
-                    // Move task to done on board
-                    const boardTask = BOARD_TASKS.find(t => t.id === "VTH-042");
-                    if (boardTask) boardTask.col = "done";
-                    save();
-                    fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie. De taak is afgerond op MayoBoard.</div>';
-                    // Next step button
-                    const nextBtn = document.createElement("button");
-                    nextBtn.className = "action-btn";
-                    nextBtn.style.marginTop = "12px";
-                    nextBtn.style.width = "100%";
-                    nextBtn.textContent = "Volgende opdracht: Temperature \u2192";
-                    nextBtn.addEventListener("click", () => {
-                      sfxClick();
-                      // Close ChatGPT, go to next task in story
-                      document.getElementById("window-chatgpt").style.display = "none";
-                      document.getElementById("macos-desktop")?.remove();
-                      document.getElementById("header").style.display = "";
-                      const storyScreen = document.querySelector("#story-content")?.closest(".screen");
-                      if (storyScreen) storyScreen.style.padding = "";
-                      nextTask();
-                    });
-                    fb.appendChild(nextBtn);
-                  } else {
-                    if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
-                    fb.innerHTML = '<div class="feedback '+(score>=60?"warning":"error")+'"><div class="feedback-title">'+ found+'/'+checks.length+' elementen</div>'+missing.map(m=>'<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>'+m.label+':</strong> '+m.hint+'</div>').join("")+'</div>';
-                    const retryBtn = document.createElement("button");
-                    retryBtn.className = "action-btn secondary";
-                    retryBtn.style.marginTop = "10px";
-                    retryBtn.textContent = "Opnieuw proberen";
-                    retryBtn.addEventListener("click", () => {
-                      sent = false;
-                      inputEl.removeAttribute("readonly");
-                      sendBtn.disabled = false;
-                      chatEl.innerHTML = "";
-                      inputEl.value = "";
-                      inputEl.focus();
-                      retryBtn.parentElement.remove();
-                    });
-                    fb.appendChild(retryBtn);
-                  }
-                  chatBody.querySelector(".gpt-input-area").before(fb);
+                const fb = document.createElement("div");
+                fb.style.cssText = "padding:16px;border-top:1px solid #333";
+
+                if (score >= 90) {
+                  sfxCorrect(); addXP(200);
+                  // Move task to done
+                  const boardTask = BOARD_TASKS.find(t => t.id === "VTH-042");
+                  if (boardTask) boardTask.col = "done";
+                  save();
+
+                  fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie. De taak is afgerond op MayoBoard.</div>';
+
+                  const nextBtn = document.createElement("button");
+                  nextBtn.className = "action-btn";
+                  nextBtn.style.cssText = "margin-top:12px;width:100%";
+                  nextBtn.textContent = "Volgende opdracht: Temperature \u2192";
+                  nextBtn.addEventListener("click", () => {
+                    sfxClick();
+                    document.getElementById("window-chatgpt").style.display = "none";
+                    document.getElementById("macos-desktop")?.remove();
+                    document.getElementById("header").style.display = "";
+                    const storyScreen = document.querySelector("#story-content")?.closest(".screen");
+                    if (storyScreen) storyScreen.style.padding = "";
+                    nextTask();
+                  });
+                  fb.appendChild(nextBtn);
+                } else {
+                  if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
+                  fb.innerHTML = '<div class="feedback ' + (score >= 60 ? "warning" : "error") + '"><div class="feedback-title">' + found + '/' + checks.length + ' elementen</div>' + missing.map(m => '<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>' + m.label + ':</strong> ' + m.hint + '</div>').join("") + '</div>';
+
+                  const retryBtn = document.createElement("button");
+                  retryBtn.className = "action-btn secondary";
+                  retryBtn.style.marginTop = "10px";
+                  retryBtn.textContent = "Opnieuw proberen";
+                  retryBtn.addEventListener("click", () => {
+                    sent = false;
+                    inputEl.removeAttribute("readonly");
+                    sendBtn.disabled = false;
+                    chatEl.innerHTML = "";
+                    inputEl.value = "";
+                    inputEl.focus();
+                    fb.remove();
+                  });
+                  fb.appendChild(retryBtn);
                 }
+
+                chatBody.querySelector(".gpt-input-area")?.before(fb);
+                chatEl.scrollTop = chatEl.scrollHeight;
               });
             }
+
             sendBtn.addEventListener("click", handleSend);
             inputEl.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } });
           }
