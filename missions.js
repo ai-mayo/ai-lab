@@ -389,9 +389,9 @@ const MISSIONS = [
               weaknesses: ["Minder detail", "Wat standaard"]
             }
           ],
-          question: "Welk model past het best bij een brief aan inwoners van de gemeente?",
-          correctModel: "Claude",
-          explanation: "Elk model heeft een eigen stijl. Claude is warm en geruststellend \u2014 goed voor inwonerbrieven. GPT-4o is completer. Llama is beknopt en draait lokaal. Het juiste model hangt af van de taak."
+          question: null,
+          correctModel: null,
+          explanation: "Elk model heeft een eigen stijl en kwaliteiten. GPT-4o is compleet en gedetailleerd \u2014 goed voor uitgebreide teksten. Claude is warm en geruststellend \u2014 sterk in persoonlijke communicatie. Llama is beknopt en draait lokaal \u2014 snel en open source. Er is geen 'beste' model. Het juiste model hangt af van je taak."
         },
         insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. Het juiste model kiezen is net zo belangrijk als een goede prompt. Voor offici\u00EBle brieven: Claude. Voor brainstorms: GPT-4o. Voor snelle taken: Llama."
       },

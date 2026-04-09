@@ -2715,6 +2715,16 @@
     function showCompareQuestion() {
       const qEl = area.querySelector("#compare-question");
       qEl.style.display = "block";
+
+      // If no question, just show explanation and continue
+      if (!d.question) {
+        addXP(80);
+        state.totalScore++;
+        qEl.innerHTML = `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Analyse</div>${d.explanation}</div>`;
+        showInsightAndNext(area, task);
+        return;
+      }
+
       qEl.innerHTML = `
         <div class="task-title" style="font-size:1rem">${d.question}</div>
         <div class="choice-grid" id="model-choices"></div>
