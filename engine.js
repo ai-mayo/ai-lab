@@ -266,7 +266,7 @@
         <div style="text-align:center;padding:60px 0">
           <div style="font-size:3rem;margin-bottom:16px">\u{1F3C6}</div>
           <h2 style="color:var(--text);font-size:1.5rem;margin-bottom:8px">Week Voltooid</h2>
-          <p style="color:var(--text-dim);margin-bottom:24px">Je hebt je eerste week bij Nova overleefd. En je weet nu meer over AI dan 90% van je collega's.</p>
+          <p style="color:var(--text-dim);margin-bottom:24px">Je hebt je eerste week bij Gemeente Mayostad overleefd. En je weet nu meer over AI dan 90% van je collega's.</p>
           <div style="font-family:var(--mono);font-size:0.8rem;color:var(--cyan)">${state.xp} XP verdiend</div>
         </div>
       `;
@@ -288,7 +288,7 @@
         </div>
         <button class="action-btn story-start-btn" id="story-start">Beginnen</button>
       </div>
-      ${chapterIdx > 0 ? `<div class="story-recap"><div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px">EERDER BIJ NOVA</div>${renderRecap(chapterIdx)}</div>` : ""}
+      ${chapterIdx > 0 ? `<div class="story-recap"><div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px">EERDER BIJ GEMEENTE MAYOSTAD</div>${renderRecap(chapterIdx)}</div>` : ""}
     `;
 
     // Type the story intro
@@ -391,6 +391,7 @@
       "sort-safe-unsafe": renderSortSafeUnsafe,
       "transform-text": renderTransformText,
       "role-compare": renderRoleCompare,
+      "video-segment": renderVideoSegment,
     };
     const renderer = renderers[type];
     if (renderer) renderer(area, task);
@@ -427,7 +428,7 @@
           <div class="stat-card"><div class="stat-value">${state.streak}</div><div class="stat-label">Dag streak</div></div>
         </div>
         <div class="result-insight">
-          <div class="insight-label">Wat je vandaag hebt geleerd bij Nova</div>
+          <div class="insight-label">Wat je vandaag hebt geleerd bij Gemeente Mayostad</div>
           <div class="insight-text">${mission.tasks.map(t => t.insight).join("<br><br>")}</div>
         </div>
         <div class="btn-row" style="justify-content:center;margin-top:24px">
@@ -1028,6 +1029,27 @@
   }
 
   // ─── INTERACTION: Intranet then Prompt ───────────────
+  // ─── INTERACTION: Video Segment ──────────────────────
+  function renderVideoSegment(area, task) {
+    const d = task.interaction;
+    area.innerHTML = `
+      <div class="video-segment-panel" style="max-width:720px;margin:20px auto;background:rgba(0,0,0,0.4);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)">
+        <div style="position:relative;background:#000">
+          <video src="${d.videoSrc}" controls autoplay playsinline style="width:100%;display:block;max-height:400px;object-fit:contain"></video>
+        </div>
+        <div style="padding:20px 24px">
+          <div style="font-size:0.88rem;color:var(--text-dim);line-height:1.6;margin-bottom:16px">${d.caption || ""}</div>
+          <button class="action-btn" id="video-next-btn" style="width:100%">${d.nextLabel || "Volgende \u2192"}</button>
+        </div>
+      </div>
+    `;
+    area.querySelector("#video-next-btn").addEventListener("click", () => {
+      sfxClick();
+      state.totalScore++;
+      nextTask();
+    });
+  }
+
   function renderIntranetThenPrompt(area, task) {
     const d = task.interaction;
     const wiki = d.wiki;
@@ -1158,6 +1180,10 @@
           <div class="dock-tooltip">MayoMail</div><div class="dock-label">MayoMail</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>
         </div>
+        <div class="dock-icon" data-app="chat">
+          <div class="dock-tooltip">MayoChat</div><div class="dock-label">MayoChat</div>
+          <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/></svg>
+        </div>
       </div>
 
       <div class="app-window open" id="window-board" style="display:none;top:35px;left:30px;right:30px;bottom:74px">
@@ -1188,7 +1214,7 @@
           {app:"zaaksysteem",label:"Zaaksysteem",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0f766e" opacity="0.4"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3" opacity="0.4"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5" opacity="0.3"/></svg>'},
           {app:"gaims",label:"GAIMS",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0c1222" opacity="0.4"/><rect x="30" y="30" width="60" height="60" rx="14" fill="#334" opacity="0.4"/><text x="60" y="68" text-anchor="middle" fill="white" font-size="28" font-weight="900" font-family="sans-serif" opacity="0.4">G</text></svg>'},
           {app:"copilot",label:"Copilot",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2d2d2d" opacity="0.4"/><circle cx="60" cy="60" r="24" fill="none" stroke="#0078d4" stroke-width="4" opacity="0.4"/><circle cx="60" cy="60" r="12" fill="#0078d4" opacity="0.4"/></svg>'},
-          {app:"chat",label:"MayoChat",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2563eb" opacity="0.4"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3" opacity="0.4"/></svg>'},
+          {app:"chat",label:"MayoChat",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/></svg>'},
         ].map(a => `<div class="desktop-icon-item${a.enabled ? "" : " disabled"}" data-desk-app="${a.app}">${a.svg}<div class="desktop-icon-label">${a.label}</div></div>`).join("")}
       </div>
 
@@ -1391,7 +1417,7 @@
                   const nextBtn = document.createElement("button");
                   nextBtn.className = "action-btn";
                   nextBtn.style.cssText = "margin-top:12px;width:100%";
-                  nextBtn.textContent = "Volgende opdracht: Temperature \u2192";
+                  nextBtn.textContent = "Afronden \u2192";
                   nextBtn.addEventListener("click", () => {
                     sfxClick();
                     document.getElementById("window-chatgpt").style.display = "none";
@@ -1536,7 +1562,7 @@
     const pageEl = area.querySelector("#intranet-page");
 
     function renderNav() {
-      navEl.innerHTML = `<div class="intranet-sidebar-title">Nova Intranet</div>`;
+      navEl.innerHTML = `<div class="intranet-sidebar-title">MayoWiki</div>`;
       Object.entries(wiki.pages).forEach(([key, page]) => {
         const item = document.createElement("div");
         item.className = "intranet-nav-item" + (key === currentPage ? " active" : "");
@@ -1613,13 +1639,31 @@
     renderNav();
     renderPage();
 
-    // Show task on board after delay
+    // Show task on board after delay, with video segments
     renderBoard(area.querySelector("#board-body"), d, task, taskShown);
+    const videoSegs = d.videoSegments || {};
+
+    // Video segment 2: Marco's rondleiding (after some exploration time)
+    if (videoSegs.onFirstExplore) {
+      setTimeout(() => {
+        showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
+      }, videoSegs.onFirstExplore.delay || 25000);
+    }
+
+    // Task assignment
     setTimeout(() => {
       if (taskShown) return;
       taskShown = true;
       renderBoard(area.querySelector("#board-body"), d, task, true);
-      showDesktopNotification("Nieuwe taak op MayoBoard! Lisa heeft een opdracht voor je.");
+      // Show video segment 3 about the task, then the chat notification
+      if (videoSegs.onTaskAssigned) {
+        showDesktopVideoOverlay(videoSegs.onTaskAssigned.src, videoSegs.onTaskAssigned.caption, () => {
+          showChatNotification(area, d, task);
+        });
+      } else {
+        showDesktopNotification("Nieuwe taak op MayoBoard! Marco heeft een opdracht voor je.");
+        setTimeout(() => showChatNotification(area, d, task), 3000);
+      }
     }, d.taskPopupDelay || 12000);
   }
 
@@ -1629,8 +1673,8 @@
     notif.className = "macos-notification";
     notif.innerHTML = `
       <div class="macos-notif-header">
-        <div class="macos-notif-icon">N</div>
-        <div class="macos-notif-app">Nova</div>
+        <div class="macos-notif-icon">M</div>
+        <div class="macos-notif-app">Mayostad</div>
         <div class="macos-notif-time">nu</div>
       </div>
       <div class="macos-notif-body">
@@ -1639,6 +1683,31 @@
     `;
     notifArea.appendChild(notif);
     setTimeout(() => notif.remove(), 4000);
+  }
+
+  function showDesktopVideoOverlay(videoSrc, caption, onDismiss) {
+    const desktop = document.getElementById("macos-desktop");
+    if (!desktop) return;
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:40px;backdrop-filter:blur(6px)";
+    overlay.innerHTML = `
+      <div style="max-width:680px;width:100%;background:rgba(20,20,30,0.95);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+        <div style="position:relative;background:#000">
+          <video src="${videoSrc}" controls autoplay playsinline style="width:100%;display:block;max-height:360px;object-fit:contain"></video>
+        </div>
+        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.5;flex:1">${caption || ""}</div>
+          <button class="desktop-video-dismiss" style="padding:8px 20px;background:#0052cc;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;margin-left:16px;white-space:nowrap">Doorgaan</button>
+        </div>
+      </div>
+    `;
+    desktop.appendChild(overlay);
+    overlay.querySelector(".desktop-video-dismiss").addEventListener("click", () => {
+      const video = overlay.querySelector("video");
+      if (video) { video.pause(); video.src = ""; }
+      overlay.remove();
+      if (onDismiss) onDismiss();
+    });
   }
 
   function showChatNotification(area, d, task) {
@@ -1716,7 +1785,7 @@
         <div class="gpt-chat" id="sim-chat" style="flex:1"></div>
         <div class="gpt-input-area">
           <div class="gpt-inputbar">
-            <input class="gpt-input" id="gpt-free-input" placeholder="Schrijf hier je prompt voor de klant-email...">
+            <input class="gpt-input" id="gpt-free-input" placeholder="Schrijf hier je prompt voor de brief aan dhr. Van Dijk...">
             <button class="gpt-send" id="gpt-free-send">\u2191</button>
           </div>
           <div class="gpt-disclaimer">ChatGPT kan fouten maken. Controleer belangrijke informatie.</div>
@@ -1762,30 +1831,92 @@
         const fb = document.createElement("div");
         fb.style.cssText = "padding:16px;border-top:1px solid #333";
 
+        // Build score detail HTML
+        const scoreDetailHTML = d.checks.map(c => {
+          const hit = c.keywords.some(kw => text.includes(kw.toLowerCase()));
+          return `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--${hit ? "green" : "red"})">${hit ? "\u2713" : "\u2718"}</span><strong>${c.label}:</strong> ${hit ? c.points + " pt" : c.hint}</div>`;
+        }).join("");
+
         if (score >= 90) {
           sfxCorrect(); addXP(200); state.totalScore++;
-          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend!</div>Je prompt bevatte alle cruciale informatie. Lisa zou trots zijn.</div>`;
+          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend! (${score} punten)</div>Je prompt bevatte alle cruciale informatie. Marco zou trots zijn.${scoreDetailHTML}</div>`;
         } else {
           if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; } else { sfxWrong(); addXP(30); }
           fb.innerHTML = `<div class="feedback ${score >= 60 ? "warning" : "error"}">
-            <div class="feedback-title">${found}/${d.checks.length} elementen - ${score >= 60 ? "Goed begin" : "De AI miste context"}</div>
-            ${missing.map(m => `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>${m.label}:</strong> ${m.hint}</div>`).join("")}
-            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: alle informatie stond op het Nova intranet. Klik op het intranet-icoon in de dock om terug te kijken.</div>
+            <div class="feedback-title">${found}/${d.checks.length} elementen - ${score >= 60 ? "Goed begin" : "De AI miste context"} (${score} punten)</div>
+            ${scoreDetailHTML}
+            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: alle informatie stond op MayoWiki. Klik op het MayoWiki-icoon in de dock om terug te kijken.</div>
           </div>`;
           fb.innerHTML += `<button class="action-btn secondary" id="retry-btn" style="margin-top:10px">Probeer opnieuw</button>`;
         }
 
-        fb.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Inzicht</div>${task.insight}</div>`;
-        fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">Volgende \u2192</button>`;
+        // WIE-WAT-WANNEER-HOE-FORMAAT framework
+        const fw = d.feedbackFramework;
+        if (fw) {
+          fb.innerHTML += `<div class="feedback info" style="margin-top:12px">
+            <div class="feedback-title">${fw.title}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+              ${fw.items.map(it => `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px"><div style="font-weight:700;color:var(--cyan);font-size:0.9rem;margin-bottom:4px">${it.label}</div><div style="font-size:0.8rem;color:var(--text-dim)">${it.desc}</div></div>`).join("")}
+            </div>
+            <div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1)">
+              <div style="font-weight:600;margin-bottom:8px;font-size:0.85rem">3 takeaways van Dag 1:</div>
+              ${fw.takeaways.map((t,i) => `<div style="display:flex;gap:8px;margin-top:4px;font-size:0.82rem"><span style="color:var(--cyan);font-weight:700">${i+1}.</span>${t}</div>`).join("")}
+            </div>
+          </div>`;
+        } else {
+          fb.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Inzicht</div>${task.insight}</div>`;
+        }
+
+        fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">Afronden \u2192</button>`;
         chatgptBody.querySelector(".gpt-input-area").before(fb);
 
         fb.querySelector("#next-from-desktop")?.addEventListener("click", () => {
-          // Clean up desktop, restore normal UI
-          document.getElementById("macos-desktop")?.remove();
-          document.getElementById("header").style.display = "";
-          area.closest(".screen").style.padding = "";
           sfxClick();
-          nextTask();
+
+          function showCliffhangerAndFinish() {
+            const cliffhanger = d.cliffhanger;
+            if (cliffhanger) {
+              const notifArea = document.getElementById("notification-area");
+              const notif = document.createElement("div");
+              notif.className = "macos-notification";
+              notif.style.cssText = "cursor:pointer;animation:none;opacity:1";
+              notif.innerHTML = `
+                <div class="macos-notif-header">
+                  <div class="macos-notif-icon" style="background:#2563eb">${cliffhanger.avatar || "?"}</div>
+                  <div class="macos-notif-app">MayoChat</div>
+                  <div class="macos-notif-time">nu</div>
+                </div>
+                <div class="macos-notif-body">
+                  <div class="macos-notif-title">${cliffhanger.from}</div>
+                  <div class="macos-notif-text">${cliffhanger.message}</div>
+                </div>
+              `;
+              notifArea.appendChild(notif);
+              setTimeout(() => {
+                notif.remove();
+                cleanupAndNext();
+              }, 6000);
+            } else {
+              cleanupAndNext();
+            }
+          }
+
+          function cleanupAndNext() {
+            document.getElementById("macos-desktop")?.remove();
+            document.getElementById("header").style.display = "";
+            area.closest(".screen").style.padding = "";
+            nextTask();
+          }
+
+          // Show video segment 6 (feedback + cliffhanger), then the cliffhanger notification
+          const vSegs = d.videoSegments || {};
+          if (vSegs.onFeedback) {
+            showDesktopVideoOverlay(vSegs.onFeedback.src, vSegs.onFeedback.caption, () => {
+              showCliffhangerAndFinish();
+            });
+          } else {
+            showCliffhangerAndFinish();
+          }
         });
 
         fb.querySelector("#retry-btn")?.addEventListener("click", () => {
@@ -2016,7 +2147,7 @@
   const BOARD_TASKS = [
     { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente. Hoe schrijf je naar inwoners? Welke regels gelden er voor AI?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad.", action:null },
     { id:"VTH-041", title:"WiWa bekijken", desc:"Wie zijn je collega's? En wie zijn de robot-collega's?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad.", action:null },
-    { id:"VTH-042", title:"Zaak VG-2026-042: reactie naar inwoner", desc:"Inwoner is nog niet geinformeerd over de status van zijn aanvraag. Stel een brief op.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"Open de Vergunningtool en zoek zaak VG-2026-042.", action:null },
+    { id:"VTH-042", title:"Brief schrijven: vertraging terrasvergunning Van Dijk", desc:"Dhr. H.J. van Dijk (Bakkerij Van Dijk, Marktstraat 14) is nog niet geinformeerd over de vertraging van zijn terrasvergunning (VTH-2026-00347). Schrijf een brief met uitleg over het bezwaar en de nieuwe beslisdatum (10 april). Check de Schrijfwijzer en Lopende Zaken op MayoWiki.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"1. Open MayoWiki > Lopende Zaken > Zaak Van Dijk\n2. Lees de Schrijfwijzer\n3. Open ChatGPT en schrijf een prompt", action:"chatgpt" },
   ];
 
   function renderBoard(container, d, task, showNewTask) {
@@ -2156,8 +2287,8 @@
       { name: "WMO-Schrijver", role: "AI Assistent", skills: ["Beschikkingen opstellen", "Bezwaar-templates", "B1-taal"], status: "online", bot: true, model: "GPT-4o", desc: "Stelt concept-beschikkingen op. Output MOET altijd juridisch gecontroleerd worden door Bas of Ahmed." },
     ]},
     { dept: "VTH", people: [
-      { name: "Marco Pieterse", role: "Teamleider", skills: ["Vergunningen", "Toezicht", "Handhaving"], status: "online", bot: false },
-      { name: "Anouk Willems", role: "Vergunningverlener", skills: ["Omgevingsvergunning", "Horeca", "Evenementen"], status: "online", bot: false },
+      { name: "Marco Pieterse", role: "Teamleider", skills: ["Vergunningen", "Toezicht", "Handhaving"], status: "online", bot: false, desc: "Teamleider VTH. Kamer 2.17. Tel: 14 0555 tst 2240. E-mail: m.pieterse@mayostad.nl" },
+      { name: "Anouk Willems", role: "Vergunningverlener", skills: ["Omgevingsvergunning", "Horeca", "Evenementen"], status: "online", bot: false, desc: "Vergunningverlener. Kamer 2.15. Tel: 14 0555 tst 2237. E-mail: a.willems@mayostad.nl. Behandelt o.a. zaak Van Dijk (VTH-2026-00347)." },
     ]},
     { dept: "BOA", people: [
       { name: "Dennis Krul", role: "Co\u00F6rdinator", skills: ["Aansturing BOA's", "Rapportages", "PV's"], status: "online", bot: false },
@@ -2334,7 +2465,7 @@
           </div>
           <div class="gpt-sidebar-label">Vandaag</div>
           <div class="gpt-sidebar-list">
-            <div class="gpt-sidebar-item active" data-chat="current">Email schrijven klant</div>
+            <div class="gpt-sidebar-item active" data-chat="current">Brief terrasvergunning Van Dijk</div>
             <div class="gpt-sidebar-item" data-chat="Samenvatting vergadering">Samenvatting vergadering</div>
             <div class="gpt-sidebar-item" data-chat="Python script debuggen">Python script debuggen</div>
           </div>

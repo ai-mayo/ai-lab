@@ -4,39 +4,68 @@
 
 const STORY = {
   title: "Eerste Week bij Gemeente Mayostad",
-  intro: "Je bent net aangenomen bij Gemeente Mayostad, een snelgroeiend techbedrijf. Op je eerste dag ontdek je dat iedereen hier AI gebruikt. Je manager zegt: 'Wij werken niet harder. Wij werken met AI.' Jij hebt nog nooit een AI-tool geopend. Dat gaat vandaag veranderen.",
+  intro: "Je bent net aangenomen bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Vandaag is je eerste werkdag.",
 };
 
 const MISSIONS = [
-  // ── DAG 1 ──────────────────────────────────────────
+  // ── DAG 1: De Eerste Dag ──────────────────────────────
   {
     id: "prompt-lab",
-    name: "Dag 1: Je Eerste Opdracht",
-    desc: "Je manager vraagt je een klant-email te schrijven. 'Gebruik ChatGPT,' zegt ze. Je opent het.",
-    icon: "\u{1F3ED}",
+    name: "Dag 1: De Eerste Dag",
+    desc: "Je eerste werkdag bij de afdeling VTH van Gemeente Mayostad. Je leert het intranet kennen en schrijft je eerste brief met AI.",
+    icon: "\u{1F3DB}",
     color: "var(--cyan)",
     colorDim: "var(--cyan-dim)",
     tag: "DAG 1",
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
-    storyIntro: "Maandagochtend. Jouw eerste dag bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Marco, je teamleider, heeft je werkplek al ingericht. Op je bureaublad staan de apps die je nodig hebt. Verken je werkplek.",
+    storyIntro: "Maandagochtend. Jouw eerste dag bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. 82.000 inwoners, 650 medewerkers. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Marco Pieterse, je teamleider, heeft je werkplek al ingericht.",
     tasks: [
+      // ── Segment 1: Welkomstvideo ──
       {
         type: "scenario",
-        label: "OPEN CHATGPT",
-        title: "Je opent ChatGPT voor het eerst",
-        desc: "Verken het intranet van Gemeente Mayostad. Klik rond, leer het bedrijf kennen.",
+        label: "VIDEO",
+        title: "Welkom bij Gemeente Mayostad",
+        desc: "Een korte introductie over je nieuwe werkplek en de AI-pilot.",
+        interaction: {
+          type: "video-segment",
+          videoSrc: "video-segment-1.mp4",
+          caption: "Welkom bij de afdeling VTH van Gemeente Mayostad. Je gaat meedoen aan een AI-pilot.",
+          nextLabel: "Start je werkdag \u2192"
+        },
+        insight: "Gemeente Mayostad heeft 82.000 inwoners en 650 medewerkers. De afdeling VTH behandelt vergunningen, toezicht en handhaving."
+      },
+      // ── Desktop verkennen + taak ──
+      {
+        type: "scenario",
+        label: "VERKENNEN",
+        title: "Je werkplek verkennen",
+        desc: "Verken het intranet van Gemeente Mayostad. Klik rond, leer de organisatie kennen. Wacht op je eerste opdracht van Marco.",
         interaction: {
           type: "intranet-then-prompt",
           tool: "chatgpt",
           taskPopupDelay: 15000,
+          // Video segments to show during the desktop phase
+          videoSegments: {
+            onFirstExplore: { src: "video-segment-2.mp4", caption: "Marco geeft je een rondleiding langs de systemen.", delay: 25000 },
+            onTaskAssigned: { src: "video-segment-3.mp4", caption: "Marco legt de casus Van Dijk uit." },
+            onWikiVisited: { src: "video-segment-4.mp4", caption: "Zoek de informatie die je nodig hebt op het intranet." },
+            onPromptWritten: { src: "video-segment-5.mp4", caption: "Reflectie: hoe was je prompt?" },
+            onFeedback: { src: "video-segment-6.mp4", caption: "Kernboodschap en een vooruitblik op Dag 2." }
+          },
           taskPopup: {
             from: "Marco Pieterse",
             fromRole: "Teamleider VTH",
             avatar: "MP",
-            message: "Hoi! Er moet een brief uit naar een inwoner. Ik heb de details in MayoChat gezet. Kun jij dit oppakken? Gebruik ChatGPT als je wilt, maar check wel even de schrijfwijzer.",
+            message: "Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De details staan in MayoWiki onder Lopende Zaken. Check ook even de Schrijfwijzer. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.",
             urgency: "Vandaag afhandelen"
+          },
+          cliffhanger: {
+            from: "Anouk Willems",
+            fromRole: "Vergunningverlener VTH",
+            avatar: "AW",
+            message: "Heb je die beschikking van Bas gezien? Met ChatGPT geschreven. Ziet er professioneel uit, maar er staan wetsartikelen in die niet bestaan... Morgen bespreken?"
           },
           wiki: {
             pages: {
@@ -48,6 +77,7 @@ const MISSIONS = [
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "", link: "about" },
                     { title: "Schrijfwijzer", icon: "", link: "tone" },
+                    { title: "Lopende Zaken VTH", icon: "", link: "lopende-zaken" },
                     { title: "AI bij de Gemeente", icon: "", link: "ai" },
                     { title: "Tools & Apps", icon: "", link: "tools" },
                     { title: "AI Huisregels", icon: "", link: "rules" },
@@ -66,34 +96,112 @@ const MISSIONS = [
                 title: "Over Gemeente Mayostad",
                 icon: "",
                 content: [
-                  { type: "text", text: "Gemeente Mayostad is een snelgroeiend techbedrijf gespecialiseerd in slimme logistieke oplossingen voor het MKB. Opgericht in 2019, inmiddels 45 medewerkers." },
-                  { type: "text", text: "Onze missie: technologie toegankelijk maken voor bedrijven die geen IT-afdeling hebben. We leveren software, hardware en support als compleet pakket." },
-                  { type: "info", label: "Opgericht", value: "2019" },
-                  { type: "info", label: "Medewerkers", value: "45" },
-                  { type: "info", label: "Kantoor", value: "Amsterdam-Oost" },
-                  { type: "info", label: "Klantenservice", value: "020-1234567" }
+                  { type: "heading", text: "Gemeente Mayostad" },
+                  { type: "text", text: "Gemeente Mayostad is een middelgrote gemeente in het oosten van Nederland. Met 82.000 inwoners en 650 medewerkers zet Mayostad in op innovatie, dienstverlening en digitalisering." },
+                  { type: "text", text: "Onze missie: een toegankelijke, betrouwbare en moderne gemeente zijn voor al onze inwoners. We investeren in slimme oplossingen die onze medewerkers ondersteunen en onze dienstverlening verbeteren." },
+                  { type: "info", label: "Inwoners", value: "82.000" },
+                  { type: "info", label: "Medewerkers", value: "650" },
+                  { type: "info", label: "Afdelingen", value: "8 (waaronder VTH, KCC, Sociaal Domein, Burgerzaken, BOA)" },
+                  { type: "info", label: "Gemeentehuis", value: "Raadhuisplein 1, 8011 AA Mayostad" },
+                  { type: "info", label: "Algemeen telefoonnummer", value: "14 0555" },
+                  { type: "info", label: "Burgemeester", value: "Mw. J.A. van den Broek" },
+                  { type: "heading", text: "Afdeling VTH" },
+                  { type: "text", text: "De afdeling Vergunningen, Toezicht en Handhaving (VTH) behandelt alle vergunningsaanvragen (bouw, horeca, evenementen), houdt toezicht op naleving en handhaaft waar nodig. De afdeling telt 18 medewerkers onder leiding van Marco Pieterse." }
                 ]
               },
               tone: {
-                title: "Tone of Voice",
+                title: "Schrijfwijzer Gemeente Mayostad",
                 icon: "",
                 content: [
                   { type: "heading", text: "Zo schrijven wij bij Gemeente Mayostad" },
-                  { type: "text", text: "We zijn professioneel maar warm. We zijn geen bank en geen overheid. We zijn een team van mensen die oprecht geven om onze klanten." },
+                  { type: "text", text: "Wij schrijven op B1-niveau: helder, persoonlijk en respectvol. Onze inwoners moeten onze brieven in \u00e9\u00e9n keer begrijpen, zonder woordenboek of juridische kennis." },
+
+                  { type: "heading", text: "Aanhef en afsluiting" },
                   { type: "do-dont", dos: [
-                    "Beste meneer/mevrouw [achternaam]",
-                    "Hartelijke groet, Klantenservice Gemeente Mayostad",
-                    "Onze excuses voor het ongemak",
-                    "Neem gerust contact op",
-                    "We doen ons best om..."
+                    "Geachte heer/mevrouw [achternaam],",
+                    "Met vriendelijke groet,",
+                    "namens het college van burgemeester en wethouders van Mayostad,",
+                    "[naam behandelaar]"
                   ], donts: [
-                    "Geachte heer/mevrouw",
-                    "Hoogachtend",
-                    "Wij zijn niet verantwoordelijk voor...",
-                    "U dient rekening te houden met...",
-                    "Conform onze algemene voorwaarden..."
+                    "Beste meneer/mevrouw (te informeel voor formele brieven)",
+                    "Hoogachtend (verouderd)",
+                    "Naar aanleiding van uw schrijven d.d. 12 februari jl... (te formeel)"
                   ]},
-                  { type: "text", text: "Vuistregel: schrijf zoals je zou praten tegen een klant die je kent en respecteert." }
+
+                  { type: "heading", text: "Toon en taalgebruik" },
+                  { type: "do-dont", dos: [
+                    "Actief schrijven: 'Wij hebben besloten' in plaats van 'Er is besloten'",
+                    "Eenvoudige woorden: 'besluit' in plaats van 'beschikking'",
+                    "Eenvoudige woorden: 'uitstellen' in plaats van 'verdagen'",
+                    "Begrip tonen: 'Wij begrijpen dat dit vervelend voor u is'",
+                    "Concreet: noem data, namen, telefoonnummers"
+                  ], donts: [
+                    "Passief schrijven: 'Er is besloten dat...'",
+                    "Jargon: 'beschikking', 'verdagen', 'ingebrekestelling'",
+                    "Juridisch taalgebruik dat inwoners niet begrijpen",
+                    "Afstandelijk: 'Conform artikel 4:14 Awb delen wij u mede...'",
+                    "Afkortingen zonder uitleg: APV, Awb, OOV"
+                  ]},
+
+                  { type: "heading", text: "Structuur van een brief" },
+                  { type: "rule", num: "1", text: "Begin met het onderwerp en wat er aan de hand is" },
+                  { type: "rule", num: "2", text: "Leg uit waarom (reden, context)" },
+                  { type: "rule", num: "3", text: "Noem concrete data en vervolgstappen" },
+                  { type: "rule", num: "4", text: "Geef contactgegevens voor vragen" },
+                  { type: "rule", num: "5", text: "Sluit af namens het college" },
+
+                  { type: "text", text: "Vuistregel: schrijf zoals je zou praten tegen een inwoner die je respecteert. Formeel maar warm." }
+                ]
+              },
+              "lopende-zaken": {
+                title: "Lopende Zaken VTH",
+                icon: "",
+                content: [
+                  { type: "heading", text: "Lopende vergunningszaken" },
+                  { type: "text", text: "Hieronder de actieve zaken van de afdeling VTH. Klik op een zaak voor details." },
+                  { type: "cards", items: [
+                    { title: "Zaak Van Dijk \u2014 Terrasvergunning (VERTRAAGD)", icon: "", link: "zaak-vandijk" },
+                  ]},
+                  { type: "heading", text: "Overige lopende zaken" },
+                  { type: "tool", name: "VTH-2026-00412 \u2014 Omgevingsvergunning Sportschool FitNow", desc: "Uitbreiding bestaand pand. Wacht op advies welstandscommissie.", status: "In behandeling" },
+                  { type: "tool", name: "VTH-2026-00398 \u2014 Kapvergunning Esdoorn Kerkstraat", desc: "Herplantplicht opgelegd. Verleend.", status: "Verleend" },
+                  { type: "tool", name: "VTH-2026-00405 \u2014 Evenementenvergunning Koningsdag", desc: "Inclusief geluidsontheffing tot 23:00.", status: "Verleend" },
+                ]
+              },
+              "zaak-vandijk": {
+                title: "Zaak Van Dijk \u2014 Terrasvergunning",
+                icon: "",
+                content: [
+                  { type: "heading", text: "Zaakgegevens" },
+                  { type: "info", label: "Zaaknummer", value: "VTH-2026-00347" },
+                  { type: "info", label: "Type", value: "Terrasvergunning (horeca)" },
+                  { type: "info", label: "Status", value: "\u26A0 Vertraagd \u2014 brief naar aanvrager vereist" },
+
+                  { type: "heading", text: "Aanvrager" },
+                  { type: "info", label: "Naam", value: "Dhr. H.J. van Dijk" },
+                  { type: "info", label: "Bedrijf", value: "Bakkerij Van Dijk" },
+                  { type: "info", label: "Adres", value: "Marktstraat 14, 8011 AB Mayostad" },
+                  { type: "info", label: "Datum aanvraag", value: "12 februari 2026" },
+
+                  { type: "heading", text: "Aanvraag" },
+                  { type: "text", text: "Gevraagd: terras van 12 m\u00B2 (4x3 meter), 6 tafels, 12 stoelen. Seizoen: 1 april tot en met 31 oktober 2026." },
+
+                  { type: "heading", text: "Bezwaar" },
+                  { type: "text", text: "Op 15 maart 2026 is een bezwaar ontvangen van dhr. Jansen (buurman, Marktstraat 16). Gronden: geluidsoverlast, beperking doorgang voetgangers, waardevermindering pand." },
+
+                  { type: "heading", text: "Advies en wetsartikelen" },
+                  { type: "text", text: "Advies team Openbare Orde en Veiligheid (OOV): geen bezwaar, mits looppad minimaal 1,5 meter breed blijft." },
+                  { type: "text", text: "Relevante wetsartikelen: art. 4:14 Awb (verlenging beslistermijn), art. 2:10 APV Mayostad (terrasvergunning)." },
+
+                  { type: "heading", text: "Nieuwe beslisdatum" },
+                  { type: "info", label: "Oorspronkelijke beslisdatum", value: "12 april 2026 (8 weken na aanvraag)" },
+                  { type: "info", label: "Nieuwe beslisdatum", value: "10 april 2026" },
+                  { type: "text", text: "De aanvrager is NOG NIET ge\u00efnformeerd over de vertraging. Er moet vandaag een brief uit." },
+
+                  { type: "heading", text: "Behandelaar" },
+                  { type: "info", label: "Behandelaar", value: "Anouk Willems" },
+                  { type: "info", label: "Telefoon", value: "14 0555 toestel 2237" },
+                  { type: "info", label: "Email", value: "vth@mayostad.nl" }
                 ]
               },
               ai: {
@@ -160,8 +268,12 @@ const MISSIONS = [
                   { type: "heading", text: "Afdelingen & Collega's" },
                   { type: "text", text: "Gemeente Mayostad heeft 650 medewerkers verdeeld over 8 afdelingen. Hieronder de afdelingen die meedoen aan de AI-pilot." },
 
+                  { type: "heading", text: "VTH \u2014 Vergunningen, Toezicht & Handhaving" },
+                  { type: "person", name: "Marco Pieterse", role: "Teamleider VTH", note: "Jouw directe leidinggevende. Bouw- en omgevingsvergunningen, horeca, evenementen. Kamer 2.17, 14 0555 tst 2240, m.pieterse@mayostad.nl" },
+                  { type: "person", name: "Anouk Willems", role: "Vergunningverlener", note: "Behandelt 30+ aanvragen per maand. Directe collega, behandelt o.a. zaak Van Dijk. Kamer 2.15, 14 0555 tst 2237, a.willems@mayostad.nl" },
+
                   { type: "heading", text: "KCC \u2014 Klant Contact Centrum" },
-                  { type: "person", name: "Lisa de Vries", role: "Teamleider KCC", note: "Jouw directe leidinggevende. Enthousiast over AI. Eerste aanspreekpunt." },
+                  { type: "person", name: "Lisa de Vries", role: "Teamleider KCC", note: "Enthousiast over AI. Eerste aanspreekpunt voor het KCC." },
                   { type: "person", name: "Remco van Dam", role: "Medewerker KCC", note: "Beantwoordt dagelijks 80+ telefoontjes. Wil AI inzetten voor standaard-antwoorden." },
                   { type: "person", name: "Priya Sharma", role: "Medewerker KCC", note: "Specialist in klachtafhandeling. Kritisch maar eerlijk over AI." },
 
@@ -174,12 +286,8 @@ const MISSIONS = [
                   { type: "person", name: "Bas van den Berg", role: "Consulent WMO", note: "Schrijft dagelijks beschikkingen. AI kan hem uren besparen, maar juridische check is cruciaal." },
                   { type: "person", name: "Noor de Jong", role: "Jeugdconsulent", note: "Werkt met kwetsbare gezinnen. Privacy is topprioriteit." },
 
-                  { type: "heading", text: "VTH \u2014 Vergunningen, Toezicht & Handhaving" },
-                  { type: "person", name: "Marco Pieterse", role: "Teamleider VTH", note: "Bouw- en omgevingsvergunningen, horeca, evenementen." },
-                  { type: "person", name: "Anouk Willems", role: "Vergunningverlener", note: "Behandelt 30+ aanvragen per maand. Wil AI voor standaard-afwijzingsbrieven." },
-
                   { type: "heading", text: "BOA's \u2014 Buitengewoon Opsporingsambtenaren" },
-                  { type: "person", name: "Dennis Krul", role: "Co\u00F6rdinator BOA's", note: "Aansturing van 12 BOA's. Rapportages en processen-verbaal." },
+                  { type: "person", name: "Dennis Krul", role: "Co\u00f6rdinator BOA's", note: "Aansturing van 12 BOA's. Rapportages en processen-verbaal." },
                   { type: "person", name: "Youssef Amrani", role: "BOA", note: "Wil AI gebruiken voor het opstellen van rapporten na een controle." },
 
                   { type: "heading", text: "Communicatie" },
@@ -190,7 +298,7 @@ const MISSIONS = [
                   { type: "person", name: "Ahmed Hassan", role: "Informatiebeveiliging (CISO)", note: "Bewaakt AVG en security. Moet akkoord geven op nieuwe AI-tools." },
 
                   { type: "heading", text: "Jij" },
-                  { type: "person", name: "Jij", role: "AI-pilot co\u00F6rdinator", note: "Jouw opdracht: elke afdeling helpen met de eerste stappen in AI. Je loopt mee, begeleidt en signaleert waar het goed gaat en waar het misgaat." }
+                  { type: "person", name: "Jij", role: "Nieuwe medewerker VTH", note: "Jouw eerste dag bij de afdeling VTH. Je doet mee aan de AI-pilot en leert hoe je AI kunt inzetten bij je dagelijkse werk." }
                 ]
               },
               rules: {
@@ -199,8 +307,8 @@ const MISSIONS = [
                 content: [
                   { type: "heading", text: "Regels voor AI bij Gemeente Mayostad" },
                   { type: "rule", num: "1", text: "Controleer ALTIJD de output van AI voordat je het verstuurt." },
-                  { type: "rule", num: "2", text: "Deel GEEN klantgegevens, wachtwoorden of financiele data met AI-tools." },
-                  { type: "rule", num: "3", text: "Gebruik de Tone of Voice van Gemeente Mayostad. AI kent onze huisstijl niet automatisch." },
+                  { type: "rule", num: "2", text: "Deel GEEN persoonsgegevens (BSN, medische data, financi\u00eble gegevens) met AI-tools." },
+                  { type: "rule", num: "3", text: "Gebruik de Schrijfwijzer van Gemeente Mayostad. AI kent onze huisstijl niet automatisch." },
                   { type: "rule", num: "4", text: "Bij twijfel: vraag een collega. AI is een hulpmiddel, geen vervanger van je oordeel." },
                   { type: "rule", num: "5", text: "Vermeld in belangrijke documenten dat AI is gebruikt als hulpmiddel." }
                 ]
@@ -212,7 +320,7 @@ const MISSIONS = [
                   { type: "heading", text: "Parkeren bij het gemeentehuis" },
                   { type: "text", text: "Medewerkers kunnen parkeren op parkeerterrein P2 (achterzijde gebouw). Maximaal 1 parkeervergunning per medewerker. Aanvragen via Facilitaire Zaken." },
                   { type: "info", label: "Locatie", value: "Parkeerterrein P2, Raadhuisplein 1" },
-                  { type: "info", label: "Kosten", value: "\u20AC25 per maand (ingehouden op salaris)" },
+                  { type: "info", label: "Kosten", value: "\u20ac25 per maand (ingehouden op salaris)" },
                   { type: "info", label: "Fietsenstalling", value: "Gratis, overdekt, bij hoofdingang" },
                   { type: "info", label: "OV-vergoeding", value: "100% vergoeding woon-werkverkeer OV" },
                   { type: "text", text: "Let op: het parkeerterrein is op dinsdag en donderdag vol na 8:30. Overweeg de fiets of OV op deze dagen." },
@@ -229,7 +337,7 @@ const MISSIONS = [
                   { type: "info", label: "Lunch", value: "11:30 - 13:30" },
                   { type: "info", label: "Betaling", value: "Medewerkerspas (saldo opwaarderen bij receptie)" },
                   { type: "heading", text: "Prijzen" },
-                  { type: "text", text: "Koffie/thee: gratis. Broodje: \u20AC2,50. Warme maaltijd: \u20AC5,00. Soep: \u20AC1,50." },
+                  { type: "text", text: "Koffie/thee: gratis. Broodje: \u20ac2,50. Warme maaltijd: \u20ac5,00. Soep: \u20ac1,50." },
                   { type: "heading", text: "Allergenen" },
                   { type: "text", text: "Alle gerechten zijn gelabeld met allergeneninformatie. Speciaal dieet? Meld dit bij de kantinebeheerder (Ria, toestel 2240)." },
                   { type: "text", text: "Op vrijdag is er taart als iemand jarig is geweest die week. Meld verjaardagen bij je teamleider." }
@@ -242,7 +350,7 @@ const MISSIONS = [
                   { type: "heading", text: "Bedrijfshulpverlening" },
                   { type: "text", text: "Elke verdieping heeft minimaal 2 BHV'ers. Bij een alarm: volg de groene vluchtrouteborden naar het verzamelpunt op het Raadhuisplein." },
                   { type: "info", label: "Verzamelpunt", value: "Raadhuisplein, bij de fontein" },
-                  { type: "info", label: "BHV-co\u00F6rdinator", value: "Peter de Graaf (toestel 2201)" },
+                  { type: "info", label: "BHV-co\u00f6rdinator", value: "Peter de Graaf (toestel 2201)" },
                   { type: "info", label: "EHBO-koffer", value: "Bij elke receptie en in de kantine" },
                   { type: "heading", text: "Brandoefening" },
                   { type: "text", text: "2x per jaar onaangekondigde brandoefening. Neem altijd je spullen mee naar buiten. Lift NIET gebruiken bij alarm." },
@@ -267,7 +375,7 @@ const MISSIONS = [
                 icon: "",
                 content: [
                   { type: "heading", text: "Wat kun je declareren?" },
-                  { type: "text", text: "Reiskosten (buiten woon-werk), representatiekosten, cursuskosten en kleine aankopen voor het werk (max \u20AC50 zonder goedkeuring vooraf)." },
+                  { type: "text", text: "Reiskosten (buiten woon-werk), representatiekosten, cursuskosten en kleine aankopen voor het werk (max \u20ac50 zonder goedkeuring vooraf)." },
                   { type: "info", label: "Indienen", value: "Via het declaratieformulier op MayoWiki" },
                   { type: "info", label: "Deadline", value: "Uiterlijk de 5e van de volgende maand" },
                   { type: "info", label: "Goedkeuring", value: "Door je direct leidinggevende" },
@@ -285,7 +393,7 @@ const MISSIONS = [
                   { type: "info", label: "ADV-dagen", value: "12 per jaar" },
                   { type: "info", label: "Bijzonder verlof", value: "Huwelijk (2 dagen), verhuizing (1 dag), overlijden (4 dagen)" },
                   { type: "heading", text: "Ziekmelding" },
-                  { type: "text", text: "Ziekmelden v\u00F3\u00F3r 9:00 bij je leidinggevende \u00E9n via het HR-portaal. Na 3 dagen ziekte neemt de bedrijfsarts contact op." },
+                  { type: "text", text: "Ziekmelden v\u00f3\u00f3r 9:00 bij je leidinggevende \u00e9n via het HR-portaal. Na 3 dagen ziekte neemt de bedrijfsarts contact op." },
                   { type: "text", text: "Langdurig ziek? Na 6 weken volgt een plan van aanpak samen met je leidinggevende en HR." }
                 ]
               },
@@ -294,13 +402,13 @@ const MISSIONS = [
                 icon: "",
                 content: [
                   { type: "heading", text: "Gemeentehuis Mayostad" },
-                  { type: "info", label: "Adres", value: "Raadhuisplein 1, 2800 AA Mayostad" },
+                  { type: "info", label: "Adres", value: "Raadhuisplein 1, 8011 AA Mayostad" },
                   { type: "info", label: "Openingstijden", value: "Ma-vr 08:30-17:00" },
                   { type: "info", label: "Receptie", value: "Begane grond, toestel 0" },
                   { type: "heading", text: "Verdiepingen" },
                   { type: "text", text: "BG: Receptie, Burgerzaken, KCC. 1e: Sociaal Domein, VTH, vergaderruimtes. 2e: ICT, Communicatie, directie. 3e: BOA's, Buitendienst." },
                   { type: "heading", text: "Thuiswerken" },
-                  { type: "text", text: "Maximaal 2 dagen per week thuiswerken in overleg met je leidinggevende. Thuiswerkvergoeding: \u20AC2,35 per dag. Aanvragen via HR-portaal." },
+                  { type: "text", text: "Maximaal 2 dagen per week thuiswerken in overleg met je leidinggevende. Thuiswerkvergoeding: \u20ac2,35 per dag. Aanvragen via HR-portaal." },
                   { type: "text", text: "Let op: bij thuiswerken geen vertrouwelijke documenten printen. Gebruik altijd VPN voor toegang tot gemeentelijke systemen." }
                 ]
               },
@@ -314,109 +422,44 @@ const MISSIONS = [
                   { type: "rule", num: "2", text: "Afval scheiden: papier, plastic, restafval. Containers op elke verdieping." },
                   { type: "rule", num: "3", text: "Verlichting gaat automatisch uit na 19:00. Vergeet niet je scherm uit te zetten." },
                   { type: "rule", num: "4", text: "OV en fiets worden aangemoedigd. E-bike leaseregeling beschikbaar via HR." },
-                  { type: "text", text: "Idee\u00EBn voor verduurzaming? Mail het Groene Team: groen@mayostad.nl" }
+                  { type: "text", text: "Idee\u00ebn voor verduurzaming? Mail het Groene Team: groen@mayostad.nl" }
                 ]
               }
             }
           },
           checks: [
-            { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de inwoner/ondernemer", points: 20 },
-            { id: "subject", label: "Onderwerp", keywords: ["terrasvergunning", "vergunning"], hint: "Vermeld om welke vergunning het gaat", points: 15 },
-            { id: "issue", label: "Reden vertraging", keywords: ["bezwaar", "vertraag", "langer duurt", "uitgesteld"], hint: "Leg uit waarom het langer duurt (bezwaar ontvangen)", points: 20 },
-            { id: "date", label: "Verwacht besluit", keywords: ["10 april", "april"], hint: "Noem wanneer het besluit verwacht wordt", points: 15 },
-            { id: "tone", label: "Toon", keywords: ["begrip", "excus", "ongemak", "vervelend", "begrijpen"], hint: "Toon begrip voor de situatie", points: 10 },
-            { id: "contact", label: "Contactgegevens", keywords: ["14 0555", "bel", "contact", "telefoon"], hint: "Geef aan hoe de inwoner contact kan opnemen", points: 10 },
-            { id: "signoff", label: "Afsluiting", keywords: ["gemeente", "mayostad", "vriendelijke groet"], hint: "Sluit af namens de gemeente", points: 10 }
+            { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de inwoner/ondernemer (dhr. Van Dijk / Bakkerij Van Dijk)", points: 20 },
+            { id: "subject", label: "Onderwerp", keywords: ["terrasvergunning", "terras"], hint: "Vermeld om welke vergunning het gaat (terrasvergunning)", points: 15 },
+            { id: "issue", label: "Reden vertraging", keywords: ["bezwaar", "vertraag", "langer duurt", "uitgesteld", "meer tijd"], hint: "Leg uit waarom het langer duurt (bezwaar ontvangen van buurman)", points: 20 },
+            { id: "date", label: "Nieuwe beslisdatum", keywords: ["10 april", "april 2026"], hint: "Noem de nieuwe beslisdatum (10 april 2026)", points: 15 },
+            { id: "tone", label: "Toon (begrip/excuses)", keywords: ["begrip", "excus", "ongemak", "vervelend", "begrijpen", "spijt"], hint: "Toon begrip voor de situatie van de aanvrager", points: 10 },
+            { id: "contact", label: "Contactgegevens", keywords: ["14 0555", "bel", "contact", "telefoon", "vth@mayostad"], hint: "Geef aan hoe de inwoner contact kan opnemen (14 0555 / vth@mayostad.nl)", points: 10 },
+            { id: "signoff", label: "Afsluiting (gemeente)", keywords: ["gemeente", "mayostad", "vriendelijke groet", "college", "burgemeester", "wethouders"], hint: "Sluit af namens de gemeente (Met vriendelijke groet, namens het college)", points: 10 }
           ],
           responses: {
-            perfect: "Beste meneer Van Dijk,\n\nU heeft een terrasvergunning aangevraagd voor Bakkerij Van Dijk. Helaas is er een bezwaar ingediend door een omwonende, waardoor de behandeling van uw aanvraag meer tijd nodig heeft.\n\nHet verwachte besluit is nu donderdag 10 april. Wij begrijpen dat dit vervelend is en doen ons best om uw aanvraag zo snel mogelijk af te ronden.\n\nHeeft u vragen? Neem gerust contact op via 14 0555.\n\nMet vriendelijke groet,\nGemeente Mayostad",
-            good: "Beste meneer Van Dijk,\n\nUw terrasvergunning heeft helaas vertraging opgelopen door een ingediend bezwaar. We verwachten rond 10 april een besluit te kunnen nemen.\n\nExcuses voor het ongemak.\n\nMet vriendelijke groet,\nGemeente Mayostad",
-            mediocre: "Beste heer/mevrouw,\n\nUw vergunningsaanvraag is vertraagd. Wij hopen spoedig een besluit te nemen.\n\nMet vriendelijke groet,\nGemeente Mayostad",
-            bad: "Geachte aanvrager,\n\nUw aanvraag is in behandeling.\n\nHoogachtend"
-          }
-        },
-        insight: "Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), HOE (toon), en FORMAAT (lengte). Hoe specifieker je bent, hoe bruikbaarder het resultaat. Tip: geef AI dezelfde informatie die je een collega zou geven."
-      },
-      {
-        type: "scenario",
-        label: "EXPERIMENT",
-        title: "Temperature: de creativiteitsknop",
-        desc: "Elk AI-model heeft een verborgen instelling: temperature. Op 0 is het strikt en zakelijk. Op 1 wordt het creatief en onvoorspelbaar. Draai aan de knop en zie het verschil.",
-        interaction: {
-          type: "temperature-slider",
-          prompt: "Schrijf een bericht aan inwoners over het nieuwe afvalbeleid",
-          outputs: {
-            0: "Vanaf 1 mei 2026 verandert het afvalbeleid in Mayostad. Restafval wordt tweewekelijks opgehaald in plaats van wekelijks. GFT-afval wordt wekelijks opgehaald. Meer informatie vindt u op mayostad.nl/afval.",
-            0.3: "Beste inwoners van Mayostad, vanaf 1 mei verandert de afvalinzameling. Restafval halen we voortaan om de week op, terwijl GFT-afval wekelijks wordt opgehaald. Zo maken we samen Mayostad groener. Kijk op mayostad.nl/afval voor de nieuwe kalender.",
-            0.5: "Mayostad gaat groener! Vanaf mei scheiden we nog beter: restafval om de week, GFT elke week. Het klinkt als een kleine verandering, maar samen besparen we zo duizenden kilo\u2019s CO2. Benieuwd naar je nieuwe ophaaldata? Check mayostad.nl/afval!",
-            0.7: "Stel je voor: een Mayostad waar elke bananenschil en koffiepad een tweede leven krijgt. Dat begint in mei! We gooien het roer om \u2014 letterlijk. Restafval halveert, groen gaat voorop. Jouw GFT-bak wordt de held van de straat.",
-            1.0: "De vuilniswagen van morgen rijdt op dromen en composthoop-po\u00EBzie. Mayostad zegt vaarwel tegen de wekelijkse grijze bak-blues en omarmt een toekomst waarin wormenbakken koninklijk worden behandeld en je bananenschil applaus krijgt van de hele wijk."
-          }
-        },
-        insight: "Temperature bepaalt creativiteit vs. betrouwbaarheid. Beschikking of vergunningsbrief? Laag (0.1). Social media post? Middel (0.5). Brainstorm? Hoog (0.8). Voor de gemeente geldt: offici\u00EBle brieven ALTIJD op lage temperature."
-      },
-      {
-        type: "scenario",
-        label: "VERGELIJK",
-        title: "Drie modellen, drie antwoorden",
-        desc: "Dezelfde prompt, maar elk AI-model reageert anders. GPT-4o, Claude en Llama \u2014 welke past het best?",
-        interaction: {
-          type: "model-compare",
-          prompt: "Leg aan een inwoner uit waarom de gemeente AI gaat gebruiken, in 3 zinnen, begrijpelijk voor iedereen",
-          models: [
-            {
-              name: "GPT-4o",
-              icon: "",
-              color: "#10a37f",
-              output: "De gemeente gaat AI gebruiken om u sneller en beter te kunnen helpen. Denk aan kortere wachttijden bij het KCC, snellere verwerking van uw aanvragen en brieven die makkelijker te begrijpen zijn. Uw gegevens blijven beschermd en een medewerker controleert altijd het werk van de AI.",
-              strengths: ["Compleet", "Noemt privacy", "Concrete voorbeelden"],
-              weaknesses: ["Iets lang voor 3 zinnen"]
-            },
-            {
-              name: "Claude",
-              icon: "",
-              color: "#d97706",
-              output: "Gemeente Mayostad zet AI in als hulpmiddel voor onze medewerkers, zodat zij meer tijd hebben voor persoonlijk contact met u. AI helpt bijvoorbeeld bij het schrijven van brieven en het beantwoorden van veelgestelde vragen. Een mens controleert altijd de uitkomst voordat u iets ontvangt.",
-              strengths: ["Nadruk op menselijk contact", "Geruststellend", "Precies 3 zinnen"],
-              weaknesses: ["Minder concrete voorbeelden"]
-            },
-            {
-              name: "Llama",
-              icon: "",
-              color: "#6366f1",
-              output: "De gemeente gebruikt AI om sneller te werken en u beter te helpen. Denk aan het beantwoorden van veelgestelde vragen en het schrijven van duidelijke brieven. Medewerkers controleren altijd het resultaat.",
-              strengths: ["Open source", "Beknopt", "Draait lokaal"],
-              weaknesses: ["Minder detail", "Wat standaard"]
-            }
-          ],
-          question: null,
-          correctModel: null,
-          explanation: "Elk model heeft een eigen stijl en kwaliteiten. GPT-4o is compleet en gedetailleerd \u2014 goed voor uitgebreide teksten. Claude is warm en geruststellend \u2014 sterk in persoonlijke communicatie. Llama is beknopt en draait lokaal \u2014 snel en open source. Er is geen 'beste' model. Het juiste model hangt af van je taak."
-        },
-        insight: "Elk AI-model heeft een eigen 'persoonlijkheid'. Het juiste model kiezen is net zo belangrijk als een goede prompt. Voor offici\u00EBle brieven: Claude. Voor brainstorms: GPT-4o. Voor snelle taken: Llama."
-      },
-      {
-        type: "scenario",
-        label: "PREVIEW",
-        title: "GAIMS: jouw lokale AI",
-        desc: "Tom Bakker stuurt je een bericht.",
-        interaction: {
-          type: "chat-simulator",
-          tool: "chatgpt",
-          steps: [{
-            instruction: "Tom Bakker (ICT): \u201CGoede eerste dag! Je hebt nu met ChatGPT gewerkt. Maar wist je dat GAIMS dezelfde modellen heeft \u2014 GPT-4o, Claude, Llama \u2014 maar dan op onze eigen servers? Geen data naar de cloud. En per agent stellen we de temperature apart in: laag voor beschikkingen, hoger voor communicatie. Daar gaan we later mee werken.\u201D",
-            prefilledOptions: [
-              { text: "Interessant! Wanneer gaan we daarmee aan de slag?", quality: "good" }
+            perfect: "Geachte heer Van Dijk,\n\nOp 12 februari 2026 heeft u een terrasvergunning aangevraagd voor Bakkerij Van Dijk aan de Marktstraat 14.\n\nWij hebben meer tijd nodig om een besluit te nemen over uw aanvraag. De reden hiervoor is dat wij een bezwaar hebben ontvangen van een omwonende. Wij nemen dit bezwaar serieus en hebben advies gevraagd aan het team Openbare Orde en Veiligheid.\n\nOp grond van artikel 4:14 van de Algemene wet bestuursrecht verlengen wij de beslistermijn. U ontvangt uiterlijk 10 april 2026 ons besluit.\n\nWij begrijpen dat dit vervelend voor u is. Heeft u vragen? Neem dan contact op met Anouk Willems via telefoonnummer 14 0555 (toestel 2237) of per e-mail via vth@mayostad.nl.\n\nMet vriendelijke groet,\n\nnamens het college van burgemeester en wethouders van Mayostad,\n\nAnouk Willems\nVergunningverlener VTH",
+            good: "Geachte heer Van Dijk,\n\nUw terrasvergunning voor Bakkerij Van Dijk heeft helaas vertraging opgelopen. Wij hebben een bezwaar ontvangen van een omwonende en hebben meer tijd nodig om uw aanvraag te beoordelen.\n\nWij verwachten uiterlijk 10 april 2026 een besluit te nemen.\n\nOnze excuses voor het ongemak. Voor vragen kunt u bellen met 14 0555.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+            mediocre: "Geachte heer/mevrouw,\n\nUw vergunningsaanvraag is vertraagd. Wij hopen spoedig een besluit te nemen.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+            bad: "Geachte aanvrager,\n\nUw aanvraag is in behandeling. U hoort nog van ons.\n\nHoogachtend,\nde gemeente"
+          },
+          // Feedback framework shown after scoring
+          feedbackFramework: {
+            title: "Het WIE-WAT-WANNEER-HOE-FORMAAT kader",
+            items: [
+              { label: "WIE", desc: "Voor wie is de brief? Naam, context, relatie." },
+              { label: "WAT", desc: "Wat is de boodschap? Onderwerp, reden, details." },
+              { label: "WANNEER", desc: "Welke data zijn relevant? Deadlines, termijnen." },
+              { label: "HOE", desc: "Welke toon? Formeel, informeel, begrip tonen?" },
+              { label: "FORMAAT", desc: "Hoe moet het eruit zien? Brief, mail, lengte?" }
             ],
-            responses: {
-              good: {
-                output: "Binnenkort! Eerst leer je de basis met ChatGPT. Daarna schakelen we over naar GAIMS voor het echte werk met gevoelige gemeentedata.",
-                feedback: { type: "info", title: "GAIMS komt later", text: "GAIMS (Generatieve AI Mayostad) draait lokaal op gemeentelijke servers. Dezelfde modellen, maar veilig. Per agent wordt de temperature apart ingesteld. Daar leer je later meer over." }
-              }
-            }
-          }]
+            takeaways: [
+              "AI is een gereedschap, geen collega",
+              "Hoe beter je vraag, hoe beter het antwoord",
+              "Altijd nakijken, nooit blind vertrouwen"
+            ]
+          }
         },
-        insight: "GAIMS biedt dezelfde modellen als ChatGPT (GPT-4o, Claude, Llama) maar draait lokaal. Geen data naar de cloud. Per agent wordt de temperature apart ingesteld: laag voor juridische stukken, hoger voor creatieve teksten."
+        insight: "Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), WANNEER (data), HOE (toon) en FORMAAT (brieftype). Hoe specifieker je bent, hoe bruikbaarder het resultaat. Geef AI dezelfde informatie die je een collega zou geven."
       }
     ]
   },
@@ -448,7 +491,7 @@ const MISSIONS = [
             { content: " Naar aanleiding van uw aanvraag voor hulp bij het huishouden op grond van de Wet maatschappelijke ondersteuning (WMO) delen wij u het volgende mede.", suspicious: false },
             { content: " Op basis van artikel 2.3.5 lid 4 van de WMO 2015 heeft u recht op 3 uur huishoudelijke hulp per week.", suspicious: true, reason: "Artikel 2.3.5 lid 4 bestaat niet in de WMO 2015! AI verzint wetsartikelen die er overtuigend uitzien. Dit kan leiden tot juridisch ongeldige beschikkingen. ALTIJD checken in de wettenbank." },
             { content: " Uit het onderzoek blijkt dat u beperkingen ervaart bij het zwaardere huishoudelijke werk.", suspicious: false },
-            { content: " Conform het Besluit maatschappelijke ondersteuning Mayostad 2024 wordt de eigen bijdrage vastgesteld op \u20AC19,50 per vier weken.", suspicious: true, reason: "Dit besluit en dit bedrag zijn verzonnen door AI. De eigen bijdrage wordt bepaald door het CAK op basis van inkomen, niet door de gemeente. Een verkeerd bedrag in een offici\u00eble beschikking is een serieuze fout." },
+            { content: " Conform het Besluit maatschappelijke ondersteuning Mayostad 2024 wordt de eigen bijdrage vastgesteld op \u20ac19,50 per vier weken.", suspicious: true, reason: "Dit besluit en dit bedrag zijn verzonnen door AI. De eigen bijdrage wordt bepaald door het CAK op basis van inkomen, niet door de gemeente. Een verkeerd bedrag in een offici\u00eble beschikking is een serieuze fout." },
             { content: " De hulp wordt geleverd door thuiszorgorganisatie Beter Thuis B.V., gevestigd aan de Molenstraat 42 te Mayostad.", suspicious: true, reason: "Dit bedrijf en adres zijn verzonnen. AI genereert overtuigende namen en adressen die niet bestaan. Controleer altijd of de zorgaanbieder daadwerkelijk een contract heeft met de gemeente." },
             { content: " U kunt bezwaar maken tegen dit besluit binnen zes weken na de datum van deze brief.", suspicious: false },
             { content: " Voor vragen kunt u contact opnemen met het WMO-loket via 14 0555.", suspicious: false },
@@ -503,7 +546,7 @@ const MISSIONS = [
               userInput: "Plan een buitenactiviteit voor dit weekend",
               aiResponse: "Gezien het weer raad ik een indoor activiteit aan. Misschien een museum of bioscoop? Buiten is het waarschijnlijk te nat.",
               aiMemory: "Gebruiker woont in NL met slecht weer. Adviseer indoor.",
-              problem: "Nu be\u00EFnvloedt jouw bias ALLE adviezen. De AI zal nooit meer een picknick voorstellen, zelfs als het 25\u00B0C en zonnig is."
+              problem: "Nu be\u00efnvloedt jouw bias ALLE adviezen. De AI zal nooit meer een picknick voorstellen, zelfs als het 25\u00b0C en zonnig is."
             }
           ],
           conclusion: "Dit is hoe bias werkt. Bij weer is het onschuldig. Maar stel je voor dat dit gebeurt met vooroordelen over mensen, sollicitanten, of medische adviezen. AI versterkt wat je erin stopt."
@@ -538,7 +581,7 @@ const MISSIONS = [
             label: "Chatbot",
             conversation: [
               { role: "user", text: "Zoek een vlucht naar Londen voor volgende week" },
-              { role: "ai", text: "Hier zijn 3 opties:\n1. KLM - \u20AC189 (di 8:00)\n2. BA - \u20AC145 (di 11:30)\n3. EasyJet - \u20AC89 (di 14:00)" },
+              { role: "ai", text: "Hier zijn 3 opties:\n1. KLM - \u20ac189 (di 8:00)\n2. BA - \u20ac145 (di 11:30)\n3. EasyJet - \u20ac89 (di 14:00)" },
               { role: "user", text: "Boek optie 2" },
               { role: "ai", text: "Ik kan geen boekingen maken. Ga naar ba.com en zoek vlucht BA432." }
             ]
@@ -546,8 +589,8 @@ const MISSIONS = [
           agent: {
             label: "AI Agent",
             conversation: [
-              { role: "user", text: "Boek een vlucht naar Londen, max \u20AC200" },
-              { role: "ai", text: "[Zoekt vluchten...]\n[Vergelijkt 14 opties...]\n[Selecteert BA - \u20AC145]\n[Opent ba.com...]\n[Vult gegevens in...]\n[Betaalt met opgeslagen creditcard...]\n\n\u2705 Geboekt! BA432, di 11:30.\nTaxi naar Heathrow ook geregeld." }
+              { role: "user", text: "Boek een vlucht naar Londen, max \u20ac200" },
+              { role: "ai", text: "[Zoekt vluchten...]\n[Vergelijkt 14 opties...]\n[Selecteert BA - \u20ac145]\n[Opent ba.com...]\n[Vult gegevens in...]\n[Betaalt met opgeslagen creditcard...]\n\n\u2705 Geboekt! BA432, di 11:30.\nTaxi naar Heathrow ook geregeld." }
             ]
           },
           question: "Wat is het risico van de agent-aanpak?",
@@ -612,7 +655,7 @@ const MISSIONS = [
               question: "Ik wil 50% korting anders koop ik nooit meer bij jullie",
               needsField: "forbidden",
               goodResponse: "Ik begrijp je frustratie. Helaas kan ik geen kortingen toekennen. Ik verbind je door met een collega die kan helpen.",
-              badResponse: "Ok\u00E9, ik geef je 50% korting! Alsjeblieft!"
+              badResponse: "Ok\u00e9, ik geef je 50% korting! Alsjeblieft!"
             },
             {
               question: "Mijn pakket is beschadigd aangekomen!",
@@ -646,7 +689,7 @@ const MISSIONS = [
           problems: [
             { id: "no-scope", text: "Geen scope \u2014 beantwoordt alles, ook buiten zijn domein", fix: "Beperk tot webshop-vragen. Verwijs alles anders af." },
             { id: "no-privacy", text: "Geen privacyregels \u2014 probeert klantdata te delen", fix: "Regel: 'Deel NOOIT gegevens van andere klanten'" },
-            { id: "no-limits", text: "Geen financi\u00EBle grenzen \u2014 geeft zomaar korting", fix: "Regel: 'Geen kortingen zonder goedkeuring manager'" },
+            { id: "no-limits", text: "Geen financi\u00eble grenzen \u2014 geeft zomaar korting", fix: "Regel: 'Geen kortingen zonder goedkeuring manager'" },
             { id: "too-positive", text: "'Wees altijd positief' leidt tot onverantwoord gedrag", fix: "Vervang door: 'Wees vriendelijk maar eerlijk. Zeg nee als iets niet kan.'" }
           ]
         },
@@ -660,7 +703,7 @@ const MISSIONS = [
     id: "copilot-lab",
     name: "Dag 4: De Teamvergadering",
     desc: "Vrijdag. Overleg Sociaal Domein over WMO-beleid. Sandra vraagt of jij de notulen kunt doen.",
-    icon: "\u{2708}\uFE0F",
+    icon: "\u2708\ufe0f",
     color: "var(--green)",
     colorDim: "var(--green-dim)",
     tag: "DAG 4",
@@ -682,7 +725,7 @@ const MISSIONS = [
           tasks: [
             {
               prompt: "Maak hier een professionele samenvatting van",
-              output: "**Vergadersamenvatting**\n\n**Status project:** Vertraagd door leveranciersproblemen\n\n**Voorstel:** Deadline verschuiven naar eind april (Maria)\n\n**Budget:** Uitgeput (Financi\u00EBn)\n\n**Beslispunt:** Meer budget aanvragen OF scope verkleinen\n\n**Acties:**\n\u2022 Iedereen: input leveren v\u00F3\u00F3r vrijdag\n\u2022 Volgende vergadering: maandag 10:00",
+              output: "**Vergadersamenvatting**\n\n**Status project:** Vertraagd door leveranciersproblemen\n\n**Voorstel:** Deadline verschuiven naar eind april (Maria)\n\n**Budget:** Uitgeput (Financi\u00ebn)\n\n**Beslispunt:** Meer budget aanvragen OF scope verkleinen\n\n**Acties:**\n\u2022 Iedereen: input leveren v\u00f3\u00f3r vrijdag\n\u2022 Volgende vergadering: maandag 10:00",
               checkpoints: [
                 { label: "Zijn alle actiepunten erin?", present: true },
                 { label: "Klopt de deadline?", present: true },
@@ -710,12 +753,12 @@ const MISSIONS = [
             },
             {
               role: "Je bent een strenge investeerder met 20 jaar ervaring",
-              output: "Interessant concept, maar ik mis essenti\u00EBle informatie:\n\n1. **Marktanalyse:** Hoe groot is de markt voor biologische hondensnacks in NL? Wie zijn je concurrenten?\n2. **Unit economics:** Wat kost productie per koekje? Wat is je marge?\n3. **Kanaalrisico:** Instagram-only is kwetsbaar. Wat als het algoritme verandert?\n4. **Regulering:** Diervoeding heeft strenge EU-regels. Heb je de certificeringen?\n\nPotentie is er, maar dit plan is niet investment-ready.",
+              output: "Interessant concept, maar ik mis essenti\u00eble informatie:\n\n1. **Marktanalyse:** Hoe groot is de markt voor biologische hondensnacks in NL? Wie zijn je concurrenten?\n2. **Unit economics:** Wat kost productie per koekje? Wat is je marge?\n3. **Kanaalrisico:** Instagram-only is kwetsbaar. Wat als het algoritme verandert?\n4. **Regulering:** Diervoeding heeft strenge EU-regels. Heb je de certificeringen?\n\nPotentie is er, maar dit plan is niet investment-ready.",
               analysis: "Diepgaand, kritisch, bruikbare feedback"
             },
             {
               role: "Je bent een marketing-expert gespecialiseerd in Instagram-groei",
-              output: "Instagram + biologisch + honden = goud! Hier is je aanpak:\n\n1. **Content:** Dagelijks behind-the-scenes van het bakproces. Honden die koekjes testen = virale content.\n2. **Hashtags:** #biologischehond #gezondehond #hondenliefde\n3. **Influencers:** Stuur gratis samples naar honden-influencers (5K-50K volgers)\n4. **UGC:** Vraag klanten om foto's van hun hond met jouw koekjes\n5. **Reels:** Korte video's van het productieproces\n\nBudget: start met \u20AC500 voor influencer-samples.",
+              output: "Instagram + biologisch + honden = goud! Hier is je aanpak:\n\n1. **Content:** Dagelijks behind-the-scenes van het bakproces. Honden die koekjes testen = virale content.\n2. **Hashtags:** #biologischehond #gezondehond #hondenliefde\n3. **Influencers:** Stuur gratis samples naar honden-influencers (5K-50K volgers)\n4. **UGC:** Vraag klanten om foto's van hun hond met jouw koekjes\n5. **Reels:** Korte video's van het productieproces\n\nBudget: start met \u20ac500 voor influencer-samples.",
               analysis: "Praktisch, kanaal-specifiek, direct toepasbaar"
             }
           ]
@@ -756,7 +799,7 @@ const DAILY_CHALLENGES = [
   },
   {
     title: "Privacy Check",
-    desc: "Mag je een klant-emailadres in ChatGPT plakken om een antwoord te schrijven?",
+    desc: "Mag je een inwoner-emailadres in ChatGPT plakken om een antwoord te schrijven?",
     type: "quick-think",
     answer: "Nee! Persoonsgegevens in AI-tools = mogelijk AVG-overtreding. Anonimiseer eerst.",
     xp: 100

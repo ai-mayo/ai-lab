@@ -26,7 +26,7 @@ const APP_RENDERERS = {
             </thead>
             <tbody>
               ${[
-                ["ZK-2026-0412","Terrasvergunning Bakkerij Van Dijk","Vergunning","H. van Dijk","Vertraagd","Anouk Willems","12-02-2026"],
+                ["VTH-2026-00347","Terrasvergunning Bakkerij Van Dijk","Vergunning","H.J. van Dijk","Vertraagd","Anouk Willems","12-02-2026"],
                 ["ZK-2026-0398","WMO hulp bij huishouden","WMO","R. Jansen-de Groot","In behandeling","Bas van den Berg","08-03-2026"],
                 ["ZK-2026-0385","Subsidie buurtfeest Zuiderpark","Subsidie","F. El-Amrani","Toegekend","Remco van Dam","15-01-2026"],
                 ["ZK-2026-0371","Bezwaar parkeerboete","Bezwaar","D. Krul","Afgehandeld","Ahmed Hassan","22-01-2026"],
@@ -61,7 +61,7 @@ const APP_RENDERERS = {
   // ─── Vergunningtool (met kaart) ──────────────────────
   vergunning(container) {
     const vergunningen = [
-      {title:"Terrasvergunning Bakkerij Van Dijk",id:"VG-2026-042",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",lat:52.078,lng:4.315,adres:"Dorpsstraat 23",aanvrager:"H. van Dijk",date:"12-02-2026",note:"Bezwaar omwonende ontvangen op 15 maart. Behandeling duurt langer dan gepland. Verwacht besluit: 10 april. Inwoner nog niet geinformeerd over vertraging.",plan:"Terras van 6x3m aan de voorzijde van het pand. 8 tafels, 16 stoelen. Openingstijden: 08:00-22:00. Parasols in huisstijl gemeente. Aanvrager: dhr. H. van Dijk, eigenaar Bakkerij Van Dijk sinds 2003. Trouwe ondernemer, woont al 30 jaar in Mayostad."},
+      {title:"Terrasvergunning Bakkerij Van Dijk",id:"VTH-2026-00347",status:"Vertraagd",statusColor:"#dc2626",type:"Horeca",lat:52.078,lng:4.315,adres:"Marktstraat 14",aanvrager:"H.J. van Dijk",date:"12-02-2026",note:"Bezwaar van dhr. Jansen (Marktstraat 16) ontvangen op 15 maart. Gronden: geluidsoverlast, beperking doorgang, waardevermindering. Advies OOV: geen bezwaar mits looppad >= 1,5m. Nieuwe beslisdatum: 10 april 2026. Inwoner nog niet geinformeerd over vertraging.",plan:"Terras van 12 m\u00B2 (4x3 meter) aan de voorzijde van het pand. 6 tafels, 12 stoelen. Seizoen: 1 april - 31 oktober. Behandelaar: Anouk Willems. Art. 4:14 Awb (verlenging beslistermijn), art. 2:10 APV (terrasvergunning)."},
       {title:"Omgevingsvergunning Sportschool FitNow",id:"VG-2026-048",status:"In behandeling",statusColor:"#d97706",type:"Bouw",lat:52.082,lng:4.320,adres:"Industrieweg 5",aanvrager:"J. de Boer",date:"18-03-2026",note:"Wacht op advies welstandscommissie.",plan:"Uitbreiding bestaand pand met 200m\u00B2. Nieuwe sportzaal + kleedkamers. Bouwlaag: 1. Materiaal: staal/glas."},
       {title:"Kapvergunning Esdoorn Kerkstraat",id:"VG-2026-045",status:"Verleend",statusColor:"#059669",type:"Kap",lat:52.076,lng:4.312,adres:"Kerkstraat 41",aanvrager:"Gemeente Mayostad",date:"25-03-2026",note:"Herplantplicht: 2 nieuwe bomen binnen 1 jaar.",plan:"Kap van 1 esdoorn (omtrek 180cm). Reden: wortelopdruk trottoir. Herplant: 2 lindes."},
       {title:"Evenementenvergunning Koningsdag",id:"VG-2026-038",status:"Verleend",statusColor:"#059669",type:"Evenement",lat:52.079,lng:4.318,adres:"Marktplein 1",aanvrager:"Oranjevereniging Mayostad",date:"10-02-2026",note:"Inclusief geluidsontheffing tot 23:00.",plan:"Koningsmarkt 08:00-18:00, live muziek 14:00-23:00. Verwacht: 5.000 bezoekers. Verkeersmaatregelen: afsluiting centrum."},
@@ -251,9 +251,9 @@ const APP_RENDERERS = {
       "# vth": {
         members: 5,
         messages: [
-          {user:"Marco Pieterse",time:"08:50",text:"Er moet vandaag een brief uit naar een inwoner. Nieuwe collega, kun jij dit oppakken? Check de vergunningtool voor de details.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
-          {user:"Anouk Willems",time:"09:05",text:"Welkom! Als je vragen hebt over vergunningen, vraag gerust.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
-          {user:"Marco Pieterse",time:"09:10",text:"Gebruik gerust ChatGPT voor de brief, maar check wel de schrijfwijzer op MayoWiki.",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+          {user:"Marco Pieterse",time:"08:50",text:"Er moet vandaag een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van buurman Jansen. Nieuwe collega, kun jij dit oppakken?",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+          {user:"Anouk Willems",time:"09:05",text:"Welkom! De zaakgegevens staan in MayoWiki onder Lopende Zaken. Als je vragen hebt, loop even langs kamer 2.15.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
+          {user:"Marco Pieterse",time:"09:10",text:"Gebruik gerust ChatGPT voor de brief, maar check wel de Schrijfwijzer op MayoWiki. En vergeet niet: altijd nakijken wat de AI schrijft!",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
         ]
       },
       "# sociaal-domein": {
@@ -332,7 +332,7 @@ const APP_RENDERERS = {
   // ─── MayoMail ───────────────────────────────────────
   mail(container) {
     const emails = [
-      {from:"Lisa de Vries",subject:"Welkom bij het team!",preview:"Hoi! Welkom bij Gemeente Mayostad. In de bijlage vind je het inwerkprogramma...",time:"09:00",unread:true},
+      {from:"Marco Pieterse",subject:"Welkom bij VTH!",preview:"Hoi! Welkom bij de afdeling VTH van Gemeente Mayostad. In de bijlage vind je het inwerkprogramma...",time:"09:00",unread:true},
       {from:"Tom Bakker",subject:"AI-pilot: handleiding ChatGPT",preview:"Hierbij de handleiding voor het gebruik van ChatGPT binnen de gemeente...",time:"08:45",unread:true},
       {from:"Ahmed Hassan",subject:"Beveiligingsprotocol AI-tools",preview:"Beste collega, bijgaand het beveiligingsprotocol voor het gebruik van AI...",time:"08:30",unread:true},
       {from:"HR Gemeente Mayostad",subject:"Arbeidsvoorwaarden en huisregels",preview:"Welkom! In de bijlage vind je je arbeidsovereenkomst en de huisregels...",time:"Gisteren",unread:false},
@@ -365,20 +365,20 @@ const APP_RENDERERS = {
           `).join("")}
         </div>
         <div style="flex:1;padding:24px;overflow-y:auto">
-          <div style="font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px">Welkom bij het team!</div>
-          <div style="font-size:0.78rem;color:#6b7280;margin-bottom:16px">Van: Lisa de Vries &lt;l.devries@mayostad.nl&gt; \u2022 Vandaag 09:00</div>
+          <div style="font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px">Welkom bij VTH!</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-bottom:16px">Van: Marco Pieterse &lt;m.pieterse@mayostad.nl&gt; \u2022 Vandaag 09:00</div>
           <div style="font-size:0.88rem;color:#374151;line-height:1.7">
             <p>Hoi!</p>
-            <p>Welkom bij Gemeente Mayostad! Fijn dat je er bent als onze nieuwe AI-pilot co\u00F6rdinator.</p>
+            <p>Welkom bij de afdeling VTH van Gemeente Mayostad! Fijn dat je er bent.</p>
             <p>Een paar dingen voor je eerste dag:</p>
             <ul style="margin:8px 0;padding-left:20px">
-              <li>Open MayoWiki en lees je in over de organisatie</li>
+              <li>Open MayoWiki en lees je in over de organisatie en de Schrijfwijzer</li>
               <li>Bekijk je collega's in WiWa</li>
               <li>Check MayoBoard voor je eerste opdrachten</li>
-              <li>Lees de AI Huisregels en Schrijfwijzer</li>
+              <li>Lees de AI Huisregels \u2014 we doen mee aan de AI-pilot</li>
             </ul>
-            <p>Ik stuur je straks je eerste echte opdracht via MayoBoard. Succes!</p>
-            <p>Groet,<br>Lisa de Vries<br><span style="color:#9ca3af">Teamleider KCC \u2022 Gemeente Mayostad</span></p>
+            <p>Ik stuur je straks je eerste echte opdracht via MayoChat. Het gaat om een brief naar een inwoner. Succes!</p>
+            <p>Groet,<br>Marco Pieterse<br><span style="color:#9ca3af">Teamleider VTH \u2022 Gemeente Mayostad</span></p>
           </div>
         </div>
       </div>`;
