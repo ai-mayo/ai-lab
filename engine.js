@@ -309,6 +309,11 @@
       sfxClick();
       startMission(chapter);
     });
+
+    // Skip story intro entirely if chapter has skipStoryIntro
+    if (chapter.skipStoryIntro) {
+      startMission(chapter);
+    }
   }
 
   function renderRecap(upToIdx) {
@@ -359,10 +364,13 @@
       </div>
     `;
 
-    // Task card
+    // Task card — hide header when interaction is a full desktop experience
     const card = document.createElement("div");
     card.className = "task-card";
-    card.innerHTML = `
+    const hideHeader = task.interaction && (task.interaction.hideTaskHeader || task.interaction.type === "intranet-then-prompt");
+    card.innerHTML = hideHeader
+      ? `<div id="interaction-area"></div>`
+      : `
       <div class="task-label">${task.label}</div>
       <div class="task-title">${task.title}</div>
       <div class="task-desc">${task.desc}</div>
@@ -1041,7 +1049,7 @@
           <div class="holo-ring holo-ring-3"></div>
           <div class="holo-base"></div>
           <div class="holo-video-wrap" style="position:absolute;inset:18px;border-radius:50%;overflow:hidden;box-shadow:0 0 60px rgba(0,212,255,0.55),inset 0 0 40px rgba(0,212,255,0.2)">
-            <video src="${d.videoSrc}" autoplay playsinline class="holo-video" style="width:140%;height:140%;position:absolute;top:-20%;left:-20%;object-fit:cover;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
+            <video src="${d.videoSrc}" autoplay playsinline class="holo-video" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
             <div class="holo-scanlines"></div>
             <div class="holo-flicker"></div>
           </div>
@@ -1721,17 +1729,26 @@
           trigger();
         }
       };
-      // Track activity
+      // Track activity — use document-level listener so dock clicks always register
       const activitySet = new Set();
-      area.addEventListener("click", (e) => {
+      const activityHandler = (e) => {
         const dockIcon = e.target.closest(".dock-icon[data-app]");
         if (dockIcon) activitySet.add("app:" + dockIcon.dataset.app);
         const wikiCard = e.target.closest("[data-link]");
         if (wikiCard) activitySet.add("wiki:" + wikiCard.dataset.link);
-        if (activitySet.size >= 3) fireSegment2();
-      });
-      // Safety fallback: 90 seconds max
-      setTimeout(fireSegment2, videoSegs.onFirstExplore.delay || 90000);
+        const appWindow = e.target.closest(".app-window");
+        if (appWindow && appWindow.id) activitySet.add("window:" + appWindow.id);
+        if (activitySet.size >= 3) {
+          document.removeEventListener("click", activityHandler, true);
+          fireSegment2();
+        }
+      };
+      document.addEventListener("click", activityHandler, true);
+      // Safety fallback: 2 minutes max (if user doesn't click at all)
+      setTimeout(() => {
+        document.removeEventListener("click", activityHandler, true);
+        fireSegment2();
+      }, videoSegs.onFirstExplore.delay || 120000);
     }
 
     // Task assignment
@@ -1786,7 +1803,7 @@
         <div class="holo-ring holo-ring-3"></div>
         <div class="holo-base"></div>
         <div class="holo-video-wrap" style="position:absolute;inset:12px;border-radius:50%;overflow:hidden;box-shadow:0 0 40px rgba(0,212,255,0.45),inset 0 0 30px rgba(0,212,255,0.15)">
-          <video src="${videoSrc}" autoplay playsinline class="holo-video" style="width:140%;height:140%;position:absolute;top:-20%;left:-20%;object-fit:cover;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
+          <video src="${videoSrc}" autoplay playsinline class="holo-video" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
           <div class="holo-scanlines"></div>
           <div class="holo-flicker"></div>
         </div>

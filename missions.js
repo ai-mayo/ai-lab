@@ -20,6 +20,7 @@ const MISSIONS = [
     tagColor: "var(--cyan)",
     xp: 500,
     tool: "chatgpt",
+    skipStoryIntro: true,
     storyIntro: "Maandagochtend. Jouw eerste dag bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. 82.000 inwoners, 650 medewerkers. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Marco Pieterse, je teamleider, heeft je werkplek al ingericht.",
     tasks: [
       // ── Desktop verkennen + taak ──
