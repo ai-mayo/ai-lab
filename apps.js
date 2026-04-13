@@ -4,58 +4,155 @@
 const APP_RENDERERS = {
   // ─── Zaaksysteem ────────────────────────────────────
   zaaksysteem(container) {
-    container.innerHTML = `
-      <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
-          <span style="font-weight:700;color:#0f766e;font-size:0.95rem">Zaaksysteem</span>
-          <span style="font-size:0.7rem;color:#888;background:#f3f4f6;padding:2px 8px;border-radius:4px">Gemeente Mayostad</span>
-          <input placeholder="Zoek op zaaknummer of naam..." style="margin-left:auto;padding:6px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:0.8rem;width:220px;outline:none;font-family:inherit">
-        </div>
-        <div style="flex:1;overflow:auto;padding:16px">
-          <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
-            <thead>
-              <tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb;font-size:0.7rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px">
-                <th style="padding:10px 14px;text-align:left">Zaaknr</th>
-                <th style="padding:10px 14px;text-align:left">Omschrijving</th>
-                <th style="padding:10px 14px;text-align:left">Type</th>
-                <th style="padding:10px 14px;text-align:left">Aanvrager</th>
-                <th style="padding:10px 14px;text-align:left">Status</th>
-                <th style="padding:10px 14px;text-align:left">Behandelaar</th>
-                <th style="padding:10px 14px;text-align:left">Datum</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${[
-                ["VTH-2026-00347","Terrasvergunning Bakkerij Van Dijk","Vergunning","H.J. van Dijk","Vertraagd","Anouk Willems","12-02-2026"],
-                ["ZK-2026-0398","WMO hulp bij huishouden","WMO","R. Jansen-de Groot","In behandeling","Bas van den Berg","08-03-2026"],
-                ["ZK-2026-0385","Subsidie buurtfeest Zuiderpark","Subsidie","F. El-Amrani","Toegekend","Remco van Dam","15-01-2026"],
-                ["ZK-2026-0371","Bezwaar parkeerboete","Bezwaar","D. Krul","Afgehandeld","Ahmed Hassan","22-01-2026"],
-                ["ZK-2026-0420","Omgevingsvergunning uitbreiding sportschool","Vergunning","J. de Boer","In behandeling","Marco Pieterse","18-03-2026"],
-                ["ZK-2026-0425","Melding geluidsoverlast Parkweg","Melding","Anoniem","Nieuw","Dennis Krul","04-04-2026"],
-                ["ZK-2026-0430","Aanvraag gehandicaptenparkeerkaart","WMO","M. Smit","In behandeling","Bas van den Berg","01-04-2026"],
-                ["ZK-2026-0418","Kapvergunning Esdoorn Kerkstraat","Vergunning","Gem. Mayostad","Verleend","Anouk Willems","25-03-2026"],
-                ["ZK-2026-0405","Evenementenvergunning Koningsdag","Vergunning","Oranjevereniging","Verleend","Marco Pieterse","10-02-2026"],
-                ["ZK-2026-0432","Klacht afhandeltijd paspoort","Klacht","P. de Vries","Nieuw","Lisa de Vries","05-04-2026"],
-              ].map(r => {
-                const statusColors = {Vertraagd:"#dc2626",Nieuw:"#2563eb","In behandeling":"#d97706",Toegekend:"#059669",Afgehandeld:"#6b7280",Verleend:"#059669"};
-                return `<tr style="border-bottom:1px solid #f3f4f6;cursor:default;transition:background 0.1s" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'">
-                  <td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6b7280">${r[0]}</td>
-                  <td style="padding:10px 14px;font-weight:500;color:#111827">${r[1]}</td>
-                  <td style="padding:10px 14px"><span style="font-size:0.7rem;background:#f3f4f6;padding:2px 8px;border-radius:4px;color:#4b5563">${r[2]}</span></td>
-                  <td style="padding:10px 14px;color:#4b5563">${r[3]}</td>
-                  <td style="padding:10px 14px"><span style="font-size:0.7rem;font-weight:600;color:${statusColors[r[4]]||"#888"}">\u2022 ${r[4]}</span></td>
-                  <td style="padding:10px 14px;color:#4b5563">${r[5]}</td>
-                  <td style="padding:10px 14px;color:#9ca3af;font-size:0.8rem">${r[6]}</td>
-                </tr>`;
-              }).join("")}
-            </tbody>
-          </table>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:0.75rem;color:#9ca3af">
-            <span>10 van 847 zaken</span>
-            <span>Pagina 1 van 85</span>
+    const zaken = [
+      {nr:"VTH-2026-00347",titel:"Terrasvergunning Bakkerij Van Dijk",type:"Vergunning",aanvrager:"H.J. van Dijk",status:"Vertraagd",behandelaar:"Anouk Willems",datum:"12-02-2026",detail:"vandijk"},
+      {nr:"VTH-2026-00412",titel:"Omgevingsvergunning Sportschool FitNow",type:"Vergunning",aanvrager:"J. de Boer",status:"In behandeling",behandelaar:"Marco Pieterse",datum:"18-03-2026"},
+      {nr:"VTH-2026-00398",titel:"Kapvergunning Esdoorn Kerkstraat",type:"Vergunning",aanvrager:"Gem. Mayostad",status:"Verleend",behandelaar:"Anouk Willems",datum:"25-03-2026"},
+      {nr:"VTH-2026-00405",titel:"Evenementenvergunning Koningsdag",type:"Vergunning",aanvrager:"Oranjevereniging",status:"Verleend",behandelaar:"Marco Pieterse",datum:"10-02-2026"},
+      {nr:"VTH-2026-00425",titel:"Melding geluidsoverlast Parkweg",type:"Melding",aanvrager:"Anoniem",status:"Nieuw",behandelaar:"Dennis Krul",datum:"04-04-2026"},
+      {nr:"ZK-2026-0398",titel:"WMO hulp bij huishouden",type:"WMO",aanvrager:"R. Jansen-de Groot",status:"In behandeling",behandelaar:"Bas van den Berg",datum:"08-03-2026"},
+      {nr:"ZK-2026-0385",titel:"Subsidie buurtfeest Zuiderpark",type:"Subsidie",aanvrager:"F. El-Amrani",status:"Toegekend",behandelaar:"Remco van Dam",datum:"15-01-2026"},
+      {nr:"ZK-2026-0371",titel:"Bezwaar parkeerboete",type:"Bezwaar",aanvrager:"D. Krul",status:"Afgehandeld",behandelaar:"Ahmed Hassan",datum:"22-01-2026"},
+      {nr:"ZK-2026-0430",titel:"Aanvraag gehandicaptenparkeerkaart",type:"WMO",aanvrager:"M. Smit",status:"In behandeling",behandelaar:"Bas van den Berg",datum:"01-04-2026"},
+      {nr:"ZK-2026-0432",titel:"Klacht afhandeltijd paspoort",type:"Klacht",aanvrager:"P. de Vries",status:"Nieuw",behandelaar:"Lisa de Vries",datum:"05-04-2026"},
+    ];
+    const statusColors = {Vertraagd:"#dc2626",Nieuw:"#2563eb","In behandeling":"#d97706",Toegekend:"#059669",Afgehandeld:"#6b7280",Verleend:"#059669"};
+
+    function renderList() {
+      container.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
+            <span style="font-weight:700;color:#0f766e;font-size:0.95rem">Zaaksysteem</span>
+            <span style="font-size:0.7rem;color:#888;background:#f3f4f6;padding:2px 8px;border-radius:4px">Gemeente Mayostad</span>
+            <span style="font-size:0.7rem;color:#0f766e;background:#d1fae5;padding:2px 8px;border-radius:4px">Afdeling VTH</span>
+            <input placeholder="Zoek op zaaknummer of naam..." style="margin-left:auto;padding:6px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:0.8rem;width:220px;outline:none;font-family:inherit">
           </div>
-        </div>
-      </div>`;
+          <div style="padding:10px 16px;background:#fffbeb;border-bottom:1px solid #fef3c7;font-size:0.75rem;color:#92400e"><strong>1 zaak vereist aandacht:</strong> VTH-2026-00347 is vertraagd, aanvrager moet worden geinformeerd.</div>
+          <div style="flex:1;overflow:auto;padding:16px">
+            <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
+              <thead>
+                <tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb;font-size:0.7rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px">
+                  <th style="padding:10px 14px;text-align:left">Zaaknr</th>
+                  <th style="padding:10px 14px;text-align:left">Omschrijving</th>
+                  <th style="padding:10px 14px;text-align:left">Type</th>
+                  <th style="padding:10px 14px;text-align:left">Aanvrager</th>
+                  <th style="padding:10px 14px;text-align:left">Status</th>
+                  <th style="padding:10px 14px;text-align:left">Behandelaar</th>
+                  <th style="padding:10px 14px;text-align:left">Datum</th>
+                </tr>
+              </thead>
+              <tbody id="zaak-rows">
+                ${zaken.map(r => `
+                  <tr data-zaak="${r.nr}" style="border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background 0.1s${r.status==='Vertraagd'?';background:#fef2f2':''}" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='${r.status==='Vertraagd'?'#fef2f2':'#fff'}'">
+                    <td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#0f766e;font-weight:600">${r.nr}</td>
+                    <td style="padding:10px 14px;font-weight:500;color:#111827">${r.titel}</td>
+                    <td style="padding:10px 14px"><span style="font-size:0.7rem;background:#f3f4f6;padding:2px 8px;border-radius:4px;color:#4b5563">${r.type}</span></td>
+                    <td style="padding:10px 14px;color:#4b5563">${r.aanvrager}</td>
+                    <td style="padding:10px 14px"><span style="font-size:0.7rem;font-weight:600;color:${statusColors[r.status]||'#888'}">&bull; ${r.status}</span></td>
+                    <td style="padding:10px 14px;color:#4b5563">${r.behandelaar}</td>
+                    <td style="padding:10px 14px;color:#9ca3af;font-size:0.8rem">${r.datum}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:0.75rem;color:#9ca3af">
+              <span>10 van 847 zaken</span>
+              <span>Pagina 1 van 85</span>
+            </div>
+          </div>
+        </div>`;
+      container.querySelectorAll("tr[data-zaak]").forEach(tr => {
+        tr.addEventListener("click", () => {
+          const z = zaken.find(x => x.nr === tr.dataset.zaak);
+          if (z && z.detail === "vandijk") renderVanDijkDetail();
+          else renderGenericDetail(z);
+        });
+      });
+    }
+
+    function renderVanDijkDetail() {
+      container.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px;overflow:auto">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
+            <button id="back-zaken" style="background:none;border:1px solid #d1d5db;border-radius:6px;padding:4px 12px;font-size:0.75rem;color:#6b7280;cursor:pointer;font-family:inherit">&larr; Alle zaken</button>
+            <span style="font-weight:700;color:#0f766e;font-size:0.95rem">Zaak VTH-2026-00347</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#dc2626;background:#fef2f2;padding:3px 10px;border-radius:4px">&bull; VERTRAAGD</span>
+          </div>
+          <div style="padding:24px 32px;max-width:860px">
+            <h1 style="font-size:1.5rem;color:#111;margin-bottom:6px">Terrasvergunning Bakkerij Van Dijk</h1>
+            <div style="font-size:0.85rem;color:#6b7280;margin-bottom:20px">Aanvraag ontvangen op 12 februari 2026 | Behandelaar: Anouk Willems</div>
+
+            <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;border-radius:6px;margin-bottom:24px">
+              <div style="font-weight:700;color:#991b1b;margin-bottom:4px">Actie vereist</div>
+              <div style="font-size:0.85rem;color:#7f1d1d">De aanvrager is NOG NIET geinformeerd over de vertraging. Er moet vandaag een brief uit.</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:24px">
+              <div>
+                <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Aanvrager</h3>
+                <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb">
+                  <div style="font-weight:600;margin-bottom:6px">Dhr. H.J. van Dijk</div>
+                  <div style="font-size:0.8rem;color:#4b5563;margin-bottom:2px">Bakkerij Van Dijk</div>
+                  <div style="font-size:0.8rem;color:#4b5563;margin-bottom:2px">Marktstraat 14</div>
+                  <div style="font-size:0.8rem;color:#4b5563">8011 AB Mayostad</div>
+                </div>
+              </div>
+              <div>
+                <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Beslistermijn</h3>
+                <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb">
+                  <div style="font-size:0.8rem;color:#6b7280;margin-bottom:4px">Oorspronkelijke beslisdatum</div>
+                  <div style="margin-bottom:10px;text-decoration:line-through;color:#9ca3af">12 april 2026</div>
+                  <div style="font-size:0.8rem;color:#6b7280;margin-bottom:4px">Nieuwe beslisdatum</div>
+                  <div style="font-weight:700;color:#dc2626">10 april 2026</div>
+                </div>
+              </div>
+            </div>
+
+            <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Aanvraag</h3>
+            <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:20px;line-height:1.6;font-size:0.88rem;color:#374151">
+              Gevraagd: terras van 12 m&sup2; (4x3 meter), 6 tafels, 12 stoelen. Seizoen: 1 april tot en met 31 oktober 2026.
+            </div>
+
+            <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Bezwaar</h3>
+            <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:20px;line-height:1.6;font-size:0.88rem;color:#374151">
+              Op 15 maart 2026 is een bezwaar ontvangen van <strong>dhr. Jansen</strong> (buurman, Marktstraat 16). Gronden: geluidsoverlast, beperking doorgang voetgangers, waardevermindering pand.
+            </div>
+
+            <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Advies &amp; wetsartikelen</h3>
+            <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:20px;line-height:1.6;font-size:0.88rem;color:#374151">
+              <p style="margin:0 0 8px">Advies team Openbare Orde en Veiligheid (OOV): <strong>geen bezwaar</strong>, mits looppad minimaal 1,5 meter breed blijft.</p>
+              <p style="margin:0">Relevante wetsartikelen: art. 4:14 Awb (verlenging beslistermijn), art. 2:10 APV Mayostad (terrasvergunning).</p>
+            </div>
+
+            <h3 style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.5px;margin-bottom:10px">Contact behandelaar</h3>
+            <div style="background:#fff;padding:14px 16px;border-radius:8px;border:1px solid #e5e7eb;line-height:1.7;font-size:0.88rem;color:#374151">
+              <div><strong>Anouk Willems</strong> &mdash; Vergunningverlener VTH</div>
+              <div>Telefoon: 14 0555 (toestel 2237)</div>
+              <div>Email: vth@mayostad.nl</div>
+            </div>
+          </div>
+        </div>`;
+      container.querySelector("#back-zaken").addEventListener("click", renderList);
+    }
+
+    function renderGenericDetail(z) {
+      container.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb">
+            <button id="back-zaken" style="background:none;border:1px solid #d1d5db;border-radius:6px;padding:4px 12px;font-size:0.75rem;color:#6b7280;cursor:pointer;font-family:inherit">&larr; Alle zaken</button>
+            <span style="font-weight:700;color:#0f766e;font-size:0.95rem">Zaak ${z.nr}</span>
+          </div>
+          <div style="padding:24px 32px">
+            <h1 style="font-size:1.3rem;color:#111;margin-bottom:6px">${z.titel}</h1>
+            <div style="font-size:0.85rem;color:#6b7280;margin-bottom:20px">Aanvrager: ${z.aanvrager} &bull; Behandelaar: ${z.behandelaar} &bull; Datum: ${z.datum}</div>
+            <div style="background:#fff;padding:20px;border-radius:8px;border:1px solid #e5e7eb;color:#6b7280;font-size:0.9rem">
+              Deze zaak staat niet op jouw takenlijst voor vandaag.
+            </div>
+          </div>
+        </div>`;
+      container.querySelector("#back-zaken").addEventListener("click", renderList);
+    }
+
+    renderList();
   },
 
   // ─── Vergunningtool (met kaart) ──────────────────────

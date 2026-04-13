@@ -46,7 +46,7 @@ const MISSIONS = [
             from: "Marco Pieterse",
             fromRole: "Teamleider VTH",
             avatar: "MP",
-            message: "Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De details staan in MayoWiki onder Lopende Zaken. Check ook even de Schrijfwijzer. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.",
+            message: "Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in het Zaaksysteem (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.",
             urgency: "Vandaag afhandelen"
           },
           cliffhanger: {
@@ -65,7 +65,6 @@ const MISSIONS = [
                   { type: "cards", items: [
                     { title: "Over Mayostad", icon: "", link: "about" },
                     { title: "Schrijfwijzer", icon: "", link: "tone" },
-                    { title: "Lopende Zaken VTH", icon: "", link: "lopende-zaken" },
                     { title: "AI bij de Gemeente", icon: "", link: "ai" },
                     { title: "Tools & Apps", icon: "", link: "tools" },
                     { title: "AI Huisregels", icon: "", link: "rules" },

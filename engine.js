@@ -1172,7 +1172,7 @@
         </div>
       </div>
 
-      <div class="app-window open focused" id="window-wiwa" style="top:40px;left:40px;width:700px;height:500px">
+      <div class="app-window" id="window-wiwa" style="display:none;top:40px;left:40px;width:700px;height:500px">
         <div class="app-titlebar">
           <div class="app-titlebar-dots">
             <div class="app-titlebar-dot red" data-action="close" data-window="wiwa"></div>
@@ -1227,7 +1227,7 @@
           <div class="dock-tooltip">MayoWiki</div><div class="dock-label">MayoWiki</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg>
         </div>
-        <div class="dock-icon active" data-app="wiwa">
+        <div class="dock-icon" data-app="wiwa">
           <div class="dock-tooltip">WiWa</div><div class="dock-label">WiWa</div>
           <svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg>
         </div>
@@ -1266,7 +1266,7 @@
           {app:"intranet",label:"MayoWiki",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg>'},
           {app:"wiwa",label:"WiWa",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg>'},
           {app:"mail",label:"MayoMail",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg>'},
-          {app:"zaaksysteem",label:"Zaaksysteem",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0f766e" opacity="0.4"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3" opacity="0.4"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5" opacity="0.3"/></svg>'},
+          {app:"zaaksysteem",label:"Zaaksysteem",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0f766e"/><rect x="28" y="28" width="64" height="64" rx="6" fill="none" stroke="white" stroke-width="3"/><path d="M40 50h40M40 62h40M40 74h25" stroke="white" stroke-width="2.5"/></svg>'},
           {app:"gaims",label:"GAIMS",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#0c1222" opacity="0.4"/><rect x="30" y="30" width="60" height="60" rx="14" fill="#334" opacity="0.4"/><text x="60" y="68" text-anchor="middle" fill="white" font-size="28" font-weight="900" font-family="sans-serif" opacity="0.4">G</text></svg>'},
           {app:"copilot",label:"Copilot",enabled:false,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2d2d2d" opacity="0.4"/><circle cx="60" cy="60" r="24" fill="none" stroke="#0078d4" stroke-width="4" opacity="0.4"/><circle cx="60" cy="60" r="12" fill="#0078d4" opacity="0.4"/></svg>'},
           {app:"chat",label:"MayoChat",enabled:true,svg:'<svg viewBox="0 0 120 120"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/></svg>'},
@@ -1291,12 +1291,6 @@
             </div>
           </div>
           <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-top:6px;text-align:center">Klik om MayoBoard te openen</div>
-        </div>
-        <div class="desktop-widget">
-          <div class="widget-title">Welkom, ${state.nickname || "collega"}!</div>
-          <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);line-height:1.5">
-            Afdeling VTH \u2022 Gemeente Mayostad<br>Je doet mee aan de AI-pilot. Verken je werkplek en wacht op je eerste opdracht van Marco.
-          </div>
         </div>
       </div>
 
