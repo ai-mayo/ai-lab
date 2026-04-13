@@ -1699,58 +1699,64 @@
       }, videoSegs.onDesktopOpen.delay || 1500);
     }
 
-    // Video segment 2: Marco's rondleiding — wacht op interactie EN tot segment 1 weg is
+    // Video segment 2: Marco's rondleiding
+    // Logica: segment 1 moet eerst ECHT klaar zijn, en dan moet user MIN. 30s verkennen MET 3+ clicks.
     if (videoSegs.onFirstExplore) {
       let segment2Queued = false;
-      let userHasInteracted = false;
-      let segment1Done = false;
+      let segment1DoneTime = null; // timestamp wanneer segment 1 verdween
+      const activitySetAfterSeg1 = new Set(); // interacties NA segment 1
 
       const tryFireSegment2 = () => {
         if (segment2Queued) return;
-        if (!userHasInteracted || !segment1Done) return;
-        // Also check DOM: geen floating hologram meer actief
+        if (!segment1DoneTime) return;
+        if (activitySetAfterSeg1.size < 3) return;
+        const elapsed = Date.now() - segment1DoneTime;
+        if (elapsed < 30000) {
+          // Nog geen 30s sinds segment 1 afgelopen — wacht tot 30s is verstreken
+          setTimeout(tryFireSegment2, 30000 - elapsed + 500);
+          return;
+        }
         if (document.querySelector(".avatar-video-float")) return;
         segment2Queued = true;
         document.removeEventListener("click", activityHandler, true);
         setTimeout(() => {
           showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
-        }, 1200);
+        }, 800);
       };
 
-      // Track activity — minstens 3 verschillende interacties
-      const activitySet = new Set();
+      // Track activity ALLEEN na segment 1
       const activityHandler = (e) => {
+        if (!segment1DoneTime) return; // negeer clicks tijdens segment 1
         const dockIcon = e.target.closest(".dock-icon[data-app]");
-        if (dockIcon) activitySet.add("app:" + dockIcon.dataset.app);
+        if (dockIcon) activitySetAfterSeg1.add("app:" + dockIcon.dataset.app);
         const wikiCard = e.target.closest("[data-link]");
-        if (wikiCard) activitySet.add("wiki:" + wikiCard.dataset.link);
+        if (wikiCard) activitySetAfterSeg1.add("wiki:" + wikiCard.dataset.link);
         const appWindow = e.target.closest(".app-window");
-        if (appWindow && appWindow.id) activitySet.add("window:" + appWindow.id);
-        if (activitySet.size >= 3) {
-          userHasInteracted = true;
-          tryFireSegment2();
-        }
+        if (appWindow && appWindow.id) activitySetAfterSeg1.add("window:" + appWindow.id);
+        const zaakRow = e.target.closest("tr[data-zaak]");
+        if (zaakRow) activitySetAfterSeg1.add("zaak:" + zaakRow.dataset.zaak);
+        if (activitySetAfterSeg1.size >= 3) tryFireSegment2();
       };
       document.addEventListener("click", activityHandler, true);
 
-      // Watch for segment 1 completion — poll every 600ms
-      const seg1Watcher = setInterval(() => {
-        const holo = document.querySelector(".avatar-video-float");
-        if (!holo) {
-          // If no hologram exists AND at least 3s passed since desktop load, segment 1 is done
-          segment1Done = true;
-          clearInterval(seg1Watcher);
-          tryFireSegment2();
-        }
-      }, 600);
-
-      // Safety fallback: na 3 minuten hoe dan ook (als user niet klikt)
+      // Watch for segment 1 completion — start pas 4s na desktop load
       setTimeout(() => {
-        userHasInteracted = true;
-        segment1Done = true;
-        clearInterval(seg1Watcher);
+        const seg1Watcher = setInterval(() => {
+          const holo = document.querySelector(".avatar-video-float");
+          if (!holo) {
+            segment1DoneTime = Date.now();
+            clearInterval(seg1Watcher);
+            tryFireSegment2();
+          }
+        }, 600);
+      }, 4000);
+
+      // Safety fallback: na 4 minuten hoe dan ook (als user niet klikt of segment 1 nooit wegdoet)
+      setTimeout(() => {
+        if (!segment1DoneTime) segment1DoneTime = Date.now() - 30000; // alsof al 30s bezig
+        for (let i = activitySetAfterSeg1.size; i < 3; i++) activitySetAfterSeg1.add("auto:" + i);
         tryFireSegment2();
-      }, videoSegs.onFirstExplore.delay || 180000);
+      }, videoSegs.onFirstExplore.delay || 240000);
     }
 
     // Task assignment
