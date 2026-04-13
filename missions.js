@@ -36,10 +36,7 @@ const MISSIONS = [
           // Video segments to show during the desktop phase (as floating holograms bottom-right)
           videoSegments: {
             onDesktopOpen: { src: "video-segment-1.mp4", caption: "Welkom bij VTH. Dit wordt een bijzondere werkdag.", delay: 1500 },
-            onFirstExplore: { src: "video-segment-2.mp4", caption: "Marco geeft je een rondleiding langs de systemen." },
             onTaskAssigned: { src: "video-segment-3.mp4", caption: "Marco legt de casus Van Dijk uit." },
-            onWikiVisited: { src: "video-segment-4.mp4", caption: "Zoek de informatie die je nodig hebt op het intranet." },
-            onPromptWritten: { src: "video-segment-5.mp4", caption: "Reflectie: hoe was je prompt?" },
             onFeedback: { src: "video-segment-6.mp4", caption: "Kernboodschap en een vooruitblik op Dag 2." }
           },
           taskPopup: {

@@ -1699,86 +1699,29 @@
       }, videoSegs.onDesktopOpen.delay || 1500);
     }
 
-    // Video segment 2: Marco's rondleiding
-    // Triggert pas als gebruiker BEIDE onboarding-taken heeft afgerond:
-    //   - MayoWiki opent EN minstens 1 wiki-pagina bekeken
-    //   - MayoBoard (kanban) geopend
-    // PLUS segment 1 is gesloten EN minstens 15s sinds segment 1 weg.
-    if (videoSegs.onFirstExplore) {
-      let segment2Queued = false;
-      let segment1DoneTime = null;
-      const onboardingDone = { wiki: false, wikiPage: false, board: false };
+    // NB: segment 2, 4, 5 verwijderd uit de flow — we gebruiken nu alleen 3 videos:
+    //   segment 1 (welkom, via onDesktopOpen)
+    //   segment 3 (de opdracht, via onTaskAssigned)
+    //   segment 6 (afsluiter, via onFeedback)
 
-      const tryFireSegment2 = () => {
-        if (segment2Queued) return;
-        if (!segment1DoneTime) return;
-        if (!onboardingDone.wiki || !onboardingDone.wikiPage || !onboardingDone.board) return;
-        const elapsed = Date.now() - segment1DoneTime;
-        if (elapsed < 15000) {
-          setTimeout(tryFireSegment2, 15000 - elapsed + 500);
-          return;
-        }
-        if (document.querySelector(".avatar-video-float")) {
-          setTimeout(tryFireSegment2, 1000);
-          return;
-        }
-        segment2Queued = true;
-        document.removeEventListener("click", activityHandler, true);
-        // Mark onboarding tasks as done in MayoBoard
-        const t40 = BOARD_TASKS.find(t => t.id === "VTH-040");
-        const t41 = BOARD_TASKS.find(t => t.id === "VTH-041");
-        if (t40) t40.col = "done";
-        if (t41) t41.col = "done";
-        setTimeout(() => {
-          if (document.querySelector(".avatar-video-float")) {
-            segment2Queued = false;
-            setTimeout(tryFireSegment2, 1500);
-            return;
-          }
-          showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
-        }, 800);
-      };
-
-      const activityHandler = (e) => {
-        if (!segment1DoneTime) return;
-        const dockIcon = e.target.closest(".dock-icon[data-app]");
-        if (dockIcon) {
-          if (dockIcon.dataset.app === "intranet") onboardingDone.wiki = true;
-          if (dockIcon.dataset.app === "board") onboardingDone.board = true;
-        }
-        const wikiCard = e.target.closest(".intranet [data-link]");
-        if (wikiCard) onboardingDone.wikiPage = true;
-        // If user opens the board via clicking the task widget too
-        if (e.target.closest("#window-board")) onboardingDone.board = true;
-        if (e.target.closest("#window-intranet")) onboardingDone.wiki = true;
-        tryFireSegment2();
-      };
-      document.addEventListener("click", activityHandler, true);
-
-      setTimeout(() => {
-        const seg1Watcher = setInterval(() => {
-          if (!document.querySelector(".avatar-video-float")) {
-            segment1DoneTime = Date.now();
-            clearInterval(seg1Watcher);
-            tryFireSegment2();
-          }
-        }, 600);
-      }, 4000);
-
-      // Safety fallback: 5 minutes
-      setTimeout(() => {
-        if (!segment1DoneTime) segment1DoneTime = Date.now() - 15000;
-        onboardingDone.wiki = onboardingDone.wikiPage = onboardingDone.board = true;
-        tryFireSegment2();
-      }, 300000);
-    }
-
-    // Task assignment
-    setTimeout(() => {
+    // Task assignment: wacht tot onboarding echt klaar is (MayoWiki + wiki-pagina + MayoBoard bezocht)
+    const onboardingDone = { wiki: false, wikiPage: false, board: false };
+    let seg1Gone = false;
+    const fireTaskAssignment = () => {
       if (taskShown) return;
+      if (!seg1Gone) return;
+      if (!onboardingDone.wiki || !onboardingDone.wikiPage || !onboardingDone.board) return;
+      if (document.querySelector(".avatar-video-float")) return;
       taskShown = true;
+      document.removeEventListener("click", onboardingHandler, true);
+      // Markeer onboarding-taken als klaar
+      const t40 = BOARD_TASKS.find(t => t.id === "VTH-040");
+      const t41 = BOARD_TASKS.find(t => t.id === "VTH-041");
+      if (t40) t40.col = "done";
+      if (t41) t41.col = "done";
+      // Voeg nieuwe taak toe aan het board
       renderBoard(area.querySelector("#board-body"), d, task, true);
-      // Show video segment 3 about the task, then the chat notification
+      // Segment 3 video, dan chat notification
       if (videoSegs.onTaskAssigned) {
         showDesktopVideoOverlay(videoSegs.onTaskAssigned.src, videoSegs.onTaskAssigned.caption, () => {
           showChatNotification(area, d, task);
@@ -1787,7 +1730,41 @@
         showDesktopNotification("Nieuwe taak op MayoBoard! Marco heeft een opdracht voor je.");
         setTimeout(() => showChatNotification(area, d, task), 3000);
       }
-    }, d.taskPopupDelay || 12000);
+    };
+
+    const onboardingHandler = (e) => {
+      if (!seg1Gone) return;
+      const dockIcon = e.target.closest(".dock-icon[data-app]");
+      if (dockIcon) {
+        if (dockIcon.dataset.app === "intranet") onboardingDone.wiki = true;
+        if (dockIcon.dataset.app === "board") onboardingDone.board = true;
+      }
+      if (e.target.closest(".intranet [data-link]")) onboardingDone.wikiPage = true;
+      if (e.target.closest("#window-intranet")) onboardingDone.wiki = true;
+      if (e.target.closest("#window-board")) onboardingDone.board = true;
+      // Pas na 10s extra, zodat user echt even kan lezen
+      if (onboardingDone.wiki && onboardingDone.wikiPage && onboardingDone.board) {
+        setTimeout(fireTaskAssignment, 10000);
+      }
+    };
+    document.addEventListener("click", onboardingHandler, true);
+
+    // Watch voor segment 1 verdwijning
+    setTimeout(() => {
+      const watcher = setInterval(() => {
+        if (!document.querySelector(".avatar-video-float")) {
+          seg1Gone = true;
+          clearInterval(watcher);
+        }
+      }, 600);
+    }, 4000);
+
+    // Safety fallback: na 4 minuten geforceerd
+    setTimeout(() => {
+      seg1Gone = true;
+      onboardingDone.wiki = onboardingDone.wikiPage = onboardingDone.board = true;
+      fireTaskAssignment();
+    }, 240000);
   }
 
   function showDesktopNotification(message) {
