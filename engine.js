@@ -2026,6 +2026,9 @@
               <div style="font-weight:600;margin-bottom:8px;font-size:0.85rem">3 takeaways van Dag 1:</div>
               ${fw.takeaways.map((t,i) => `<div style="display:flex;gap:8px;margin-top:4px;font-size:0.82rem"><span style="color:var(--cyan);font-weight:700">${i+1}.</span>${t}</div>`).join("")}
             </div>
+            <div style="margin-top:14px;padding:10px 12px;background:rgba(0,212,255,0.08);border-left:3px solid var(--cyan);border-radius:4px;font-size:0.8rem;line-height:1.5">
+              <strong style="color:var(--cyan)">Pro-tip:</strong> Wil je een nieuwe opdracht beginnen? Start dan een <em>nieuwe chat</em> in ChatGPT. Een verse chat voorkomt dat oude context je nieuwe prompt beinvloedt. Elke taak verdient zijn eigen gesprek.
+            </div>
           </div>`;
         } else {
           fb.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Inzicht</div>${task.insight}</div>`;
