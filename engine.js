@@ -1700,32 +1700,36 @@
     }
 
     // Video segment 2: Marco's rondleiding
-    // Logica: segment 1 moet eerst ECHT klaar zijn, en dan moet user MIN. 30s verkennen MET 3+ clicks.
+    // Triggert pas als gebruiker BEIDE onboarding-taken heeft afgerond:
+    //   - MayoWiki opent EN minstens 1 wiki-pagina bekeken
+    //   - MayoBoard (kanban) geopend
+    // PLUS segment 1 is gesloten EN minstens 15s sinds segment 1 weg.
     if (videoSegs.onFirstExplore) {
       let segment2Queued = false;
-      let segment1DoneTime = null; // timestamp wanneer segment 1 verdween
-      const activitySetAfterSeg1 = new Set(); // interacties NA segment 1
+      let segment1DoneTime = null;
+      const onboardingDone = { wiki: false, wikiPage: false, board: false };
 
       const tryFireSegment2 = () => {
         if (segment2Queued) return;
         if (!segment1DoneTime) return;
-        if (activitySetAfterSeg1.size < 3) return;
+        if (!onboardingDone.wiki || !onboardingDone.wikiPage || !onboardingDone.board) return;
         const elapsed = Date.now() - segment1DoneTime;
-        if (elapsed < 30000) {
-          // Nog geen 30s sinds segment 1 afgelopen — wacht tot 30s is verstreken
-          setTimeout(tryFireSegment2, 30000 - elapsed + 500);
+        if (elapsed < 15000) {
+          setTimeout(tryFireSegment2, 15000 - elapsed + 500);
           return;
         }
-        // STRIKTE check: geen enkele hologram actief
         if (document.querySelector(".avatar-video-float")) {
-          // Wacht 1s en probeer opnieuw
           setTimeout(tryFireSegment2, 1000);
           return;
         }
         segment2Queued = true;
         document.removeEventListener("click", activityHandler, true);
+        // Mark onboarding tasks as done in MayoBoard
+        const t40 = BOARD_TASKS.find(t => t.id === "VTH-040");
+        const t41 = BOARD_TASKS.find(t => t.id === "VTH-041");
+        if (t40) t40.col = "done";
+        if (t41) t41.col = "done";
         setTimeout(() => {
-          // Double-check voor het echt showen
           if (document.querySelector(".avatar-video-float")) {
             segment2Queued = false;
             setTimeout(tryFireSegment2, 1500);
@@ -1735,26 +1739,25 @@
         }, 800);
       };
 
-      // Track activity ALLEEN na segment 1
       const activityHandler = (e) => {
-        if (!segment1DoneTime) return; // negeer clicks tijdens segment 1
+        if (!segment1DoneTime) return;
         const dockIcon = e.target.closest(".dock-icon[data-app]");
-        if (dockIcon) activitySetAfterSeg1.add("app:" + dockIcon.dataset.app);
-        const wikiCard = e.target.closest("[data-link]");
-        if (wikiCard) activitySetAfterSeg1.add("wiki:" + wikiCard.dataset.link);
-        const appWindow = e.target.closest(".app-window");
-        if (appWindow && appWindow.id) activitySetAfterSeg1.add("window:" + appWindow.id);
-        const zaakRow = e.target.closest("tr[data-zaak]");
-        if (zaakRow) activitySetAfterSeg1.add("zaak:" + zaakRow.dataset.zaak);
-        if (activitySetAfterSeg1.size >= 3) tryFireSegment2();
+        if (dockIcon) {
+          if (dockIcon.dataset.app === "intranet") onboardingDone.wiki = true;
+          if (dockIcon.dataset.app === "board") onboardingDone.board = true;
+        }
+        const wikiCard = e.target.closest(".intranet [data-link]");
+        if (wikiCard) onboardingDone.wikiPage = true;
+        // If user opens the board via clicking the task widget too
+        if (e.target.closest("#window-board")) onboardingDone.board = true;
+        if (e.target.closest("#window-intranet")) onboardingDone.wiki = true;
+        tryFireSegment2();
       };
       document.addEventListener("click", activityHandler, true);
 
-      // Watch for segment 1 completion — start pas 4s na desktop load
       setTimeout(() => {
         const seg1Watcher = setInterval(() => {
-          const holo = document.querySelector(".avatar-video-float");
-          if (!holo) {
+          if (!document.querySelector(".avatar-video-float")) {
             segment1DoneTime = Date.now();
             clearInterval(seg1Watcher);
             tryFireSegment2();
@@ -1762,13 +1765,12 @@
         }, 600);
       }, 4000);
 
-      // Safety fallback: na 4 minuten hoe dan ook (als user niet klikt of segment 1 nooit wegdoet)
-      // Negeer delay uit missions data — dat was een oude trigger-delay, niet bedoeld als fallback
+      // Safety fallback: 5 minutes
       setTimeout(() => {
-        if (!segment1DoneTime) segment1DoneTime = Date.now() - 30000;
-        for (let i = activitySetAfterSeg1.size; i < 3; i++) activitySetAfterSeg1.add("auto:" + i);
+        if (!segment1DoneTime) segment1DoneTime = Date.now() - 15000;
+        onboardingDone.wiki = onboardingDone.wikiPage = onboardingDone.board = true;
         tryFireSegment2();
-      }, 240000);
+      }, 300000);
     }
 
     // Task assignment
@@ -2411,7 +2413,7 @@
               <div style="font-size:0.65rem;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Hint</div>
               <div style="font-size:0.82rem;color:#1e3a5f;line-height:1.6;white-space:pre-line">${t.hint}</div>
             </div>` : ""}
-            ${t.action === "chatgpt" ? `<button id="popup-action" style="width:100%;padding:10px;background:#10a37f;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.88rem;font-weight:600;cursor:pointer">Open ChatGPT \u2192</button>` : ""}
+            <div style="font-size:0.7rem;color:#9ca3af;text-align:center;padding-top:4px">Sluit dit venster en open zelf de juiste tools.</div>
           </div>
         `;
         popup.querySelector("#popup-close").addEventListener("click", () => { overlay.style.display = "none"; });

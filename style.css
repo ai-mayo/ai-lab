@@ -2168,24 +2168,28 @@ body {
   display: flex;
 }
 
-/* macOS notification */
+/* macOS notification - bottom-right, above avatar hologram */
 .macos-notification {
   position: absolute;
-  top: 36px;
-  right: 12px;
-  width: 340px;
+  bottom: 24px;
+  right: 24px;
+  width: 320px;
   background: rgba(45, 45, 55, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.1);
   overflow: hidden;
-  z-index: 120;
+  z-index: 700;
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
   animation: notifSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
+/* When avatar hologram is visible, push notification above it */
+#macos-desktop:has(.avatar-video-float) .macos-notification {
+  bottom: 320px;
+}
 @keyframes notifSlide {
-  from { transform: translateY(-20px); opacity: 0; }
+  from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
