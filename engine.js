@@ -1032,19 +1032,66 @@
   // ─── INTERACTION: Video Segment ──────────────────────
   function renderVideoSegment(area, task) {
     const d = task.interaction;
+    // Dark stage with hologram avatar centered
     area.innerHTML = `
-      <div class="video-segment-panel" style="max-width:720px;margin:20px auto;background:rgba(0,0,0,0.4);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)">
-        <div style="position:relative;background:#000">
-          <video src="${d.videoSrc}" controls autoplay playsinline style="width:100%;display:block;max-height:400px;object-fit:contain"></video>
+      <div style="min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;background:radial-gradient(ellipse at center, rgba(0,40,80,0.25) 0%, transparent 70%)">
+        <div class="holo-stage intro-stage" style="position:relative;width:360px;height:360px;margin-bottom:28px">
+          <div class="holo-ring holo-ring-1"></div>
+          <div class="holo-ring holo-ring-2"></div>
+          <div class="holo-ring holo-ring-3"></div>
+          <div class="holo-base"></div>
+          <div class="holo-video-wrap" style="position:absolute;inset:18px;border-radius:50%;overflow:hidden;box-shadow:0 0 60px rgba(0,212,255,0.55),inset 0 0 40px rgba(0,212,255,0.2)">
+            <video src="${d.videoSrc}" autoplay playsinline class="holo-video" style="width:140%;height:140%;position:absolute;top:-20%;left:-20%;object-fit:cover;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
+            <div class="holo-scanlines"></div>
+            <div class="holo-flicker"></div>
+          </div>
         </div>
-        <div style="padding:20px 24px">
-          <div style="font-size:0.88rem;color:var(--text-dim);line-height:1.6;margin-bottom:16px">${d.caption || ""}</div>
-          <button class="action-btn" id="video-next-btn" style="width:100%">${d.nextLabel || "Volgende \u2192"}</button>
+        <div style="max-width:520px;text-align:center;margin-bottom:20px">
+          <div style="font-size:0.7rem;color:#00d4ff;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">&#9673; AI-begeleider</div>
+          <div style="font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.6">${d.caption || ""}</div>
         </div>
+        <button class="action-btn" id="video-next-btn" style="min-width:220px">${d.nextLabel || "Volgende \u2192"}</button>
       </div>
     `;
-    area.querySelector("#video-next-btn").addEventListener("click", () => {
+
+    // Inject hologram styles if not already there
+    if (!document.getElementById("avatar-video-styles")) {
+      const style = document.createElement("style");
+      style.id = "avatar-video-styles";
+      style.textContent = `
+        @keyframes avatar-slide-in { from { transform: translate(20px,20px) scale(0.95); opacity: 0 } to { transform: translate(0,0) scale(1); opacity: 1 } }
+        @keyframes holo-pulse { 0%,100% { opacity: 1; transform: scale(1) } 50% { opacity: 0.5; transform: scale(1.3) } }
+        @keyframes holo-ring-spin { from { transform: translate(-50%,-50%) rotate(0deg) } to { transform: translate(-50%,-50%) rotate(360deg) } }
+        @keyframes holo-ring-spin-rev { from { transform: translate(-50%,-50%) rotate(360deg) } to { transform: translate(-50%,-50%) rotate(0deg) } }
+        @keyframes holo-base-glow { 0%,100% { opacity: 0.6; transform: translate(-50%,0) scaleX(1) } 50% { opacity: 1; transform: translate(-50%,0) scaleX(1.1) } }
+        @keyframes holo-flicker { 0%,100% { opacity: 0 } 48% { opacity: 0 } 50% { opacity: 0.08 } 52% { opacity: 0 } 78% { opacity: 0 } 80% { opacity: 0.05 } 82% { opacity: 0 } }
+        @keyframes holo-scan { from { transform: translateY(-100%) } to { transform: translateY(100%) } }
+        .holo-stage { perspective: 800px }
+        .holo-ring { position:absolute; top:50%; left:50%; border-radius:50%; border: 1px solid rgba(0,212,255,0.35); pointer-events:none; transform: translate(-50%,-50%) }
+        .holo-ring-1 { width:100%; height:100%; border-style: dashed; border-color: rgba(0,212,255,0.4); animation: holo-ring-spin 18s linear infinite }
+        .holo-ring-2 { width:88%; height:88%; border-color: rgba(0,212,255,0.25); animation: holo-ring-spin-rev 24s linear infinite }
+        .holo-ring-3 { width:108%; height:108%; border-color: rgba(120,80,255,0.2); border-top-color: rgba(120,80,255,0.55); animation: holo-ring-spin 12s linear infinite }
+        .holo-base { position:absolute; bottom:-4px; left:50%; transform: translate(-50%,0); width:70%; height:6px; border-radius:50%; background: radial-gradient(ellipse at center, rgba(0,212,255,0.7) 0%, rgba(0,212,255,0) 70%); filter: blur(2px); animation: holo-base-glow 2.5s ease-in-out infinite }
+        .holo-video-wrap::before { content:""; position:absolute; inset:0; border-radius:50%; background: radial-gradient(circle at center, rgba(0,212,255,0) 50%, rgba(0,212,255,0.18) 100%); pointer-events:none; z-index:2 }
+        .holo-scanlines { position:absolute; inset:0; background: repeating-linear-gradient(to bottom, rgba(0,212,255,0.04) 0px, rgba(0,212,255,0.04) 1px, transparent 1px, transparent 3px); pointer-events:none; z-index:2 }
+        .holo-scanlines::after { content:""; position:absolute; left:0; right:0; height:40%; background: linear-gradient(to bottom, transparent, rgba(0,212,255,0.12), transparent); animation: holo-scan 4s linear infinite; pointer-events:none }
+        .holo-flicker { position:absolute; inset:0; background: rgba(0,212,255,0.3); mix-blend-mode: screen; animation: holo-flicker 6s linear infinite; pointer-events:none; z-index:2 }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const videoEl = area.querySelector(".holo-video");
+    const nextBtn = area.querySelector("#video-next-btn");
+    // Pulse the next button when video ends
+    if (videoEl) {
+      videoEl.addEventListener("ended", () => {
+        if (nextBtn) nextBtn.classList.add("pulse-ready");
+      });
+    }
+    nextBtn.addEventListener("click", () => {
       sfxClick();
+      // Stop video before transitioning
+      if (videoEl) { videoEl.pause(); videoEl.src = ""; }
       state.totalScore++;
       nextTask();
     });
@@ -1688,26 +1735,89 @@
   function showDesktopVideoOverlay(videoSrc, caption, onDismiss) {
     const desktop = document.getElementById("macos-desktop");
     if (!desktop) return;
-    const overlay = document.createElement("div");
-    overlay.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:40px;backdrop-filter:blur(6px)";
-    overlay.innerHTML = `
-      <div style="max-width:680px;width:100%;background:rgba(20,20,30,0.95);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.5)">
-        <div style="position:relative;background:#000">
-          <video src="${videoSrc}" controls autoplay playsinline style="width:100%;display:block;max-height:360px;object-fit:contain"></video>
+    // Remove any existing avatar video to prevent stacking
+    const existing = desktop.querySelector(".avatar-video-float");
+    if (existing) existing.remove();
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar-video-float";
+    avatar.style.cssText = "position:absolute;bottom:24px;right:24px;width:260px;z-index:600;animation:avatar-slide-in 0.4s cubic-bezier(0.34,1.56,0.64,1);display:flex;flex-direction:column;align-items:center;gap:12px";
+    avatar.innerHTML = `
+      <div class="holo-stage" style="position:relative;width:240px;height:240px">
+        <div class="holo-ring holo-ring-1"></div>
+        <div class="holo-ring holo-ring-2"></div>
+        <div class="holo-ring holo-ring-3"></div>
+        <div class="holo-base"></div>
+        <div class="holo-video-wrap" style="position:absolute;inset:12px;border-radius:50%;overflow:hidden;box-shadow:0 0 40px rgba(0,212,255,0.45),inset 0 0 30px rgba(0,212,255,0.15)">
+          <video src="${videoSrc}" autoplay playsinline class="holo-video" style="width:140%;height:140%;position:absolute;top:-20%;left:-20%;object-fit:cover;filter:brightness(1.05) contrast(1.1) saturate(0.85);mix-blend-mode:screen"></video>
+          <div class="holo-scanlines"></div>
+          <div class="holo-flicker"></div>
         </div>
-        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between">
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.5;flex:1">${caption || ""}</div>
-          <button class="desktop-video-dismiss" style="padding:8px 20px;background:#0052cc;color:white;border:none;border-radius:8px;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;margin-left:16px;white-space:nowrap">Doorgaan</button>
+        <button class="avatar-close" title="Sluiten" style="position:absolute;top:0;right:0;width:28px;height:28px;border-radius:50%;background:rgba(10,15,25,0.85);border:1px solid rgba(0,212,255,0.4);color:#00d4ff;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;z-index:3">&times;</button>
+      </div>
+      <div class="holo-panel" style="width:100%;background:rgba(10,15,25,0.82);border:1px solid rgba(0,212,255,0.25);border-radius:12px;padding:10px 14px;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.45)">
+        ${caption ? `<div style="font-size:0.78rem;color:rgba(255,255,255,0.85);line-height:1.45;margin-bottom:8px">${caption}</div>` : ""}
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <div class="avatar-speaker" style="font-size:0.68rem;color:#00d4ff;font-weight:600;letter-spacing:1px;text-transform:uppercase"><span style="display:inline-block;width:6px;height:6px;background:#00d4ff;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #00d4ff;animation:holo-pulse 1.5s ease-in-out infinite"></span>AI-begeleider</div>
+          <button class="desktop-video-dismiss" style="padding:6px 14px;background:linear-gradient(135deg,#00d4ff,#0052cc);color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,212,255,0.35)">Doorgaan</button>
         </div>
       </div>
     `;
-    desktop.appendChild(overlay);
-    overlay.querySelector(".desktop-video-dismiss").addEventListener("click", () => {
-      const video = overlay.querySelector("video");
-      if (video) { video.pause(); video.src = ""; }
-      overlay.remove();
-      if (onDismiss) onDismiss();
-    });
+    desktop.appendChild(avatar);
+
+    // Inject hologram styles once
+    if (!document.getElementById("avatar-video-styles")) {
+      const style = document.createElement("style");
+      style.id = "avatar-video-styles";
+      style.textContent = `
+        @keyframes avatar-slide-in { from { transform: translate(20px,20px) scale(0.95); opacity: 0 } to { transform: translate(0,0) scale(1); opacity: 1 } }
+        @keyframes holo-pulse { 0%,100% { opacity: 1; transform: scale(1) } 50% { opacity: 0.5; transform: scale(1.3) } }
+        @keyframes holo-ring-spin { from { transform: translate(-50%,-50%) rotate(0deg) } to { transform: translate(-50%,-50%) rotate(360deg) } }
+        @keyframes holo-ring-spin-rev { from { transform: translate(-50%,-50%) rotate(360deg) } to { transform: translate(-50%,-50%) rotate(0deg) } }
+        @keyframes holo-base-glow { 0%,100% { opacity: 0.6; transform: translate(-50%,0) scaleX(1) } 50% { opacity: 1; transform: translate(-50%,0) scaleX(1.1) } }
+        @keyframes holo-flicker { 0%,100% { opacity: 0 } 48% { opacity: 0 } 50% { opacity: 0.08 } 52% { opacity: 0 } 78% { opacity: 0 } 80% { opacity: 0.05 } 82% { opacity: 0 } }
+        @keyframes holo-scan { from { transform: translateY(-100%) } to { transform: translateY(100%) } }
+        .holo-stage { perspective: 800px }
+        .holo-ring { position:absolute; top:50%; left:50%; border-radius:50%; border: 1px solid rgba(0,212,255,0.35); pointer-events:none; transform: translate(-50%,-50%) }
+        .holo-ring-1 { width:100%; height:100%; border-style: dashed; border-color: rgba(0,212,255,0.4); animation: holo-ring-spin 18s linear infinite }
+        .holo-ring-2 { width:88%; height:88%; border-color: rgba(0,212,255,0.25); animation: holo-ring-spin-rev 24s linear infinite }
+        .holo-ring-3 { width:108%; height:108%; border-color: rgba(120,80,255,0.2); border-top-color: rgba(120,80,255,0.55); animation: holo-ring-spin 12s linear infinite }
+        .holo-base { position:absolute; bottom:-4px; left:50%; transform: translate(-50%,0); width:70%; height:6px; border-radius:50%; background: radial-gradient(ellipse at center, rgba(0,212,255,0.7) 0%, rgba(0,212,255,0) 70%); filter: blur(2px); animation: holo-base-glow 2.5s ease-in-out infinite }
+        .holo-video-wrap::before { content:""; position:absolute; inset:0; border-radius:50%; background: radial-gradient(circle at center, rgba(0,212,255,0) 50%, rgba(0,212,255,0.18) 100%); pointer-events:none; z-index:2 }
+        .holo-scanlines { position:absolute; inset:0; background: repeating-linear-gradient(to bottom, rgba(0,212,255,0.04) 0px, rgba(0,212,255,0.04) 1px, transparent 1px, transparent 3px); pointer-events:none; z-index:2 }
+        .holo-scanlines::after { content:""; position:absolute; left:0; right:0; height:40%; background: linear-gradient(to bottom, transparent, rgba(0,212,255,0.12), transparent); animation: holo-scan 4s linear infinite; pointer-events:none }
+        .holo-flicker { position:absolute; inset:0; background: rgba(0,212,255,0.3); mix-blend-mode: screen; animation: holo-flicker 6s linear infinite; pointer-events:none; z-index:2 }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function dismiss() {
+      const v = avatar.querySelector("video");
+      if (v) { v.pause(); v.src = ""; }
+      avatar.style.animation = "avatar-slide-in 0.3s cubic-bezier(0.4,0,1,1) reverse";
+      setTimeout(() => { avatar.remove(); if (onDismiss) onDismiss(); }, 280);
+    }
+
+    avatar.querySelector(".desktop-video-dismiss").addEventListener("click", dismiss);
+    avatar.querySelector(".avatar-close").addEventListener("click", dismiss);
+
+    // Auto-dismiss when video ends
+    const video = avatar.querySelector("video");
+    if (video) {
+      video.addEventListener("ended", () => {
+        // Highlight the Doorgaan button when video finishes
+        const btn = avatar.querySelector(".desktop-video-dismiss");
+        if (btn) {
+          btn.style.animation = "pulse-glow 1.5s ease-in-out infinite";
+          if (!document.getElementById("avatar-pulse-style")) {
+            const s = document.createElement("style");
+            s.id = "avatar-pulse-style";
+            s.textContent = "@keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(0,82,204,0.7) } 50% { box-shadow: 0 0 0 8px rgba(0,82,204,0) } }";
+            document.head.appendChild(s);
+          }
+        }
+      });
+    }
   }
 
   function showChatNotification(area, d, task) {
