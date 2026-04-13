@@ -1721,14 +1721,13 @@
       if (t41) t41.col = "done";
       // Voeg nieuwe taak toe aan het board
       renderBoard(area.querySelector("#board-body"), d, task, true);
-      // Segment 3 video, dan chat notification
+      // Eerst chat notification (Marco's bericht), dan pas segment 3 video
+      showChatNotification(area, d, task);
       if (videoSegs.onTaskAssigned) {
-        showDesktopVideoOverlay(videoSegs.onTaskAssigned.src, videoSegs.onTaskAssigned.caption, () => {
-          showChatNotification(area, d, task);
-        });
-      } else {
-        showDesktopNotification("Nieuwe taak op MayoBoard! Marco heeft een opdracht voor je.");
-        setTimeout(() => showChatNotification(area, d, task), 3000);
+        // Video start 2s na het bericht
+        setTimeout(() => {
+          showDesktopVideoOverlay(videoSegs.onTaskAssigned.src, videoSegs.onTaskAssigned.caption);
+        }, 2000);
       }
     };
 
@@ -1893,16 +1892,13 @@
     notifArea.appendChild(notif);
     sfxClick();
 
-    // Clicking the notification opens MayoBoard (taak) — met exact dezelfde tekst zichtbaar
+    // Clicking the notification opens MayoChat (zodat gebruiker Marco's bericht kan lezen)
     notif.addEventListener("click", () => {
       sfxClick();
       notif.remove();
-      const boardWin = document.getElementById("window-board");
-      if (boardWin) {
-        boardWin.style.display = "flex";
-        document.querySelectorAll(".app-window").forEach(w => w.classList.remove("focused"));
-        boardWin.classList.add("focused", "maximized");
-      }
+      // Simulate a click on the MayoChat dock icon
+      const chatDock = document.querySelector('.dock-icon[data-app="chat"]');
+      if (chatDock) chatDock.click();
     });
 
     // Auto-dismiss after 30s, then show again
@@ -2315,7 +2311,7 @@
   const BOARD_TASKS = [
     { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente. Hoe schrijf je naar inwoners? Welke regels gelden er voor AI?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad.", action:null },
     { id:"VTH-041", title:"WiWa bekijken", desc:"Wie zijn je collega's? En wie zijn de robot-collega's?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad.", action:null },
-    { id:"VTH-042", title:"Brief schrijven: vertraging terrasvergunning Van Dijk", desc:"Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in het Zaaksysteem (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"1. Open Zaaksysteem en klik op VTH-2026-00347 voor alle details\n2. Lees de Schrijfwijzer in MayoWiki\n3. Open ChatGPT en schrijf een prompt", action:"chatgpt" },
+    { id:"VTH-042", title:"Brief schrijven: vertraging terrasvergunning Van Dijk", desc:"Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in de Vergunningtool (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"1. Open de Vergunningtool en klik op zaak VTH-2026-00347 voor alle details\n2. Lees de Schrijfwijzer in MayoWiki\n3. Open ChatGPT en schrijf een prompt", action:"chatgpt" },
   ];
 
   function renderBoard(container, d, task, showNewTask) {

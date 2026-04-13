@@ -43,7 +43,7 @@ const MISSIONS = [
             from: "Marco Pieterse",
             fromRole: "Teamleider VTH",
             avatar: "MP",
-            message: "Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in het Zaaksysteem (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.",
+            message: "Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in de Vergunningtool (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.",
             urgency: "Vandaag afhandelen"
           },
           cliffhanger: {
@@ -135,57 +135,6 @@ const MISSIONS = [
                   { type: "rule", num: "5", text: "Sluit af namens het college" },
 
                   { type: "text", text: "Vuistregel: schrijf zoals je zou praten tegen een inwoner die je respecteert. Formeel maar warm." }
-                ]
-              },
-              "lopende-zaken": {
-                title: "Lopende Zaken VTH",
-                icon: "",
-                content: [
-                  { type: "heading", text: "Lopende vergunningszaken" },
-                  { type: "text", text: "Hieronder de actieve zaken van de afdeling VTH. Klik op een zaak voor details." },
-                  { type: "cards", items: [
-                    { title: "Zaak Van Dijk \u2014 Terrasvergunning (VERTRAAGD)", icon: "", link: "zaak-vandijk" },
-                  ]},
-                  { type: "heading", text: "Overige lopende zaken" },
-                  { type: "tool", name: "VTH-2026-00412 \u2014 Omgevingsvergunning Sportschool FitNow", desc: "Uitbreiding bestaand pand. Wacht op advies welstandscommissie.", status: "In behandeling" },
-                  { type: "tool", name: "VTH-2026-00398 \u2014 Kapvergunning Esdoorn Kerkstraat", desc: "Herplantplicht opgelegd. Verleend.", status: "Verleend" },
-                  { type: "tool", name: "VTH-2026-00405 \u2014 Evenementenvergunning Koningsdag", desc: "Inclusief geluidsontheffing tot 23:00.", status: "Verleend" },
-                ]
-              },
-              "zaak-vandijk": {
-                title: "Zaak Van Dijk \u2014 Terrasvergunning",
-                icon: "",
-                content: [
-                  { type: "heading", text: "Zaakgegevens" },
-                  { type: "info", label: "Zaaknummer", value: "VTH-2026-00347" },
-                  { type: "info", label: "Type", value: "Terrasvergunning (horeca)" },
-                  { type: "info", label: "Status", value: "\u26A0 Vertraagd \u2014 brief naar aanvrager vereist" },
-
-                  { type: "heading", text: "Aanvrager" },
-                  { type: "info", label: "Naam", value: "Dhr. H.J. van Dijk" },
-                  { type: "info", label: "Bedrijf", value: "Bakkerij Van Dijk" },
-                  { type: "info", label: "Adres", value: "Marktstraat 14, 8011 AB Mayostad" },
-                  { type: "info", label: "Datum aanvraag", value: "12 februari 2026" },
-
-                  { type: "heading", text: "Aanvraag" },
-                  { type: "text", text: "Gevraagd: terras van 12 m\u00B2 (4x3 meter), 6 tafels, 12 stoelen. Seizoen: 1 april tot en met 31 oktober 2026." },
-
-                  { type: "heading", text: "Bezwaar" },
-                  { type: "text", text: "Op 15 maart 2026 is een bezwaar ontvangen van dhr. Jansen (buurman, Marktstraat 16). Gronden: geluidsoverlast, beperking doorgang voetgangers, waardevermindering pand." },
-
-                  { type: "heading", text: "Advies en wetsartikelen" },
-                  { type: "text", text: "Advies team Openbare Orde en Veiligheid (OOV): geen bezwaar, mits looppad minimaal 1,5 meter breed blijft." },
-                  { type: "text", text: "Relevante wetsartikelen: art. 4:14 Awb (verlenging beslistermijn), art. 2:10 APV Mayostad (terrasvergunning)." },
-
-                  { type: "heading", text: "Nieuwe beslisdatum" },
-                  { type: "info", label: "Oorspronkelijke beslisdatum", value: "12 april 2026 (8 weken na aanvraag)" },
-                  { type: "info", label: "Nieuwe beslisdatum", value: "10 april 2026" },
-                  { type: "text", text: "De aanvrager is NOG NIET ge\u00efnformeerd over de vertraging. Er moet vandaag een brief uit." },
-
-                  { type: "heading", text: "Behandelaar" },
-                  { type: "info", label: "Behandelaar", value: "Anouk Willems" },
-                  { type: "info", label: "Telefoon", value: "14 0555 toestel 2237" },
-                  { type: "info", label: "Email", value: "vth@mayostad.nl" }
                 ]
               },
               ai: {
