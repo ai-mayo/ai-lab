@@ -390,7 +390,110 @@ const MISSIONS = [
               "Hoe beter je vraag, hoe beter het antwoord",
               "Altijd nakijken, nooit blind vertrouwen"
             ]
-          }
+          },
+          // ── Bonus prompt-oefeningen (na Van Dijk brief, voor cliffhanger) ──
+          bonusExercises: [
+            {
+              id: "antwoord-email",
+              num: 2,
+              title: "Antwoord-email voor boze Van Dijk",
+              from: "Anouk Willems",
+              fromRole: "Vergunningverlener VTH",
+              avatar: "AW",
+              scenario: "Van Dijk heeft net gebeld. Hij is boos over de vertraging en dreigt met een officiele klacht. Anouk vraagt of jij een kort, rustig antwoord-email kunt schrijven. Toon begrip, herhaal de nieuwe datum (10 april) en nodig hem uit om contact op te nemen bij vragen.",
+              placeholder: "Schrijf hier je prompt voor de antwoord-email aan Van Dijk...",
+              checks: [
+                { id: "recipient", label: "Ontvanger (Van Dijk)", keywords: ["van dijk", "meneer", "geachte heer"], hint: "Vermeld de ontvanger (Van Dijk / meneer)", points: 15 },
+                { id: "subject", label: "Onderwerp (reactie klacht)", keywords: ["telefoongesprek", "klacht", "reactie", "gesprek", "gebeld", "bezwaar"], hint: "Vermeld het onderwerp (reactie op telefoongesprek / klacht)", points: 15 },
+                { id: "empathy", label: "Empathie/begrip", keywords: ["begrip", "begrijp", "vervelend", "frustrat", "ongemak", "excus", "spijt", "empathi"], hint: "Toon empathie en begrip voor zijn frustratie", points: 20 },
+                { id: "date", label: "Nieuwe datum (10 april)", keywords: ["10 april", "april 2026"], hint: "Noem de nieuwe beslisdatum (10 april)", points: 15 },
+                { id: "invite", label: "Uitnodigen gesprek/contact", keywords: ["contact", "gesprek", "bel", "vragen", "uitnodig", "bereik", "telefoon"], hint: "Nodig uit om contact op te nemen bij vragen", points: 15 },
+                { id: "tone", label: "Toon (rustig/professioneel)", keywords: ["rustig", "professioneel", "kalm", "zakelijk", "respectvol", "vriendelijk"], hint: "Geef aan dat de toon rustig en professioneel moet zijn", points: 10 },
+                { id: "signoff", label: "Afsluiting (namens gemeente)", keywords: ["gemeente", "mayostad", "groet", "namens", "afdeling", "vth"], hint: "Sluit af namens de gemeente/afdeling", points: 10 }
+              ],
+              responses: {
+                perfect: "Geachte heer Van Dijk,\n\nDank u voor uw telefoongesprek van vandaag. Wij begrijpen dat de vertraging rond uw terrasvergunning frustrerend is, en wij nemen uw zorgen serieus.\n\nZoals besproken, heeft de bezwaarprocedure meer tijd gevraagd dan verwacht. Wij verwachten uiterlijk 10 april 2026 een definitief besluit te kunnen nemen over uw aanvraag.\n\nWij willen graag met u in gesprek blijven. Mocht u vragen hebben of een persoonlijk gesprek willen, dan kunt u contact opnemen met Anouk Willems via 14 0555 (toestel 2237) of vth@mayostad.nl.\n\nMet vriendelijke groet,\n\nnamens de afdeling VTH,\nGemeente Mayostad",
+                good: "Geachte heer Van Dijk,\n\nBedankt voor uw telefonische reactie. Wij begrijpen uw frustratie over de vertraging. Het besluit over uw terrasvergunning verwachten wij uiterlijk 10 april 2026.\n\nVoor vragen kunt u ons bereiken via 14 0555.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+                mediocre: "Geachte heer Van Dijk,\n\nWij hebben uw klacht ontvangen. De vergunning is in behandeling.\n\nMet vriendelijke groet,\nGemeente Mayostad",
+                bad: "Geachte heer,\n\nUw klacht is geregistreerd. U hoort van ons.\n\nDe gemeente"
+              }
+            },
+            {
+              id: "interne-memo",
+              num: 3,
+              title: "Interne memo voor Anouk",
+              from: "Anouk Willems",
+              fromRole: "Vergunningverlener VTH",
+              avatar: "AW",
+              scenario: "Anouk wil voor maandag een korte status-update van de zaak Van Dijk. Schrijf een interne memo met bulletpoints, max 150 woorden. Zakelijk en collegiaal, zonder jargon. Vergeet het zaaknummer niet: VTH-2026-00347.",
+              placeholder: "Schrijf hier je prompt voor de interne memo aan Anouk...",
+              checks: [
+                { id: "audience", label: "Doelgroep (Anouk/intern)", keywords: ["anouk", "collega", "intern", "willems"], hint: "Vermeld de doelgroep (Anouk / collega / intern)", points: 15 },
+                { id: "casenr", label: "Zaaknummer", keywords: ["vth-2026-00347", "2026-00347", "zaaknummer", "zaak"], hint: "Noem het zaaknummer (VTH-2026-00347)", points: 15 },
+                { id: "status", label: "Status (bezwaar/advies/datum)", keywords: ["bezwaar", "advies", "oov", "status", "nieuwe datum", "klacht", "10 april"], hint: "Beschrijf de status (bezwaar, advies OOV, nieuwe datum)", points: 20 },
+                { id: "format", label: "Format (bulletpoints/kort)", keywords: ["bullet", "punten", "opsomm", "kort", "beknopt", "samenva"], hint: "Vraag om bulletpoints / kort format", points: 15 },
+                { id: "length", label: "Lengte (max 150 woorden)", keywords: ["150", "woorden", "kort", "beknopt", "max"], hint: "Geef een maximale lengte aan (max 150 woorden / kort)", points: 10 },
+                { id: "tone", label: "Toon (zakelijk/collegiaal)", keywords: ["zakelijk", "collegiaal", "professioneel", "informeel", "intern"], hint: "Geef de toon aan (zakelijk / collegiaal)", points: 15 },
+                { id: "actions", label: "Actiepunten/vervolgstappen", keywords: ["actiepunt", "vervolg", "stap", "todo", "actie", "planning", "deadline"], hint: "Vraag om actiepunten of vervolgstappen", points: 10 }
+              ],
+              responses: {
+                perfect: "Memo: Status zaak VTH-2026-00347 (Van Dijk)\n\nAan: Anouk Willems\nVan: [naam]\nDatum: vandaag\n\nStatus:\n- Terrasvergunning Bakkerij Van Dijk (Marktstraat 14) aangevraagd op 12 feb 2026\n- Bezwaar ontvangen van omwonende; advies aangevraagd bij OOV\n- Beslistermijn verlengd tot 10 april 2026\n- Dhr. Van Dijk heeft telefonisch geklaagd; antwoord-email verstuurd\n\nVervolgstappen:\n- Advies OOV afwachten (verwacht eind maart)\n- Besluit voorbereiden voor 10 april\n- Bij nieuw contact Van Dijk: rustig en empathisch reageren",
+                good: "Memo zaak VTH-2026-00347:\n\n- Terrasvergunning Van Dijk vertraagd door bezwaar\n- Nieuwe beslisdatum: 10 april 2026\n- Van Dijk heeft klacht ingediend na telefoongesprek\n- Actie: advies OOV afwachten",
+                mediocre: "Status update Van Dijk:\n\nDe zaak loopt nog. Er is een bezwaar. We wachten op advies.",
+                bad: "Hoi Anouk, de zaak Van Dijk is nog bezig. Ik houd je op de hoogte."
+              }
+            },
+            {
+              id: "social-media",
+              num: 4,
+              title: "LinkedIn-post voor Gemeente Mayostad",
+              from: "Sarah Chen",
+              fromRole: "Communicatieadviseur",
+              avatar: "SC",
+              scenario: "Sarah van Communicatie vraagt of jij een LinkedIn-post kunt schrijven over het thema 'vergunningen en bezwaarprocedures'. Niet over Van Dijk specifiek, maar algemeen uitleggen waarom sommige beslissingen langer duren. Max 250 woorden, vriendelijk en transparant, gericht op inwoners van Mayostad. Vergeet de hashtags niet: #GemeenteMayostad #Vergunningen #Transparantie.",
+              placeholder: "Schrijf hier je prompt voor de LinkedIn-post...",
+              checks: [
+                { id: "platform", label: "Platform (LinkedIn)", keywords: ["linkedin", "social media", "post"], hint: "Vermeld het platform (LinkedIn / social media)", points: 15 },
+                { id: "subject", label: "Onderwerp (vergunningen)", keywords: ["vergunning", "bezwaar", "procedure", "beslissing"], hint: "Vermeld het onderwerp (vergunningen / bezwaarprocedure)", points: 15 },
+                { id: "audience", label: "Doelgroep (inwoners)", keywords: ["inwoner", "burger", "mayostad", "publiek", "bewoner"], hint: "Vermeld de doelgroep (inwoners van Mayostad)", points: 15 },
+                { id: "length", label: "Lengte (max 250 woorden)", keywords: ["250", "woorden", "kort", "beknopt", "max"], hint: "Geef een maximale lengte aan (max 250 woorden / kort)", points: 10 },
+                { id: "tone", label: "Toon (vriendelijk/transparant)", keywords: ["vriendelijk", "transparant", "informatief", "open", "toegankelijk", "helder"], hint: "Geef de toon aan (vriendelijk / transparant / informatief)", points: 15 },
+                { id: "hashtags", label: "Hashtags", keywords: ["hashtag", "#", "gemeentemayostad", "vergunningen", "transparantie"], hint: "Vraag om hashtags (#GemeenteMayostad #Vergunningen #Transparantie)", points: 10 },
+                { id: "cta", label: "Oproep / CTA", keywords: ["vraag", "welkom", "contact", "meer info", "reactie", "bel", "neem contact", "laat weten", "website"], hint: "Voeg een oproep toe (vragen welkom / meer info / neem contact op)", points: 20 }
+              ],
+              responses: {
+                perfect: "Wist je dat sommige vergunningen langer duren dan je zou verwachten?\n\nBij Gemeente Mayostad behandelen we jaarlijks honderden vergunningsaanvragen. Van terrasvergunnningen tot bouwvergunningen. Soms duurt een beslissing langer dan gepland, bijvoorbeeld wanneer een bezwaar wordt ingediend of extra advies nodig is.\n\nDat is geen bureaucratie, dat is zorgvuldigheid. We willen dat elk besluit eerlijk is voor alle betrokkenen: de aanvrager, de buren en de wijk.\n\nWat kun je verwachten?\n- Binnen 8 weken een besluit (tenzij er bijzonderheden zijn)\n- Altijd een duidelijke uitleg als het langer duurt\n- Een vast contactpersoon voor je zaak\n\nHeb je vragen over een lopende aanvraag? Neem contact met ons op via 14 0555 of kijk op mayostad.nl/vergunningen.\n\n#GemeenteMayostad #Vergunningen #Transparantie",
+                good: "Bij Gemeente Mayostad vinden we transparantie belangrijk. Soms duurt een vergunningsbesluit langer door bezwaren of extra onderzoek. We leggen altijd uit waarom.\n\nVragen? Bel 14 0555.\n\n#GemeenteMayostad #Vergunningen #Transparantie",
+                mediocre: "Vergunningen kosten soms meer tijd dan verwacht. Dat komt door procedures. We doen ons best.\n\n#GemeenteMayostad",
+                bad: "Gemeente Mayostad werkt aan vergunningen. Meer info op de website."
+              }
+            },
+            {
+              id: "stagiair-uitleg",
+              num: 5,
+              title: "Toelichting voor stagiair op B1-niveau",
+              from: "Marco Pieterse",
+              fromRole: "Teamleider VTH",
+              avatar: "MP",
+              scenario: "Marco brengt maandag een nieuwe MBO-stagiair mee. Kun jij uitleggen hoe het bezwaarproces bij vergunningen werkt, maar dan op B1-niveau? Korte zinnen, geen jargon, stapsgewijs (stap 1, 2, 3...) en met voorbeelden zodat een student het snapt.",
+              placeholder: "Schrijf hier je prompt voor de uitleg aan de stagiair...",
+              checks: [
+                { id: "audience", label: "Doelgroep (stagiair/MBO)", keywords: ["stagiair", "mbo", "student", "beginner", "nieuw", "jong"], hint: "Vermeld de doelgroep (stagiair / MBO / beginner)", points: 15 },
+                { id: "b1level", label: "B1-niveau / eenvoudig", keywords: ["b1", "eenvoudig", "simpel", "makkelijk", "begrijpelijk", "kort", "helder", "duidelijk"], hint: "Vraag om B1-niveau / eenvoudig taalgebruik", points: 20 },
+                { id: "subject", label: "Onderwerp (bezwaarproces)", keywords: ["bezwaar", "bezwaarproces", "procedure", "vergunning"], hint: "Vermeld het onderwerp (bezwaarproces bij vergunningen)", points: 15 },
+                { id: "format", label: "Format (stapsgewijs)", keywords: ["stap", "stapsgewijs", "genummerd", "nummer", "1 2 3", "volgorde"], hint: "Vraag om stapsgewijs / genummerd format", points: 15 },
+                { id: "examples", label: "Voorbeelden", keywords: ["voorbeeld", "bijv", "bijvoorbeeld", "stel dat", "denk aan", "illustr"], hint: "Vraag om voorbeelden ter verduidelijking", points: 15 },
+                { id: "nojargon", label: "Geen jargon", keywords: ["jargon", "geen vaktaal", "geen moeilijk", "gewone taal", "geen afkorting"], hint: "Vraag om geen jargon of vaktaal te gebruiken", points: 10 },
+                { id: "clear", label: "Duidelijk / helder", keywords: ["duidelijk", "helder", "overzichtelijk", "leesbaar", "begrijp"], hint: "Vraag om een duidelijke en heldere uitleg", points: 10 }
+              ],
+              responses: {
+                perfect: "Hoe werkt een bezwaar bij vergunningen?\n\nStel: iemand vraagt een vergunning aan. Bijvoorbeeld voor een terras bij een restaurant.\n\nStap 1: De aanvraag komt binnen\nDe gemeente ontvangt de aanvraag en kijkt of alles compleet is.\n\nStap 2: De gemeente beslist\nBinnen 8 weken neemt de gemeente een besluit: ja of nee.\n\nStap 3: Iemand is het niet eens\nEen buurman vindt het terras te dicht bij zijn huis. Hij dient een bezwaar in. Dat is een brief waarin hij uitlegt waarom hij het niet eens is met het besluit.\n\nStap 4: De gemeente bekijkt het bezwaar\nDe gemeente leest het bezwaar en vraagt soms advies aan andere afdelingen. Dit kost extra tijd.\n\nStap 5: Nieuw besluit\nDe gemeente neemt een nieuw besluit. Soms verandert er iets, soms blijft het hetzelfde.\n\nBelangrijk: iedereen mag bezwaar maken. Dat is een recht. De gemeente moet elk bezwaar serieus bekijken.",
+                good: "Het bezwaarproces bij vergunningen:\n\nStap 1: Iemand vraagt een vergunning aan\nStap 2: De gemeente neemt een besluit\nStap 3: Iemand die het niet eens is, dient een bezwaar in\nStap 4: De gemeente bekijkt het bezwaar opnieuw\nStap 5: Er komt een nieuw besluit\n\nDit duurt soms langer dan gepland.",
+                mediocre: "Als iemand het niet eens is met een besluit over een vergunning, kan die persoon bezwaar maken. De gemeente bekijkt het dan opnieuw.",
+                bad: "Het bezwaarproces is een juridische procedure conform de Awb waarbij belanghebbenden binnen 6 weken na bekendmaking van het besluit een bezwaarschrift kunnen indienen."
+              }
+            }
+          ]
         },
         insight: "Een goede prompt bevat: WIE (ontvanger), WAT (boodschap + details), WANNEER (data), HOE (toon) en FORMAAT (brieftype). Hoe specifieker je bent, hoe bruikbaarder het resultaat. Geef AI dezelfde informatie die je een collega zou geven."
       }

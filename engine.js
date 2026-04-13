@@ -2034,7 +2034,9 @@
           fb.innerHTML += `<div class="feedback info" style="margin-top:12px"><div class="feedback-title">Inzicht</div>${task.insight}</div>`;
         }
 
-        fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">Afronden \u2192</button>`;
+        // Determine button text: if bonus exercises exist, indicate more exercises
+        const hasBonusExercises = d.bonusExercises && d.bonusExercises.length > 0;
+        fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">${hasBonusExercises ? "Volgende opdracht \u2192" : "Afronden \u2192"}</button>`;
         chatgptBody.querySelector(".gpt-input-area").before(fb);
 
         fb.querySelector("#next-from-desktop")?.addEventListener("click", () => {
@@ -2075,14 +2077,29 @@
             nextTask();
           }
 
-          // Show video segment 6 (feedback + cliffhanger), then the cliffhanger notification
-          const vSegs = d.videoSegments || {};
-          if (vSegs.onFeedback) {
-            showDesktopVideoOverlay(vSegs.onFeedback.src, vSegs.onFeedback.caption, () => {
-              showCliffhangerAndFinish();
+          // If bonus exercises exist, start the chain; otherwise go to video+cliffhanger
+          if (hasBonusExercises) {
+            startBonusExerciseChain(d, chatgptBody, chatEl, 0, () => {
+              // All bonus exercises done — show video + cliffhanger
+              const vSegs = d.videoSegments || {};
+              if (vSegs.onFeedback) {
+                showDesktopVideoOverlay(vSegs.onFeedback.src, vSegs.onFeedback.caption, () => {
+                  showCliffhangerAndFinish();
+                });
+              } else {
+                showCliffhangerAndFinish();
+              }
             });
           } else {
-            showCliffhangerAndFinish();
+            // Show video segment 6 (feedback + cliffhanger), then the cliffhanger notification
+            const vSegs = d.videoSegments || {};
+            if (vSegs.onFeedback) {
+              showDesktopVideoOverlay(vSegs.onFeedback.src, vSegs.onFeedback.caption, () => {
+                showCliffhangerAndFinish();
+              });
+            } else {
+              showCliffhangerAndFinish();
+            }
           }
         });
 
@@ -2102,6 +2119,302 @@
     inputEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
     });
+  }
+
+  // ─── Bonus Exercise Chain (extra prompt exercises within desktop) ───
+  function startBonusExerciseChain(d, chatgptBody, chatEl, exerciseIndex, onAllDone) {
+    const exercises = d.bonusExercises;
+    if (exerciseIndex >= exercises.length) {
+      onAllDone();
+      return;
+    }
+
+    const exercise = exercises[exerciseIndex];
+    const isLast = exerciseIndex === exercises.length - 1;
+    const totalExercises = exercises.length + 1; // +1 for the Van Dijk exercise
+    const currentNum = exerciseIndex + 2; // exercise 2, 3, 4, 5
+
+    // Show "Nieuwe chat" overlay
+    showNewChatOverlay(exercise, currentNum, totalExercises, (startFresh) => {
+      // Reset the ChatGPT chat area for the new exercise
+      renderBonusExerciseInChat(d, chatgptBody, chatEl, exercise, startFresh, isLast, () => {
+        // This exercise is done, move to next
+        startBonusExerciseChain(d, chatgptBody, chatEl, exerciseIndex + 1, onAllDone);
+      });
+    });
+  }
+
+  function showNewChatOverlay(exercise, currentNum, totalExercises, onContinue) {
+    const desktop = document.getElementById("macos-desktop");
+    if (!desktop) { onContinue(true); return; }
+
+    const overlay = document.createElement("div");
+    overlay.className = "new-chat-overlay";
+    overlay.innerHTML = `
+      <div class="new-chat-card">
+        <div class="new-chat-badge">Opdracht ${currentNum} van ${totalExercises}</div>
+        <div class="new-chat-icon">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#00d4ff" stroke-width="1.5">
+            <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <div class="new-chat-title">Nieuwe opdracht!</div>
+        <div class="new-chat-exercise-title">${exercise.title}</div>
+        <div class="new-chat-from">
+          <div class="new-chat-avatar">${exercise.avatar}</div>
+          <div>
+            <div class="new-chat-from-name">${exercise.from}</div>
+            <div class="new-chat-from-role">${exercise.fromRole}</div>
+          </div>
+        </div>
+        <div class="new-chat-scenario">${exercise.scenario}</div>
+        <div class="new-chat-tip">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="#00d4ff"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+          <span>Tip: Elke taak verdient een verse chat. Zo voorkom je dat oude context je nieuwe prompt verstoort.</span>
+        </div>
+        <div class="new-chat-buttons">
+          <button class="action-btn new-chat-primary" id="new-chat-fresh">Start nieuwe chat</button>
+          <button class="action-btn secondary new-chat-secondary" id="new-chat-continue">Doorgaan in huidige chat</button>
+        </div>
+      </div>
+    `;
+    desktop.appendChild(overlay);
+
+    // Inject overlay styles once
+    if (!document.getElementById("new-chat-overlay-styles")) {
+      const style = document.createElement("style");
+      style.id = "new-chat-overlay-styles";
+      style.textContent = `
+        .new-chat-overlay {
+          position: absolute; inset: 0; z-index: 800;
+          background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+          display: flex; align-items: center; justify-content: center;
+          animation: nco-fade-in 0.3s ease;
+        }
+        @keyframes nco-fade-in { from { opacity: 0 } to { opacity: 1 } }
+        .new-chat-card {
+          background: #1a1a2e; border: 1px solid rgba(0,212,255,0.25);
+          border-radius: 16px; padding: 32px; max-width: 480px; width: 90%;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.1);
+          text-align: center;
+        }
+        .new-chat-badge {
+          display: inline-block; padding: 4px 14px; border-radius: 20px;
+          background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3);
+          color: #00d4ff; font-size: 0.72rem; font-weight: 700;
+          letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+        }
+        .new-chat-icon { margin-bottom: 16px; }
+        .new-chat-title {
+          font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px;
+        }
+        .new-chat-exercise-title {
+          font-size: 1rem; color: #00d4ff; font-weight: 600; margin-bottom: 20px;
+        }
+        .new-chat-from {
+          display: flex; align-items: center; gap: 10px; justify-content: center;
+          margin-bottom: 16px;
+        }
+        .new-chat-avatar {
+          width: 36px; height: 36px; border-radius: 50%; background: #2563eb;
+          color: white; display: flex; align-items: center; justify-content: center;
+          font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+        }
+        .new-chat-from-name { font-weight: 600; color: #e2e8f0; font-size: 0.88rem; }
+        .new-chat-from-role { font-size: 0.72rem; color: #64748b; }
+        .new-chat-scenario {
+          text-align: left; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;
+          background: rgba(255,255,255,0.05); border-radius: 10px; padding: 14px 16px;
+          margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.08);
+        }
+        .new-chat-tip {
+          display: flex; align-items: flex-start; gap: 8px; text-align: left;
+          font-size: 0.78rem; color: #94a3b8; line-height: 1.5;
+          background: rgba(0,212,255,0.06); border-left: 3px solid #00d4ff;
+          border-radius: 0 6px 6px 0; padding: 10px 12px; margin-bottom: 20px;
+        }
+        .new-chat-tip svg { flex-shrink: 0; margin-top: 1px; }
+        .new-chat-buttons { display: flex; flex-direction: column; gap: 8px; }
+        .new-chat-primary {
+          width: 100%; padding: 12px;
+          background: linear-gradient(135deg, #00d4ff, #0052cc) !important;
+          font-size: 0.92rem !important;
+        }
+        .new-chat-secondary {
+          width: 100%; padding: 10px; font-size: 0.82rem !important;
+          background: rgba(255,255,255,0.06) !important;
+          border: 1px solid rgba(255,255,255,0.15) !important;
+          color: #94a3b8 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    overlay.querySelector("#new-chat-fresh").addEventListener("click", () => {
+      sfxClick();
+      overlay.remove();
+      onContinue(true);
+    });
+    overlay.querySelector("#new-chat-continue").addEventListener("click", () => {
+      sfxClick();
+      overlay.remove();
+      onContinue(false);
+    });
+  }
+
+  function renderBonusExerciseInChat(d, chatgptBody, chatEl, exercise, startFresh, isLast, onDone) {
+    const ui = buildToolWindow(d.tool || "chatgpt");
+
+    // Clear existing feedback elements
+    chatgptBody.querySelectorAll(".bonus-feedback-area").forEach(el => el.remove());
+
+    // Update the task reminder bar at top
+    const taskReminder = chatgptBody.querySelector("#task-reminder");
+    if (taskReminder) {
+      taskReminder.innerHTML = `
+        <div style="background:#2563eb;color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0">${exercise.avatar}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-weight:600;color:#e2e8f0">${exercise.from}</span>
+            <span style="font-size:0.65rem;color:#64748b">${exercise.fromRole}</span>
+            <span style="margin-left:auto;font-size:0.6rem;background:#0052cc;color:white;padding:2px 6px;border-radius:4px;font-weight:700">Opdracht ${exercise.num}</span>
+          </div>
+          <div style="color:#94a3b8;line-height:1.5;margin-top:6px">${exercise.scenario}</div>
+        </div>
+      `;
+    }
+
+    // Clear or keep chat based on user choice
+    if (startFresh) {
+      chatEl.style.display = "flex";
+      chatEl.style.alignItems = "center";
+      chatEl.style.justifyContent = "center";
+      chatEl.innerHTML = `<div style="text-align:center;color:#666;font-size:0.9rem">
+        <div style="font-size:2rem;margin-bottom:8px;opacity:0.3">G</div>
+        Waar kan ik je mee helpen?
+      </div>`;
+    }
+
+    // Remove old event listeners by cloning input/send elements
+    const oldInput = chatgptBody.querySelector("#gpt-free-input");
+    const oldSend = chatgptBody.querySelector("#gpt-free-send");
+    if (oldInput && oldSend) {
+      const newInput = oldInput.cloneNode(true);
+      oldInput.parentNode.replaceChild(newInput, oldInput);
+      const newSend = oldSend.cloneNode(true);
+      oldSend.parentNode.replaceChild(newSend, oldSend);
+    }
+
+    // Re-query fresh elements
+    const inputEl = chatgptBody.querySelector("#gpt-free-input");
+    const sendBtn = chatgptBody.querySelector("#gpt-free-send");
+    if (inputEl) {
+      inputEl.removeAttribute("readonly");
+      inputEl.value = "";
+      inputEl.placeholder = exercise.placeholder || "Schrijf hier je prompt...";
+    }
+    if (sendBtn) {
+      sendBtn.disabled = false;
+      sendBtn.style.opacity = "0.3";
+    }
+
+    let sent = false;
+
+    inputEl.addEventListener("input", () => {
+      sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3";
+    });
+
+    function handleSend() {
+      if (sent || inputEl.value.trim().length < 5) return;
+      sent = true;
+      sfxClick();
+
+      const promptText = inputEl.value.trim();
+      inputEl.setAttribute("readonly", "");
+      sendBtn.disabled = true;
+
+      // Clear welcome message
+      chatEl.style.display = "block";
+      chatEl.style.alignItems = "";
+      chatEl.style.justifyContent = "";
+      if (startFresh && chatEl.querySelector("div[style*='text-align:center']")) chatEl.innerHTML = "";
+
+      addChatMsg(chatEl, ui, "user", promptText, false);
+
+      const text = promptText.toLowerCase();
+      let score = 0, found = 0;
+      exercise.checks.forEach(c => {
+        if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { score += c.points; found++; }
+      });
+
+      let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+      addChatMsg(chatEl, ui, "ai", exercise.responses[responseKey], true).then(() => {
+        const fb = document.createElement("div");
+        fb.className = "bonus-feedback-area";
+        fb.style.cssText = "padding:16px;border-top:1px solid #333";
+
+        const scoreDetailHTML = exercise.checks.map(c => {
+          const hit = c.keywords.some(kw => text.includes(kw.toLowerCase()));
+          return `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--${hit ? "green" : "red"})">${hit ? "\u2713" : "\u2718"}</span><strong>${c.label}:</strong> ${hit ? c.points + " pt" : c.hint}</div>`;
+        }).join("");
+
+        if (score >= 90) {
+          sfxCorrect(); addXP(150);
+          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Uitstekend! (${score} punten)</div>${scoreDetailHTML}</div>`;
+        } else if (score >= 60) {
+          sfxCorrect(); addXP(80);
+          fb.innerHTML = `<div class="feedback warning"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Goed! (${score} punten)</div>${scoreDetailHTML}</div>`;
+        } else {
+          sfxWrong(); addXP(30);
+          fb.innerHTML = `<div class="feedback error"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Probeer meer details (${score} punten)</div>${scoreDetailHTML}</div>`;
+        }
+
+        const btnRow = document.createElement("div");
+        btnRow.style.cssText = "display:flex;gap:8px;margin-top:12px";
+
+        if (score < 60) {
+          const retryBtn = document.createElement("button");
+          retryBtn.className = "action-btn secondary";
+          retryBtn.textContent = "Opnieuw proberen";
+          retryBtn.addEventListener("click", () => {
+            sent = false;
+            inputEl.removeAttribute("readonly");
+            sendBtn.disabled = false;
+            if (startFresh) {
+              chatEl.style.display = "flex";
+              chatEl.style.alignItems = "center";
+              chatEl.style.justifyContent = "center";
+              chatEl.innerHTML = `<div style="text-align:center;color:#666;font-size:0.9rem"><div style="font-size:2rem;margin-bottom:8px;opacity:0.3">G</div>Waar kan ik je mee helpen?</div>`;
+            }
+            inputEl.value = "";
+            inputEl.focus();
+            fb.remove();
+          });
+          btnRow.appendChild(retryBtn);
+        }
+
+        const nextBtn = document.createElement("button");
+        nextBtn.className = "action-btn";
+        nextBtn.style.flex = "1";
+        nextBtn.textContent = isLast ? "Dag afronden \u2192" : "Volgende opdracht \u2192";
+        nextBtn.addEventListener("click", () => {
+          sfxClick();
+          fb.remove();
+          onDone();
+        });
+        btnRow.appendChild(nextBtn);
+
+        fb.appendChild(btnRow);
+        chatgptBody.querySelector(".gpt-input-area")?.before(fb);
+        chatEl.scrollTop = chatEl.scrollHeight;
+      });
+    }
+
+    sendBtn.addEventListener("click", handleSend);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    });
+    inputEl.focus();
   }
 
   // ─── INTERACTION: Free Prompt ────────────────────────
