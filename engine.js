@@ -1697,11 +1697,41 @@
       }, videoSegs.onDesktopOpen.delay || 1500);
     }
 
-    // Video segment 2: Marco's rondleiding (after some exploration time)
+    // Video segment 2: Marco's rondleiding — pas nadat gebruiker ECHT rondklikt
+    // Triggert na ~2 verschillende apps geopend OF 3 wiki-pagina's bezocht (fallback timer 90s)
     if (videoSegs.onFirstExplore) {
-      setTimeout(() => {
-        showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
-      }, videoSegs.onFirstExplore.delay || 25000);
+      let segment2Fired = false;
+      const fireSegment2 = () => {
+        if (segment2Fired) return;
+        segment2Fired = true;
+        // Only show if segment 1 hologram is gone (to avoid stacking)
+        const existing = document.querySelector(".avatar-video-float");
+        const trigger = () => showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
+        if (existing) {
+          // Wait a bit for user to dismiss segment 1
+          const waitForDismiss = setInterval(() => {
+            if (!document.querySelector(".avatar-video-float")) {
+              clearInterval(waitForDismiss);
+              setTimeout(trigger, 800);
+            }
+          }, 500);
+          // Fallback: force show after 40s
+          setTimeout(() => { clearInterval(waitForDismiss); trigger(); }, 40000);
+        } else {
+          trigger();
+        }
+      };
+      // Track activity
+      const activitySet = new Set();
+      area.addEventListener("click", (e) => {
+        const dockIcon = e.target.closest(".dock-icon[data-app]");
+        if (dockIcon) activitySet.add("app:" + dockIcon.dataset.app);
+        const wikiCard = e.target.closest("[data-link]");
+        if (wikiCard) activitySet.add("wiki:" + wikiCard.dataset.link);
+        if (activitySet.size >= 3) fireSegment2();
+      });
+      // Safety fallback: 90 seconds max
+      setTimeout(fireSegment2, videoSegs.onFirstExplore.delay || 90000);
     }
 
     // Task assignment
