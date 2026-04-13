@@ -22,20 +22,6 @@ const MISSIONS = [
     tool: "chatgpt",
     storyIntro: "Maandagochtend. Jouw eerste dag bij de afdeling VTH (Vergunningen, Toezicht en Handhaving) van Gemeente Mayostad. 82.000 inwoners, 650 medewerkers. De gemeente doet mee aan een AI-pilot en jij bent een van de eerste medewerkers die ermee gaat werken. Marco Pieterse, je teamleider, heeft je werkplek al ingericht.",
     tasks: [
-      // ── Segment 1: Welkomstvideo ──
-      {
-        type: "scenario",
-        label: "VIDEO",
-        title: "Welkom bij Gemeente Mayostad",
-        desc: "Een korte introductie over je nieuwe werkplek en de AI-pilot.",
-        interaction: {
-          type: "video-segment",
-          videoSrc: "video-segment-1.mp4",
-          caption: "Welkom bij de afdeling VTH van Gemeente Mayostad. Je gaat meedoen aan een AI-pilot.",
-          nextLabel: "Start je werkdag \u2192"
-        },
-        insight: "Gemeente Mayostad heeft 82.000 inwoners en 650 medewerkers. De afdeling VTH behandelt vergunningen, toezicht en handhaving."
-      },
       // ── Desktop verkennen + taak ──
       {
         type: "scenario",
@@ -46,8 +32,9 @@ const MISSIONS = [
           type: "intranet-then-prompt",
           tool: "chatgpt",
           taskPopupDelay: 15000,
-          // Video segments to show during the desktop phase
+          // Video segments to show during the desktop phase (as floating holograms bottom-right)
           videoSegments: {
+            onDesktopOpen: { src: "video-segment-1.mp4", caption: "Welkom bij VTH. Dit wordt een bijzondere werkdag.", delay: 1500 },
             onFirstExplore: { src: "video-segment-2.mp4", caption: "Marco geeft je een rondleiding langs de systemen.", delay: 25000 },
             onTaskAssigned: { src: "video-segment-3.mp4", caption: "Marco legt de casus Van Dijk uit." },
             onWikiVisited: { src: "video-segment-4.mp4", caption: "Zoek de informatie die je nodig hebt op het intranet." },

@@ -1690,6 +1690,13 @@
     renderBoard(area.querySelector("#board-body"), d, task, taskShown);
     const videoSegs = d.videoSegments || {};
 
+    // Video segment 1: Welkom (verschijnt direct na openen desktop als floating hologram rechtsonder)
+    if (videoSegs.onDesktopOpen) {
+      setTimeout(() => {
+        showDesktopVideoOverlay(videoSegs.onDesktopOpen.src, videoSegs.onDesktopOpen.caption);
+      }, videoSegs.onDesktopOpen.delay || 1500);
+    }
+
     // Video segment 2: Marco's rondleiding (after some exploration time)
     if (videoSegs.onFirstExplore) {
       setTimeout(() => {
