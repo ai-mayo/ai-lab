@@ -1699,31 +1699,25 @@
       }, videoSegs.onDesktopOpen.delay || 1500);
     }
 
-    // Video segment 2: Marco's rondleiding — pas nadat gebruiker ECHT rondklikt
-    // Triggert na ~2 verschillende apps geopend OF 3 wiki-pagina's bezocht (fallback timer 90s)
+    // Video segment 2: Marco's rondleiding — wacht op interactie EN tot segment 1 weg is
     if (videoSegs.onFirstExplore) {
-      let segment2Fired = false;
-      const fireSegment2 = () => {
-        if (segment2Fired) return;
-        segment2Fired = true;
-        // Only show if segment 1 hologram is gone (to avoid stacking)
-        const existing = document.querySelector(".avatar-video-float");
-        const trigger = () => showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
-        if (existing) {
-          // Wait a bit for user to dismiss segment 1
-          const waitForDismiss = setInterval(() => {
-            if (!document.querySelector(".avatar-video-float")) {
-              clearInterval(waitForDismiss);
-              setTimeout(trigger, 800);
-            }
-          }, 500);
-          // Fallback: force show after 40s
-          setTimeout(() => { clearInterval(waitForDismiss); trigger(); }, 40000);
-        } else {
-          trigger();
-        }
+      let segment2Queued = false;
+      let userHasInteracted = false;
+      let segment1Done = false;
+
+      const tryFireSegment2 = () => {
+        if (segment2Queued) return;
+        if (!userHasInteracted || !segment1Done) return;
+        // Also check DOM: geen floating hologram meer actief
+        if (document.querySelector(".avatar-video-float")) return;
+        segment2Queued = true;
+        document.removeEventListener("click", activityHandler, true);
+        setTimeout(() => {
+          showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
+        }, 1200);
       };
-      // Track activity — use document-level listener so dock clicks always register
+
+      // Track activity — minstens 3 verschillende interacties
       const activitySet = new Set();
       const activityHandler = (e) => {
         const dockIcon = e.target.closest(".dock-icon[data-app]");
@@ -1733,16 +1727,30 @@
         const appWindow = e.target.closest(".app-window");
         if (appWindow && appWindow.id) activitySet.add("window:" + appWindow.id);
         if (activitySet.size >= 3) {
-          document.removeEventListener("click", activityHandler, true);
-          fireSegment2();
+          userHasInteracted = true;
+          tryFireSegment2();
         }
       };
       document.addEventListener("click", activityHandler, true);
-      // Safety fallback: 2 minutes max (if user doesn't click at all)
+
+      // Watch for segment 1 completion — poll every 600ms
+      const seg1Watcher = setInterval(() => {
+        const holo = document.querySelector(".avatar-video-float");
+        if (!holo) {
+          // If no hologram exists AND at least 3s passed since desktop load, segment 1 is done
+          segment1Done = true;
+          clearInterval(seg1Watcher);
+          tryFireSegment2();
+        }
+      }, 600);
+
+      // Safety fallback: na 3 minuten hoe dan ook (als user niet klikt)
       setTimeout(() => {
-        document.removeEventListener("click", activityHandler, true);
-        fireSegment2();
-      }, videoSegs.onFirstExplore.delay || 120000);
+        userHasInteracted = true;
+        segment1Done = true;
+        clearInterval(seg1Watcher);
+        tryFireSegment2();
+      }, videoSegs.onFirstExplore.delay || 180000);
     }
 
     // Task assignment
@@ -1888,11 +1896,16 @@
     notifArea.appendChild(notif);
     sfxClick();
 
-    // Clicking the notification opens ChatGPT
+    // Clicking the notification opens MayoBoard (taak) — met exact dezelfde tekst zichtbaar
     notif.addEventListener("click", () => {
       sfxClick();
       notif.remove();
-      openChatGPTWindow(area, d, task);
+      const boardWin = document.getElementById("window-board");
+      if (boardWin) {
+        boardWin.style.display = "flex";
+        document.querySelectorAll(".app-window").forEach(w => w.classList.remove("focused"));
+        boardWin.classList.add("focused", "maximized");
+      }
     });
 
     // Auto-dismiss after 30s, then show again
@@ -1901,7 +1914,7 @@
         notif.remove();
         // Remind again
         setTimeout(() => {
-          if (!document.getElementById("window-chatgpt")?.classList.contains("open-active")) {
+          if (!document.getElementById("window-board")?.classList.contains("focused")) {
             showChatNotification(area, d, task);
           }
         }, 15000);
@@ -2305,7 +2318,7 @@
   const BOARD_TASKS = [
     { id:"VTH-040", title:"MayoWiki doorlezen", desc:"Lees je in over de gemeente. Hoe schrijf je naar inwoners? Welke regels gelden er voor AI?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open MayoWiki op het bureaublad.", action:null },
     { id:"VTH-041", title:"WiWa bekijken", desc:"Wie zijn je collega's? En wie zijn de robot-collega's?", priority:"low", prioLabel:"Onboarding", col:"progress", avatar:"", hint:"Open WiWa op het bureaublad.", action:null },
-    { id:"VTH-042", title:"Brief schrijven: vertraging terrasvergunning Van Dijk", desc:"Dhr. H.J. van Dijk (Bakkerij Van Dijk, Marktstraat 14) is nog niet geinformeerd over de vertraging van zijn terrasvergunning (VTH-2026-00347). Schrijf een brief met uitleg over het bezwaar en de nieuwe beslisdatum (10 april). Check de Schrijfwijzer en Lopende Zaken op MayoWiki.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"1. Open MayoWiki > Lopende Zaken > Zaak Van Dijk\n2. Lees de Schrijfwijzer\n3. Open ChatGPT en schrijf een prompt", action:"chatgpt" },
+    { id:"VTH-042", title:"Brief schrijven: vertraging terrasvergunning Van Dijk", desc:"Hoi! Welkom bij VTH. Er moet vandaag nog een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van een buurman. Kun jij dit oppakken? De zaak-details staan in het Zaaksysteem (VTH-2026-00347). Check ook even de Schrijfwijzer op MayoWiki. Gebruik ChatGPT als je wilt, maar lever geen brief af die je niet zelf gecheckt hebt.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:"1. Open Zaaksysteem en klik op VTH-2026-00347 voor alle details\n2. Lees de Schrijfwijzer in MayoWiki\n3. Open ChatGPT en schrijf een prompt", action:"chatgpt" },
   ];
 
   function renderBoard(container, d, task, showNewTask) {
