@@ -1716,10 +1716,21 @@
           setTimeout(tryFireSegment2, 30000 - elapsed + 500);
           return;
         }
-        if (document.querySelector(".avatar-video-float")) return;
+        // STRIKTE check: geen enkele hologram actief
+        if (document.querySelector(".avatar-video-float")) {
+          // Wacht 1s en probeer opnieuw
+          setTimeout(tryFireSegment2, 1000);
+          return;
+        }
         segment2Queued = true;
         document.removeEventListener("click", activityHandler, true);
         setTimeout(() => {
+          // Double-check voor het echt showen
+          if (document.querySelector(".avatar-video-float")) {
+            segment2Queued = false;
+            setTimeout(tryFireSegment2, 1500);
+            return;
+          }
           showDesktopVideoOverlay(videoSegs.onFirstExplore.src, videoSegs.onFirstExplore.caption);
         }, 800);
       };
@@ -1752,11 +1763,12 @@
       }, 4000);
 
       // Safety fallback: na 4 minuten hoe dan ook (als user niet klikt of segment 1 nooit wegdoet)
+      // Negeer delay uit missions data — dat was een oude trigger-delay, niet bedoeld als fallback
       setTimeout(() => {
-        if (!segment1DoneTime) segment1DoneTime = Date.now() - 30000; // alsof al 30s bezig
+        if (!segment1DoneTime) segment1DoneTime = Date.now() - 30000;
         for (let i = activitySetAfterSeg1.size; i < 3; i++) activitySetAfterSeg1.add("auto:" + i);
         tryFireSegment2();
-      }, videoSegs.onFirstExplore.delay || 240000);
+      }, 240000);
     }
 
     // Task assignment
