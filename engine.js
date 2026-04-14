@@ -2,6 +2,53 @@
 (function () {
   "use strict";
 
+  // ─── Prompt Quality Assessment ──────────────────────
+  // Beoordeelt niet alleen of INHOUD aanwezig is, maar ook of het een GOEDE PROMPT is
+  function assessPromptQuality(text) {
+    const lower = text.toLowerCase();
+    const words = text.split(/\s+/).length;
+    const quality = { score: 0, max: 50, items: [], penalty: 0 };
+
+    // 1. ROL-definitie: "je bent", "jij bent", "als", "vanuit de rol"
+    const hasRole = /\b(je bent|jij bent|als een?|vanuit de rol|in de rol|namens)\b/i.test(text);
+    quality.items.push({ label: "Rol/context", hit: hasRole, points: 10, tip: "Begin met: 'Je bent een VTH-medewerker die...' of 'Namens de gemeente...'" });
+    if (hasRole) quality.score += 10;
+
+    // 2. INSTRUCTIE: "schrijf", "maak", "stel op", "formuleer", "beantwoord"
+    const hasInstruction = /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen)\b/i.test(text);
+    quality.items.push({ label: "Duidelijke instructie", hit: hasInstruction, points: 10, tip: "Geef een werkwoord: 'Schrijf een brief...', 'Maak een samenvatting...'" });
+    if (hasInstruction) quality.score += 10;
+
+    // 3. TOON-aanduiding: "formeel", "informeel", "zakelijk", "empathisch", "vriendelijk", "B1"
+    const hasTone = /\b(formeel|informeel|zakelijk|empathisch|vriendelijk|professioneel|warm|helder|begrijpelijk|b1|toon|stijl)\b/i.test(text);
+    quality.items.push({ label: "Toon/stijl", hit: hasTone, points: 10, tip: "Vermeld de toon: 'Formeel maar empathisch', 'B1-niveau', 'Zakelijk'" });
+    if (hasTone) quality.score += 10;
+
+    // 4. FORMAT-specificatie: "brief", "email", "memo", "post", "uitleg", "opsommingstekens"
+    const hasFormat = /\b(brief|email|e-mail|memo|bericht|post|uitleg|toelichting|opsomming|bulletpoints|stapsgewijs|samenvatting)\b/i.test(text);
+    quality.items.push({ label: "Format/output", hit: hasFormat, points: 10, tip: "Specificeer het format: 'als een formele brief', 'in opsommingstekens', 'een e-mail'" });
+    if (hasFormat) quality.score += 10;
+
+    // 5. Niet een data-dump: als >200 woorden EN geen instructie-werkwoorden = waarschijnlijk copy-paste
+    const isDataDump = words > 150 && !hasInstruction && !hasRole;
+    quality.items.push({ label: "Geen data-dump", hit: !isDataDump, points: 10, tip: "Kopieer niet de hele tekst. Geef een OPDRACHT met de relevante details erbij." });
+    if (!isDataDump) quality.score += 10;
+    if (isDataDump) quality.penalty = 30; // Trek 30 punten af van content-score bij data-dump
+
+    return quality;
+  }
+
+  function renderQualityFeedback(quality) {
+    return `<div style="margin-top:12px;padding:12px;background:rgba(120,80,255,0.08);border:1px solid rgba(120,80,255,0.2);border-radius:8px">
+      <div style="font-weight:700;color:#a78bfa;margin-bottom:8px;font-size:0.85rem">Prompt-kwaliteit: ${quality.score}/${quality.max}</div>
+      ${quality.items.map(it => `<div style="display:flex;gap:8px;margin-top:4px;font-size:0.82rem">
+        <span style="color:var(--${it.hit ? 'green' : 'red'})">${it.hit ? '\u2713' : '\u2718'}</span>
+        <strong>${it.label}:</strong> ${it.hit ? it.points + ' pt' : '<span style="color:var(--text-dim)">' + it.tip + '</span>'}
+      </div>`).join("")}
+      ${quality.penalty > 0 ? '<div style="margin-top:8px;padding:8px;background:rgba(220,38,38,0.1);border-radius:4px;font-size:0.8rem;color:#fca5a5"><strong>Let op:</strong> Je hebt veel tekst gekopieerd zonder een duidelijke opdracht. AI werkt beter met een heldere instructie + relevante context, niet een data-dump.</div>' : ''}
+    </div>`;
+  }
+
   // ─── State ──────────────────────────────────────────
   const state = {
     xp: 0,
@@ -1978,19 +2025,27 @@
 
       addChatMsg(chatEl, ui, "user", promptText, false);
 
-      // Validate
+      // Validate: content score + prompt quality score
       const text = promptText.toLowerCase();
-      let score = 0, found = 0, missing = [];
+      let contentScore = 0, found = 0, missing = [];
       d.checks.forEach(c => {
         if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
-          score += c.points;
+          contentScore += c.points;
           found++;
         } else {
           missing.push(c);
         }
       });
 
+      // Prompt quality assessment
+      const quality = assessPromptQuality(promptText);
+      // Apply penalty for data-dump: even if keywords are present, score goes down
+      const score = Math.max(0, contentScore - quality.penalty);
+
       let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+      // Extra: if quality is very low (data dump), downgrade response even if content score is high
+      if (quality.penalty > 0 && responseKey === "perfect") responseKey = "good";
+
       addChatMsg(chatEl, ui, "ai", d.responses[responseKey], true).then(() => {
         const fb = document.createElement("div");
         fb.style.cssText = "padding:16px;border-top:1px solid #333";
@@ -2001,16 +2056,19 @@
           return `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--${hit ? "green" : "red"})">${hit ? "\u2713" : "\u2718"}</span><strong>${c.label}:</strong> ${hit ? c.points + " pt" : c.hint}</div>`;
         }).join("");
 
-        if (score >= 90) {
+        // Prompt quality feedback
+        const qualityHTML = renderQualityFeedback(quality);
+
+        if (score >= 90 && quality.score >= 30) {
           sfxCorrect(); addXP(200); state.totalScore++;
-          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend! (${score} punten)</div>Je prompt bevatte alle cruciale informatie. Marco zou trots zijn.${scoreDetailHTML}</div>`;
+          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend! (${score} punten)</div>Je prompt bevatte alle cruciale informatie EN was goed gestructureerd.${scoreDetailHTML}</div>${qualityHTML}`;
         } else {
           if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; } else { sfxWrong(); addXP(30); }
           fb.innerHTML = `<div class="feedback ${score >= 60 ? "warning" : "error"}">
             <div class="feedback-title">${found}/${d.checks.length} elementen - ${score >= 60 ? "Goed begin" : "De AI miste context"} (${score} punten)</div>
             ${scoreDetailHTML}
-            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: alle informatie stond op MayoWiki. Klik op het MayoWiki-icoon in de dock om terug te kijken.</div>
-          </div>`;
+            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: informatie vind je in de Vergunningtool en op MayoWiki.</div>
+          </div>${qualityHTML}`;
           fb.innerHTML += `<button class="action-btn secondary" id="retry-btn" style="margin-top:10px">Probeer opnieuw</button>`;
         }
 
