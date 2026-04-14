@@ -917,6 +917,49 @@ body {
   margin-bottom: 4px;
 }
 
+/* Coaching feedback */
+.coaching-feedback { animation: screenIn 0.3s ease; }
+.coaching-feedback h4 { margin: 0 0 8px 0; font-size: 0.95rem; }
+.coaching-feedback ul { margin: 0; padding-left: 20px; font-size: 0.88rem; line-height: 1.7; }
+.coaching-feedback li { margin-bottom: 2px; }
+
+.coaching-good {
+  padding: 14px 16px;
+  background: rgba(0, 255, 136, 0.06);
+  border: 1px solid rgba(0, 255, 136, 0.18);
+  border-radius: var(--radius-sm);
+  color: #6ee7a0;
+  margin-bottom: 10px;
+}
+.coaching-improve {
+  padding: 14px 16px;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  border-radius: var(--radius-sm);
+  color: #7dd3fc;
+  margin-bottom: 10px;
+}
+.coaching-example {
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+.coaching-example .example-prompt {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* Action button */
 .action-btn {
   display: inline-flex;

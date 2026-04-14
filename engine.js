@@ -2,51 +2,61 @@
 (function () {
   "use strict";
 
-  // ─── Prompt Quality Assessment ──────────────────────
-  // Beoordeelt niet alleen of INHOUD aanwezig is, maar ook of het een GOEDE PROMPT is
-  function assessPromptQuality(text) {
-    const lower = text.toLowerCase();
-    const words = text.split(/\s+/).length;
-    const quality = { score: 0, max: 50, items: [], penalty: 0 };
+  // ─── Coaching Feedback System ──────────────────────
+  // Geeft constructieve feedback zonder scores — altijd bemoedigend
+  function generateCoachingFeedback(promptText, checks, examplePrompt) {
+    const text = promptText.toLowerCase();
 
-    // 1. ROL-definitie: "je bent", "jij bent", "als", "vanuit de rol"
-    const hasRole = /\b(je bent|jij bent|als een?|vanuit de rol|in de rol|namens)\b/i.test(text);
-    quality.items.push({ label: "Rol/context", hit: hasRole, points: 10, tip: "Begin met: 'Je bent een VTH-medewerker die...' of 'Namens de gemeente...'" });
-    if (hasRole) quality.score += 10;
+    // Determine which content checks matched
+    const good = [];
+    const improve = [];
+    checks.forEach(c => {
+      if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
+        good.push(c);
+      } else {
+        improve.push(c);
+      }
+    });
 
-    // 2. INSTRUCTIE: "schrijf", "maak", "stel op", "formuleer", "beantwoord"
-    const hasInstruction = /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen)\b/i.test(text);
-    quality.items.push({ label: "Duidelijke instructie", hit: hasInstruction, points: 10, tip: "Geef een werkwoord: 'Schrijf een brief...', 'Maak een samenvatting...'" });
-    if (hasInstruction) quality.score += 10;
+    // Prompt quality tips (role, instruction, tone, format)
+    const qualityChecks = [
+      { label: "Rol/context", hit: /\b(je bent|jij bent|als een?|vanuit de rol|in de rol|namens)\b/i.test(promptText), goodText: "Je gaf de AI een duidelijke rol", tipText: "Begin met een rol, bijv: 'Je bent een beleidsmedewerker die...'" },
+      { label: "Duidelijke instructie", hit: /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen)\b/i.test(promptText), goodText: "Je gaf een duidelijke instructie", tipText: "Geef een werkwoord: 'Schrijf een brief...', 'Maak een samenvatting...'" },
+      { label: "Toon/stijl", hit: /\b(formeel|informeel|zakelijk|empathisch|vriendelijk|professioneel|warm|helder|begrijpelijk|b1|toon|stijl)\b/i.test(promptText), goodText: "Je gaf de gewenste toon aan", tipText: "Vermeld de toon: 'Formeel maar empathisch', 'B1-niveau', 'Zakelijk'" },
+      { label: "Format/output", hit: /\b(brief|email|e-mail|memo|bericht|post|uitleg|toelichting|opsomming|bulletpoints|stapsgewijs|samenvatting)\b/i.test(promptText), goodText: "Je specificeerde het gewenste format", tipText: "Specificeer het format: 'als een formele brief', 'in opsommingstekens'" }
+    ];
 
-    // 3. TOON-aanduiding: "formeel", "informeel", "zakelijk", "empathisch", "vriendelijk", "B1"
-    const hasTone = /\b(formeel|informeel|zakelijk|empathisch|vriendelijk|professioneel|warm|helder|begrijpelijk|b1|toon|stijl)\b/i.test(text);
-    quality.items.push({ label: "Toon/stijl", hit: hasTone, points: 10, tip: "Vermeld de toon: 'Formeel maar empathisch', 'B1-niveau', 'Zakelijk'" });
-    if (hasTone) quality.score += 10;
+    const qualityGood = qualityChecks.filter(q => q.hit);
+    const qualityImprove = qualityChecks.filter(q => !q.hit);
 
-    // 4. FORMAT-specificatie: "brief", "email", "memo", "post", "uitleg", "opsommingstekens"
-    const hasFormat = /\b(brief|email|e-mail|memo|bericht|post|uitleg|toelichting|opsomming|bulletpoints|stapsgewijs|samenvatting)\b/i.test(text);
-    quality.items.push({ label: "Format/output", hit: hasFormat, points: 10, tip: "Specificeer het format: 'als een formele brief', 'in opsommingstekens', 'een e-mail'" });
-    if (hasFormat) quality.score += 10;
+    // Build HTML
+    let html = '<div class="coaching-feedback">';
 
-    // 5. Niet een data-dump: als >200 woorden EN geen instructie-werkwoorden = waarschijnlijk copy-paste
-    const isDataDump = words > 150 && !hasInstruction && !hasRole;
-    quality.items.push({ label: "Geen data-dump", hit: !isDataDump, points: 10, tip: "Kopieer niet de hele tekst. Geef een OPDRACHT met de relevante details erbij." });
-    if (!isDataDump) quality.score += 10;
-    if (isDataDump) quality.penalty = 30; // Trek 30 punten af van content-score bij data-dump
+    // Good section — always show
+    html += '<div class="coaching-good"><h4>\uD83D\uDC4D Dit deed je goed:</h4><ul>';
+    if (good.length === 0 && qualityGood.length === 0) {
+      html += '<li>Je hebt een begin gemaakt — dat is stap \u00e9\u00e9n!</li>';
+    } else {
+      good.forEach(c => { html += `<li>Je noemde <strong>${c.label.toLowerCase()}</strong></li>`; });
+      qualityGood.forEach(q => { html += `<li>${q.goodText}</li>`; });
+    }
+    html += '</ul></div>';
 
-    return quality;
-  }
+    // Improve section — only if there are items
+    if (improve.length > 0 || qualityImprove.length > 0) {
+      html += '<div class="coaching-improve"><h4>\uD83D\uDCA1 Dit kan beter:</h4><ul>';
+      improve.forEach(c => { html += `<li><strong>${c.label}:</strong> ${c.hint}</li>`; });
+      qualityImprove.forEach(q => { html += `<li><strong>Tip — ${q.label}:</strong> ${q.tipText}</li>`; });
+      html += '</ul></div>';
+    }
 
-  function renderQualityFeedback(quality) {
-    return `<div style="margin-top:12px;padding:12px;background:rgba(120,80,255,0.08);border:1px solid rgba(120,80,255,0.2);border-radius:8px">
-      <div style="font-weight:700;color:#a78bfa;margin-bottom:8px;font-size:0.85rem">Prompt-kwaliteit: ${quality.score}/${quality.max}</div>
-      ${quality.items.map(it => `<div style="display:flex;gap:8px;margin-top:4px;font-size:0.82rem">
-        <span style="color:var(--${it.hit ? 'green' : 'red'})">${it.hit ? '\u2713' : '\u2718'}</span>
-        <strong>${it.label}:</strong> ${it.hit ? it.points + ' pt' : '<span style="color:var(--text-dim)">' + it.tip + '</span>'}
-      </div>`).join("")}
-      ${quality.penalty > 0 ? '<div style="margin-top:8px;padding:8px;background:rgba(220,38,38,0.1);border-radius:4px;font-size:0.8rem;color:#fca5a5"><strong>Let op:</strong> Je hebt veel tekst gekopieerd zonder een duidelijke opdracht. AI werkt beter met een heldere instructie + relevante context, niet een data-dump.</div>' : ''}
-    </div>`;
+    // Example section — always show
+    if (examplePrompt) {
+      html += `<div class="coaching-example"><h4>\u270F\uFE0F Probeer het zo:</h4><div class="example-prompt">${examplePrompt}</div></div>`;
+    }
+
+    html += '</div>';
+    return html;
   }
 
   // ─── State ──────────────────────────────────────────
@@ -1462,6 +1472,7 @@
             const taskData = missionData?.tasks?.[0]?.interaction || {};
             const checks = taskData.checks || [];
             const responses = taskData.responses || {};
+            const examplePrompt = taskData.examplePrompt || null;
             let sent = false;
 
             inputEl.addEventListener("input", () => { sendBtn.style.opacity = inputEl.value.trim().length > 10 ? "1" : "0.3"; });
@@ -1488,12 +1499,16 @@
 
               // Validate
               const text = promptText.toLowerCase();
-              let score = 0, found = 0, missing = [];
+              let found = 0;
               checks.forEach(c => {
-                if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { score += c.points; found++; }
-                else { missing.push(c); }
+                if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { found++; }
               });
-              let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+              const totalChecks = checks.length;
+              let responseKey;
+              if (found >= totalChecks - 1) responseKey = "perfect";
+              else if (found >= Math.ceil(totalChecks * 3/7)) responseKey = "good";
+              else if (found >= Math.ceil(totalChecks * 2/7)) responseKey = "mediocre";
+              else responseKey = "bad";
               const response = responses[responseKey] || "Bedankt voor je bericht. Ik heb je prompt verwerkt.";
 
               // Show AI response with typing animation
@@ -1501,14 +1516,15 @@
                 const fb = document.createElement("div");
                 fb.style.cssText = "padding:16px;border-top:1px solid #333";
 
-                if (score >= 90) {
-                  sfxCorrect(); addXP(200);
+                // Coaching feedback
+                fb.innerHTML = generateCoachingFeedback(promptText, checks, examplePrompt);
+
+                if (found >= Math.ceil(totalChecks * 5/7)) {
+                  addXP(200);
                   // Move task to done
                   const boardTask = BOARD_TASKS.find(t => t.id === "VTH-042");
                   if (boardTask) boardTask.col = "done";
                   save();
-
-                  fb.innerHTML = '<div class="feedback success"><div class="feedback-title">Uitstekend!</div>Je prompt bevatte alle cruciale informatie. De taak is afgerond op MayoBoard.</div>';
 
                   const nextBtn = document.createElement("button");
                   nextBtn.className = "action-btn";
@@ -1525,13 +1541,12 @@
                   });
                   fb.appendChild(nextBtn);
                 } else {
-                  if (score >= 60) { sfxCorrect(); addXP(100); } else { sfxWrong(); addXP(30); }
-                  fb.innerHTML = '<div class="feedback ' + (score >= 60 ? "warning" : "error") + '"><div class="feedback-title">' + found + '/' + checks.length + ' elementen</div>' + missing.map(m => '<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--red)">\u2718</span><strong>' + m.label + ':</strong> ' + m.hint + '</div>').join("") + '</div>';
+                  if (found >= Math.ceil(totalChecks * 3/7)) { addXP(100); } else { addXP(30); }
 
                   const retryBtn = document.createElement("button");
                   retryBtn.className = "action-btn secondary";
                   retryBtn.style.marginTop = "10px";
-                  retryBtn.textContent = "Opnieuw proberen";
+                  retryBtn.textContent = "Wil je het nog eens proberen met deze tips?";
                   retryBtn.addEventListener("click", () => {
                     sent = false;
                     inputEl.removeAttribute("readonly");
@@ -2025,51 +2040,34 @@
 
       addChatMsg(chatEl, ui, "user", promptText, false);
 
-      // Validate: content score + prompt quality score
+      // Validate: coaching-based analysis
       const text = promptText.toLowerCase();
-      let contentScore = 0, found = 0, missing = [];
+      let found = 0;
       d.checks.forEach(c => {
         if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
-          contentScore += c.points;
           found++;
-        } else {
-          missing.push(c);
         }
       });
 
-      // Prompt quality assessment
-      const quality = assessPromptQuality(promptText);
-      // Apply penalty for data-dump: even if keywords are present, score goes down
-      const score = Math.max(0, contentScore - quality.penalty);
-
-      let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
-      // Extra: if quality is very low (data dump), downgrade response even if content score is high
-      if (quality.penalty > 0 && responseKey === "perfect") responseKey = "good";
+      const totalChecks = d.checks.length;
+      let responseKey;
+      if (found >= totalChecks - 1) responseKey = "perfect";
+      else if (found >= Math.ceil(totalChecks * 3/7)) responseKey = "good";
+      else if (found >= Math.ceil(totalChecks * 2/7)) responseKey = "mediocre";
+      else responseKey = "bad";
 
       addChatMsg(chatEl, ui, "ai", d.responses[responseKey], true).then(() => {
         const fb = document.createElement("div");
         fb.style.cssText = "padding:16px;border-top:1px solid #333";
 
-        // Build score detail HTML
-        const scoreDetailHTML = d.checks.map(c => {
-          const hit = c.keywords.some(kw => text.includes(kw.toLowerCase()));
-          return `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--${hit ? "green" : "red"})">${hit ? "\u2713" : "\u2718"}</span><strong>${c.label}:</strong> ${hit ? c.points + " pt" : c.hint}</div>`;
-        }).join("");
+        // Coaching feedback
+        fb.innerHTML = generateCoachingFeedback(promptText, d.checks, d.examplePrompt);
 
-        // Prompt quality feedback
-        const qualityHTML = renderQualityFeedback(quality);
-
-        if (score >= 90 && quality.score >= 30) {
-          sfxCorrect(); addXP(200); state.totalScore++;
-          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${d.checks.length} elementen - Uitstekend! (${score} punten)</div>Je prompt bevatte alle cruciale informatie EN was goed gestructureerd.${scoreDetailHTML}</div>${qualityHTML}`;
+        if (found >= Math.ceil(totalChecks * 5/7)) {
+          addXP(200); state.totalScore++;
         } else {
-          if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; } else { sfxWrong(); addXP(30); }
-          fb.innerHTML = `<div class="feedback ${score >= 60 ? "warning" : "error"}">
-            <div class="feedback-title">${found}/${d.checks.length} elementen - ${score >= 60 ? "Goed begin" : "De AI miste context"} (${score} punten)</div>
-            ${scoreDetailHTML}
-            <div style="margin-top:10px;font-size:0.8rem;color:var(--text-dim)">Tip: informatie vind je in de Vergunningtool en op MayoWiki.</div>
-          </div>${qualityHTML}`;
-          fb.innerHTML += `<button class="action-btn secondary" id="retry-btn" style="margin-top:10px">Probeer opnieuw</button>`;
+          if (found >= Math.ceil(totalChecks * 3/7)) { addXP(100); state.totalScore++; } else { addXP(30); }
+          fb.innerHTML += `<button class="action-btn secondary" id="retry-btn" style="margin-top:10px">Wil je het nog eens proberen met deze tips?</button>`;
         }
 
         // WIE-WAT-WANNEER-HOE-FORMAAT framework
@@ -2400,40 +2398,41 @@
       addChatMsg(chatEl, ui, "user", promptText, false);
 
       const text = promptText.toLowerCase();
-      let score = 0, found = 0;
+      let found = 0;
       exercise.checks.forEach(c => {
-        if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { score += c.points; found++; }
+        if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) { found++; }
       });
 
-      let responseKey = score >= 90 ? "perfect" : score >= 60 ? "good" : score >= 30 ? "mediocre" : "bad";
+      const totalChecks = exercise.checks.length;
+      let responseKey;
+      if (found >= totalChecks - 1) responseKey = "perfect";
+      else if (found >= Math.ceil(totalChecks * 3/7)) responseKey = "good";
+      else if (found >= Math.ceil(totalChecks * 2/7)) responseKey = "mediocre";
+      else responseKey = "bad";
+
       addChatMsg(chatEl, ui, "ai", exercise.responses[responseKey], true).then(() => {
         const fb = document.createElement("div");
         fb.className = "bonus-feedback-area";
         fb.style.cssText = "padding:16px;border-top:1px solid #333";
 
-        const scoreDetailHTML = exercise.checks.map(c => {
-          const hit = c.keywords.some(kw => text.includes(kw.toLowerCase()));
-          return `<div style="display:flex;gap:8px;margin-top:6px;font-size:0.85rem"><span style="color:var(--${hit ? "green" : "red"})">${hit ? "\u2713" : "\u2718"}</span><strong>${c.label}:</strong> ${hit ? c.points + " pt" : c.hint}</div>`;
-        }).join("");
+        // Coaching feedback
+        fb.innerHTML = generateCoachingFeedback(promptText, exercise.checks, exercise.examplePrompt);
 
-        if (score >= 90) {
-          sfxCorrect(); addXP(150);
-          fb.innerHTML = `<div class="feedback success"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Uitstekend! (${score} punten)</div>${scoreDetailHTML}</div>`;
-        } else if (score >= 60) {
-          sfxCorrect(); addXP(80);
-          fb.innerHTML = `<div class="feedback warning"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Goed! (${score} punten)</div>${scoreDetailHTML}</div>`;
+        if (found >= Math.ceil(totalChecks * 5/7)) {
+          addXP(150);
+        } else if (found >= Math.ceil(totalChecks * 3/7)) {
+          addXP(80);
         } else {
-          sfxWrong(); addXP(30);
-          fb.innerHTML = `<div class="feedback error"><div class="feedback-title">${found}/${exercise.checks.length} elementen - Probeer meer details (${score} punten)</div>${scoreDetailHTML}</div>`;
+          addXP(30);
         }
 
         const btnRow = document.createElement("div");
         btnRow.style.cssText = "display:flex;gap:8px;margin-top:12px";
 
-        if (score < 60) {
+        if (found < Math.ceil(totalChecks * 3/7)) {
           const retryBtn = document.createElement("button");
           retryBtn.className = "action-btn secondary";
-          retryBtn.textContent = "Opnieuw proberen";
+          retryBtn.textContent = "Wil je het nog eens proberen met deze tips?";
           retryBtn.addEventListener("click", () => {
             sent = false;
             inputEl.removeAttribute("readonly");
@@ -2509,63 +2508,40 @@
       // Show user message
       addChatMsg(chatEl, ui, "user", promptText, false);
 
-      // Calculate score
+      // Coaching-based analysis
       const text = promptText.toLowerCase();
-      let score = 0;
       let found = 0;
-      let missing = [];
       d.checks.forEach(c => {
         if (c.keywords.some(kw => text.includes(kw.toLowerCase()))) {
-          score += c.points;
           found++;
-        } else {
-          missing.push(c);
         }
       });
 
-      // Pick response based on score
-      let responseKey = "bad";
-      if (score >= 90) responseKey = "perfect";
-      else if (score >= 60) responseKey = "good";
-      else if (score >= 30) responseKey = "mediocre";
+      // Pick response based on matched count
+      const totalChecks = d.checks.length;
+      let responseKey;
+      if (found >= totalChecks - 1) responseKey = "perfect";
+      else if (found >= Math.ceil(totalChecks * 3/7)) responseKey = "good";
+      else if (found >= Math.ceil(totalChecks * 2/7)) responseKey = "mediocre";
+      else responseKey = "bad";
 
       const response = d.responses[responseKey];
 
       // Show AI response
       addChatMsg(chatEl, ui, "ai", response, true).then(() => {
-        // Show feedback
+        // Show coaching feedback
         const fbArea = document.createElement("div");
         fbArea.style.marginTop = "16px";
 
-        if (score >= 90) {
-          sfxCorrect();
+        fbArea.innerHTML = generateCoachingFeedback(promptText, d.checks, d.examplePrompt);
+
+        if (found >= Math.ceil(totalChecks * 5/7)) {
           addXP(200);
           state.totalScore++;
-          fbArea.innerHTML = `
-            <div class="feedback success">
-              <div class="feedback-title">${found}/${d.checks.length} elementen gevonden — Uitstekend!</div>
-              Je prompt bevatte alle cruciale informatie. De AI kon een email produceren die je vrijwel direct kunt versturen.
-            </div>
-          `;
         } else {
-          if (score >= 60) { sfxCorrect(); addXP(100); state.totalScore++; }
-          else { sfxWrong(); addXP(30); }
-
-          const missingHTML = missing.map(m =>
-            `<div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:0.85rem">
-              <span style="color:var(--red)">\u2718</span>
-              <span><strong>${m.label}:</strong> ${m.hint}</span>
-            </div>`
-          ).join("");
-
-          fbArea.innerHTML = `
-            <div class="feedback ${score >= 60 ? "warning" : "error"}">
-              <div class="feedback-title">${found}/${d.checks.length} elementen — ${score >= 60 ? "Goed begin, maar er mist nog wat" : "De AI miste veel context"}</div>
-              ${score < 60 ? "Kijk naar wat er ontbrak. Hoe meer details je geeft, hoe beter het resultaat." : "Bijna! Met deze extra details was de email nog beter geweest:"}
-              ${missingHTML}
-            </div>
-            <button class="action-btn secondary" id="retry-prompt" style="margin-top:12px">Probeer opnieuw</button>
-          `;
+          if (found >= Math.ceil(totalChecks * 3/7)) { addXP(100); state.totalScore++; }
+          else { addXP(30); }
+          fbArea.innerHTML += `<button class="action-btn secondary" id="retry-prompt" style="margin-top:12px">Wil je het nog eens proberen met deze tips?</button>`;
         }
 
         area.appendChild(fbArea);

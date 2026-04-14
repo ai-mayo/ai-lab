@@ -360,6 +360,7 @@ const MISSIONS = [
               }
             }
           },
+          examplePrompt: "Je bent een beleidsmedewerker bij de afdeling VTH van gemeente Mayostad. Schrijf een formele brief aan dhr. H.J. van Dijk (Bakkerij Van Dijk, Marktstraat 14) over de vertraging van zijn terrasvergunning VTH-2026-00347. De vertraging is veroorzaakt door een bezwaar van een buurman. Nieuwe beslisdatum: 10 april 2026. Toon begrip voor het ongemak. Gebruik de gemeentelijke schrijfwijzer (B1-niveau, actief schrijven). Sluit af met contactgegevens: 14 0555.",
           checks: [
             { id: "recipient", label: "Ontvanger", keywords: ["van dijk", "bakkerij"], hint: "Noem de naam van de inwoner/ondernemer (dhr. Van Dijk / Bakkerij Van Dijk)", points: 20 },
             { id: "subject", label: "Onderwerp", keywords: ["terrasvergunning", "terras"], hint: "Vermeld om welke vergunning het gaat (terrasvergunning)", points: 15 },
@@ -402,6 +403,7 @@ const MISSIONS = [
               avatar: "AW",
               scenario: "Van Dijk heeft net gebeld. Hij is boos over de vertraging en dreigt met een officiele klacht. Anouk vraagt of jij een kort, rustig antwoord-email kunt schrijven. Toon begrip, herhaal de nieuwe datum (10 april) en nodig hem uit om contact op te nemen bij vragen.",
               placeholder: "Schrijf hier je prompt voor de antwoord-email aan Van Dijk...",
+              examplePrompt: "Schrijf een korte, professionele antwoord-email aan dhr. Van Dijk als reactie op zijn boze telefoongesprek over de vertraging van zijn terrasvergunning. Toon begrip voor zijn frustratie, herhaal dat het besluit uiterlijk 10 april 2026 komt, en nodig hem uit om contact op te nemen bij vragen (14 0555). Rustige, empathische toon. Sluit af namens de afdeling VTH, Gemeente Mayostad.",
               checks: [
                 { id: "recipient", label: "Ontvanger (Van Dijk)", keywords: ["van dijk", "meneer", "geachte heer"], hint: "Vermeld de ontvanger (Van Dijk / meneer)", points: 15 },
                 { id: "subject", label: "Onderwerp (reactie klacht)", keywords: ["telefoongesprek", "klacht", "reactie", "gesprek", "gebeld", "bezwaar"], hint: "Vermeld het onderwerp (reactie op telefoongesprek / klacht)", points: 15 },
@@ -427,6 +429,7 @@ const MISSIONS = [
               avatar: "AW",
               scenario: "Anouk wil voor maandag een korte status-update van de zaak Van Dijk. Schrijf een interne memo met bulletpoints, max 150 woorden. Zakelijk en collegiaal, zonder jargon. Vergeet het zaaknummer niet: VTH-2026-00347.",
               placeholder: "Schrijf hier je prompt voor de interne memo aan Anouk...",
+              examplePrompt: "Schrijf een korte interne memo voor collega Anouk Willems over de status van zaak VTH-2026-00347 (terrasvergunning Van Dijk). Gebruik bulletpoints, max 150 woorden. Vermeld: bezwaar ontvangen, advies aangevraagd bij OOV, nieuwe beslisdatum 10 april 2026, klacht Van Dijk na telefoongesprek. Voeg actiepunten toe. Zakelijke en collegiale toon, geen jargon.",
               checks: [
                 { id: "audience", label: "Doelgroep (Anouk/intern)", keywords: ["anouk", "collega", "intern", "willems"], hint: "Vermeld de doelgroep (Anouk / collega / intern)", points: 15 },
                 { id: "casenr", label: "Zaaknummer", keywords: ["vth-2026-00347", "2026-00347", "zaaknummer", "zaak"], hint: "Noem het zaaknummer (VTH-2026-00347)", points: 15 },
@@ -452,6 +455,7 @@ const MISSIONS = [
               avatar: "SC",
               scenario: "Sarah van Communicatie vraagt of jij een LinkedIn-post kunt schrijven over het thema 'vergunningen en bezwaarprocedures'. Niet over Van Dijk specifiek, maar algemeen uitleggen waarom sommige beslissingen langer duren. Max 250 woorden, vriendelijk en transparant, gericht op inwoners van Mayostad. Vergeet de hashtags niet: #GemeenteMayostad #Vergunningen #Transparantie.",
               placeholder: "Schrijf hier je prompt voor de LinkedIn-post...",
+              examplePrompt: "Schrijf een LinkedIn-post namens Gemeente Mayostad over vergunningen en bezwaarprocedures. Leg op een vriendelijke en transparante manier uit waarom sommige vergunningsbeslissingen langer duren. Gericht op inwoners van Mayostad, max 250 woorden. Sluit af met een uitnodiging om contact op te nemen bij vragen. Gebruik deze hashtags: #GemeenteMayostad #Vergunningen #Transparantie.",
               checks: [
                 { id: "platform", label: "Platform (LinkedIn)", keywords: ["linkedin", "social media", "post"], hint: "Vermeld het platform (LinkedIn / social media)", points: 15 },
                 { id: "subject", label: "Onderwerp (vergunningen)", keywords: ["vergunning", "bezwaar", "procedure", "beslissing"], hint: "Vermeld het onderwerp (vergunningen / bezwaarprocedure)", points: 15 },
@@ -477,6 +481,7 @@ const MISSIONS = [
               avatar: "MP",
               scenario: "Marco brengt maandag een nieuwe MBO-stagiair mee. Kun jij uitleggen hoe het bezwaarproces bij vergunningen werkt, maar dan op B1-niveau? Korte zinnen, geen jargon, stapsgewijs (stap 1, 2, 3...) en met voorbeelden zodat een student het snapt.",
               placeholder: "Schrijf hier je prompt voor de uitleg aan de stagiair...",
+              examplePrompt: "Leg uit hoe het bezwaarproces bij vergunningen werkt, voor een MBO-stagiair die nieuw is bij de gemeente. Schrijf op B1-niveau: korte zinnen, geen jargon, gewone taal. Gebruik een stapsgewijs format (stap 1, 2, 3...) en geef bij elke stap een concreet voorbeeld zodat een student het snapt. Houd het duidelijk en overzichtelijk.",
               checks: [
                 { id: "audience", label: "Doelgroep (stagiair/MBO)", keywords: ["stagiair", "mbo", "student", "beginner", "nieuw", "jong"], hint: "Vermeld de doelgroep (stagiair / MBO / beginner)", points: 15 },
                 { id: "b1level", label: "B1-niveau / eenvoudig", keywords: ["b1", "eenvoudig", "simpel", "makkelijk", "begrijpelijk", "kort", "helder", "duidelijk"], hint: "Vraag om B1-niveau / eenvoudig taalgebruik", points: 20 },
