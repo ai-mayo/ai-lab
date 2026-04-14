@@ -1559,7 +1559,8 @@
                   fb.appendChild(retryBtn);
                 }
 
-                chatBody.querySelector(".gpt-input-area")?.before(fb);
+                chatEl.appendChild(fb);
+                chatEl.scrollTop = chatEl.scrollHeight;
                 chatEl.scrollTop = chatEl.scrollHeight;
               });
             }
@@ -2091,7 +2092,8 @@
         // Determine button text: if bonus exercises exist, indicate more exercises
         const hasBonusExercises = d.bonusExercises && d.bonusExercises.length > 0;
         fb.innerHTML += `<button class="action-btn" id="next-from-desktop" style="margin-top:12px">${hasBonusExercises ? "Volgende opdracht \u2192" : "Afronden \u2192"}</button>`;
-        chatgptBody.querySelector(".gpt-input-area").before(fb);
+        chatEl.appendChild(fb);
+        chatEl.scrollTop = chatEl.scrollHeight;
 
         fb.querySelector("#next-from-desktop")?.addEventListener("click", () => {
           sfxClick();
