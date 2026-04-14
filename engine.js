@@ -1934,7 +1934,10 @@
     }
   }
 
+  let taskNotificationShown = false;
   function showChatNotification(area, d, task) {
+    if (taskNotificationShown) return; // Voorkom dubbele melding
+    taskNotificationShown = true;
     const tp = d.taskPopup;
     const notifArea = document.getElementById("notification-area");
     const notif = document.createElement("div");
@@ -1942,39 +1945,34 @@
     notif.style.cursor = "pointer";
     notif.innerHTML = `
       <div class="macos-notif-header">
-        <div class="macos-notif-icon" style="background:#2563eb">M</div>
-        <div class="macos-notif-app">MayoChat</div>
+        <div class="macos-notif-icon" style="background:#0f766e">M</div>
+        <div class="macos-notif-app">MayoBoard</div>
         <div class="macos-notif-time">nu</div>
       </div>
       <div class="macos-notif-body">
-        <div class="macos-notif-title">${tp.from}</div>
+        <div class="macos-notif-title">${tp.from} — Nieuwe taak</div>
         <div class="macos-notif-text">${tp.message}</div>
       </div>
     `;
     notifArea.appendChild(notif);
     sfxClick();
 
-    // Clicking the notification opens MayoChat (zodat gebruiker Marco's bericht kan lezen)
+    // Klik opent MayoBoard met de taak
     notif.addEventListener("click", () => {
       sfxClick();
       notif.remove();
-      // Simulate a click on the MayoChat dock icon
-      const chatDock = document.querySelector('.dock-icon[data-app="chat"]');
-      if (chatDock) chatDock.click();
+      const boardWin = document.getElementById("window-board");
+      if (boardWin) {
+        boardWin.style.display = "flex";
+        document.querySelectorAll(".app-window").forEach(w => w.classList.remove("focused"));
+        boardWin.classList.add("focused", "maximized");
+      }
     });
 
-    // Auto-dismiss after 30s, then show again
+    // Auto-dismiss na 60s (geen herhaling meer)
     setTimeout(() => {
-      if (notif.parentElement) {
-        notif.remove();
-        // Remind again
-        setTimeout(() => {
-          if (!document.getElementById("window-board")?.classList.contains("focused")) {
-            showChatNotification(area, d, task);
-          }
-        }, 15000);
-      }
-    }, 30000);
+      if (notif.parentElement) notif.remove();
+    }, 60000);
   }
 
   function openChatGPTWindow(area, d, task) {
