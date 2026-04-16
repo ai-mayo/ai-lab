@@ -65,6 +65,7 @@ const MISSIONS = [
                     { title: "AI bij de Gemeente", icon: "", link: "ai" },
                     { title: "Tools & Apps", icon: "", link: "tools" },
                     { title: "AI Huisregels", icon: "", link: "rules" },
+                    { title: "Organisatie", icon: "", link: "team" },
                     { title: "Parkeerbeleid", icon: "", link: "parking" },
                     { title: "Kantine & Lunch", icon: "", link: "kantine" },
                     { title: "BHV & Veiligheid", icon: "", link: "bhv" },

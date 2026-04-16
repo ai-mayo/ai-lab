@@ -7,6 +7,10 @@
   function generateCoachingFeedback(promptText, checks, examplePrompt) {
     const text = promptText.toLowerCase();
 
+    // Data-dump detection: if the user just pasted raw case data without prompt structure
+    const hasInstruction = /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen|genereer|help|kun je|wil je|graag)\b/i.test(promptText);
+    const isDataDump = !hasInstruction && promptText.length > 100;
+
     // Determine which content checks matched
     const good = [];
     const improve = [];
@@ -21,7 +25,7 @@
     // Prompt quality tips (role, instruction, tone, format)
     const qualityChecks = [
       { label: "Rol/context", hit: /\b(je bent|jij bent|als een?|vanuit de rol|in de rol|namens)\b/i.test(promptText), goodText: "Je gaf de AI een duidelijke rol", tipText: "Begin met een rol, bijv: 'Je bent een beleidsmedewerker die...'" },
-      { label: "Duidelijke instructie", hit: /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen)\b/i.test(promptText), goodText: "Je gaf een duidelijke instructie", tipText: "Geef een werkwoord: 'Schrijf een brief...', 'Maak een samenvatting...'" },
+      { label: "Duidelijke instructie", hit: hasInstruction, goodText: "Je gaf een duidelijke instructie", tipText: "Geef een werkwoord: 'Schrijf een brief...', 'Maak een samenvatting...'" },
       { label: "Toon/stijl", hit: /\b(formeel|informeel|zakelijk|empathisch|vriendelijk|professioneel|warm|helder|begrijpelijk|b1|toon|stijl)\b/i.test(promptText), goodText: "Je gaf de gewenste toon aan", tipText: "Vermeld de toon: 'Formeel maar empathisch', 'B1-niveau', 'Zakelijk'" },
       { label: "Format/output", hit: /\b(brief|email|e-mail|memo|bericht|post|uitleg|toelichting|opsomming|bulletpoints|stapsgewijs|samenvatting)\b/i.test(promptText), goodText: "Je specificeerde het gewenste format", tipText: "Specificeer het format: 'als een formele brief', 'in opsommingstekens'" }
     ];
@@ -32,10 +36,15 @@
     // Build HTML
     let html = '<div class="coaching-feedback">';
 
+    // Data-dump warning
+    if (isDataDump) {
+      html += '<div class="coaching-improve" style="margin-bottom:12px"><h4>\u26A0\uFE0F Let op: data plakken is geen prompt</h4><p style="font-size:0.85rem;line-height:1.5;margin:8px 0 0">Het lijkt erop dat je zaakgegevens hebt geplakt zonder de AI een duidelijke opdracht te geven. AI heeft een <strong>instructie</strong> nodig: wat moet het doen met deze informatie? Probeer: "Schrijf een brief aan [naam] over [onderwerp]. Gebruik de volgende gegevens: ..."</p></div>';
+    }
+
     // Good section — always show
     html += '<div class="coaching-good"><h4>\uD83D\uDC4D Dit deed je goed:</h4><ul>';
     if (good.length === 0 && qualityGood.length === 0) {
-      html += '<li>Je hebt een begin gemaakt — dat is stap \u00e9\u00e9n!</li>';
+      html += '<li>Je hebt een begin gemaakt \u2014 dat is stap \u00e9\u00e9n!</li>';
     } else {
       good.forEach(c => { html += `<li>Je noemde <strong>${c.label.toLowerCase()}</strong></li>`; });
       qualityGood.forEach(q => { html += `<li>${q.goodText}</li>`; });
@@ -46,7 +55,7 @@
     if (improve.length > 0 || qualityImprove.length > 0) {
       html += '<div class="coaching-improve"><h4>\uD83D\uDCA1 Dit kan beter:</h4><ul>';
       improve.forEach(c => { html += `<li><strong>${c.label}:</strong> ${c.hint}</li>`; });
-      qualityImprove.forEach(q => { html += `<li><strong>Tip — ${q.label}:</strong> ${q.tipText}</li>`; });
+      qualityImprove.forEach(q => { html += `<li><strong>Tip \u2014 ${q.label}:</strong> ${q.tipText}</li>`; });
       html += '</ul></div>';
     }
 
@@ -2578,6 +2587,12 @@
           found++;
         }
       });
+
+      // Data-dump penalty: if no instruction verb, cap the score
+      const hasInstructionVerb = /\b(schrijf|maak|stel\s+op|formuleer|beantwoord|opstellen|herschrijf|vertaal|leg uit|vat samen|genereer|help|kun je|wil je|graag)\b/i.test(promptText);
+      if (!hasInstructionVerb && promptText.length > 100) {
+        found = Math.min(found, Math.ceil(d.checks.length * 2/7)); // cap at mediocre
+      }
 
       const totalChecks = d.checks.length;
       let responseKey;
