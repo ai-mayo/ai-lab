@@ -424,7 +424,7 @@
     // Task card — hide header when interaction is a full desktop experience
     const card = document.createElement("div");
     card.className = "task-card";
-    const hideHeader = task.interaction && (task.interaction.hideTaskHeader || task.interaction.type === "intranet-then-prompt");
+    const hideHeader = task.interaction && (task.interaction.hideTaskHeader || task.interaction.type === "intranet-then-prompt" || task.interaction.type === "desktop-then-review");
     card.innerHTML = hideHeader
       ? `<div id="interaction-area"></div>`
       : `
@@ -450,6 +450,7 @@
       "agent-builder": renderAgentBuilder,
       "find-config-errors": renderFindConfigErrors,
       "intranet-then-prompt": renderIntranetThenPrompt,
+      "desktop-then-review": renderDesktopThenReview,
       "free-prompt": renderFreePrompt,
       "chat-simulator": renderChatSimulator,
       "model-compare": renderModelCompare,
@@ -1827,6 +1828,536 @@
       onboardingDone.wiki = onboardingDone.wikiPage = onboardingDone.board = true;
       fireTaskAssignment();
     }, 240000);
+  }
+
+  // ─── INTERACTION: Desktop + Document Review (Dag 2) ──
+  function renderDesktopThenReview(area, task) {
+    const d = task.interaction;
+    const doc = d.document;
+    let taskShown = false;
+
+    // Inherit wiki pages from Dag 1 and merge Dag 2 additions
+    const dag1Wiki = MISSIONS[0]?.tasks[0]?.interaction?.wiki;
+    const mergedWiki = { pages: { ...(dag1Wiki?.pages || {}), ...(d.wiki?.pages || {}) } };
+    let currentPage = "home";
+
+    // Override BOARD_TASKS for Dag 2
+    const dag2Tasks = d.boardTasks || [];
+    BOARD_TASKS.length = 0;
+    dag2Tasks.forEach(t => BOARD_TASKS.push(t));
+
+    document.getElementById("header").style.display = "none";
+    area.closest(".screen").style.padding = "0";
+
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
+
+    // Build MayoChat for Dag 2
+    const chatChannels = d.chatChannels || {};
+    const channelNames = Object.keys(chatChannels);
+    let activeChannel = channelNames[0] || "# vth";
+
+    function buildChatHTML(ch, chName) {
+      return `
+        <div style="flex:1;display:flex;background:#1a1a2e;font-family:-apple-system,'Inter',sans-serif;font-size:13px;color:#e2e8f0">
+          <div style="width:200px;background:#151528;border-right:1px solid #252545;padding:10px 0;overflow-y:auto;flex-shrink:0">
+            <div style="padding:8px 14px;font-weight:700;font-size:0.85rem;color:#7dd3fc;margin-bottom:8px">MayoChat</div>
+            ${channelNames.map(cn => `
+              <div class="mc-ch-d2" data-channel="${cn}" style="display:flex;align-items:center;padding:5px 14px;cursor:pointer;color:${cn===chName?"#fff":"#64748b"};font-size:0.82rem;font-weight:${cn===chName?"600":"400"};background:${cn===chName?"#252550":"transparent"};border-radius:4px;margin:0 6px">
+                <span style="flex:1">${cn}</span>
+              </div>
+            `).join("")}
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column">
+            <div style="padding:10px 16px;border-bottom:1px solid #252545;font-weight:600;font-size:0.85rem">${chName} <span style="font-weight:400;color:#64748b;font-size:0.75rem">\u2022 ${ch.members} leden</span></div>
+            <div style="flex:1;overflow-y:auto;padding:12px 16px">
+              ${ch.messages.map(m => `
+                <div style="display:flex;gap:10px;margin-bottom:14px">
+                  ${m.avatar ? `<img src="${m.avatar}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0">` : `<div style="width:32px;height:32px;border-radius:6px;background:#333;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#888;font-weight:700;flex-shrink:0">${m.user.split(" ").map(w=>w[0]).join("").slice(0,2)}</div>`}
+                  <div>
+                    <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px">
+                      <span style="font-weight:600;font-size:0.82rem;color:#e2e8f0">${m.user}</span>
+                      <span style="font-size:0.65rem;color:#64748b">${m.time}</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:#cbd5e1;line-height:1.5">${m.text}</div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+            <div style="padding:10px 16px;border-top:1px solid #252545">
+              <div style="display:flex;align-items:center;gap:8px;background:#1e1e38;border:1px solid #333;border-radius:8px;padding:8px 12px">
+                <input placeholder="Bericht in ${chName}..." style="flex:1;background:transparent;border:none;color:#e2e8f0;font-family:inherit;font-size:0.85rem;outline:none" readonly>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // Desktop HTML (same structure as Dag 1)
+    area.innerHTML = `<div class="desktop" id="macos-desktop">
+      <div class="mac-notch"><div class="mac-notch-cam"></div></div>
+      <div class="menubar">
+        <span class="menubar-apple"><svg viewBox="0 0 17 20" width="12" height="14" fill="white"><path d="M12.15 0c.08.68-.2 1.36-.54 1.86-.38.53-.99.94-1.6.88-.09-.65.24-1.34.56-1.77.38-.5 1.04-.9 1.58-.97zM14.96 7.2c-.04.02-1.6.92-1.58 2.76.02 2.2 1.93 2.93 1.96 2.94-.01.06-.3 1.06-.1 2.22-.56.46-1.1.92-1.97.92-.42 0-.7-.14-1-.28-.32-.15-.66-.3-1.17-.3-.54 0-.9.16-1.24.31-.28.13-.55.25-.92.27-.83.03-1.46-.98-2.03-1.94-.58-.98-1.06-2.5-.44-3.59.3-.54.84-.88 1.44-.89.47-.01.9.17 1.24.32.28.12.5.22.76.22.24 0 .44-.09.72-.22.38-.17.86-.38 1.48-.33.85.03 1.5.46 1.86 1.13-.75.46-1.26 1.23-1.2 2.15.06.98.65 1.82 1.49 2.18-.18.53-.4 1.04-.7 1.51z"/></svg></span>
+        <span class="menubar-app">Finder</span>
+        <span class="menubar-item">Archief</span>
+        <span class="menubar-item">Weergave</span>
+        <div class="menubar-right">
+          <svg viewBox="0 0 16 12" width="14" height="10"><path d="M8 9.6a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4zm-4.2-3a.6.6 0 01.42.18l.85.84A4.78 4.78 0 018 6.4c1.1 0 2.15.37 3 1.05l.82-.82a.6.6 0 01.85.85l-.83.83A4.78 4.78 0 018 9.6a4.78 4.78 0 01-3.78-1.27l-.84-.84a.6.6 0 01.42-1.02z" fill="white" opacity="0.9"/></svg>
+          <svg viewBox="0 0 20 10" width="18" height="9"><rect x="0" y="1" width="16" height="8" rx="1.5" fill="none" stroke="white" stroke-width="1" opacity="0.8"/><rect x="17" y="3.5" width="1.5" height="3" rx="0.5" fill="white" opacity="0.5"/><rect x="1.5" y="2.5" width="12" height="5" rx="0.5" fill="#28c840"/></svg>
+          <span>${timeStr}</span>
+        </div>
+      </div>
+
+      <div class="app-window open" id="window-intranet" style="display:none;top:40px;left:20px;right:20px;bottom:80px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots">
+            <div class="app-titlebar-dot red" data-action="close" data-window="intranet"></div>
+            <div class="app-titlebar-dot yellow" data-action="minimize" data-window="intranet"></div>
+            <div class="app-titlebar-dot green" data-action="maximize" data-window="intranet"></div>
+          </div>
+          <div class="app-titlebar-title">MayoWiki \u2014 Kennisbank</div>
+          <div class="app-titlebar-controls">
+            <div class="app-titlebar-ctrl" data-action="minimize" data-window="intranet">\u2014</div>
+            <div class="app-titlebar-ctrl" data-action="maximize" data-window="intranet">\u25A1</div>
+            <div class="app-titlebar-ctrl close" data-action="close" data-window="intranet">\u2715</div>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="intranet" id="intranet-container">
+            <div class="wiki-topbar">
+              <div class="wiki-topbar-logo"><svg viewBox="0 0 24 24" fill="white"><path d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V4H6zm2 3h8v2H8V7zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/></svg> MayoWiki</div>
+              <div class="wiki-topbar-nav"><a>Shelves</a><a>Books</a><a>Favorieten</a></div>
+              <div class="wiki-topbar-search"><input type="text" placeholder="Zoeken in wiki..."></div>
+            </div>
+            <div class="wiki-body">
+              <div class="intranet-sidebar" id="intranet-nav"></div>
+              <div class="intranet-main" id="intranet-page"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-window" id="window-wiwa" style="display:none;top:40px;left:40px;width:700px;height:500px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="wiwa"></div><div class="app-titlebar-dot yellow"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="wiwa"></div></div>
+          <div class="app-titlebar-title">WiWa \u2014 Wie is Wa</div>
+          <div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="wiwa">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="wiwa">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="wiwa">\u2715</div></div>
+        </div>
+        <div class="app-body" id="wiwa-body"></div>
+      </div>
+
+      <div class="app-window open" id="window-board" style="display:none;top:35px;left:30px;right:30px;bottom:74px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="board"></div><div class="app-titlebar-dot yellow" data-action="minimize" data-window="board"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="board"></div></div>
+          <div class="app-titlebar-title">MayoBoard \u2014 Takenbord</div>
+          <div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="board">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="board">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="board">\u2715</div></div>
+        </div>
+        <div class="app-body" id="board-body"></div>
+      </div>
+
+      <div class="app-window open" id="window-review" style="display:none;top:35px;left:20px;right:20px;bottom:74px">
+        <div class="app-titlebar">
+          <div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="review"></div><div class="app-titlebar-dot yellow" data-action="minimize" data-window="review"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="review"></div></div>
+          <div class="app-titlebar-title">Beschikking \u2014 ${doc.caseNr}</div>
+          <div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="review">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="review">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="review">\u2715</div></div>
+        </div>
+        <div class="app-body" id="review-body"></div>
+      </div>
+
+      <div class="dock" id="dock">
+        <div class="dock-icon" data-app="board"><div class="dock-tooltip">MayoBoard</div><div class="dock-label">MayoBoard</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#0052cc"/><rect x="20" y="30" width="22" height="60" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="49" y="30" width="22" height="45" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="78" y="30" width="22" height="35" rx="3" fill="rgba(255,255,255,0.3)"/><rect x="23" y="34" width="16" height="10" rx="2" fill="white"/><rect x="23" y="48" width="16" height="10" rx="2" fill="white"/><rect x="52" y="34" width="16" height="10" rx="2" fill="white"/><rect x="81" y="34" width="16" height="10" rx="2" fill="white"/></svg></div>
+        <div class="dock-icon" data-app="vergunning"><div class="dock-tooltip">Vergunningtool</div><div class="dock-label">Vergunning</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#7c3aed"/><rect x="30" y="25" width="50" height="65" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M42 40h26M42 50h20M42 60h24" stroke="white" stroke-width="2" opacity="0.6"/><circle cx="80" cy="75" r="16" fill="#7c3aed" stroke="white" stroke-width="3"/><path d="M74 75l4 4 8-8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+        <div class="dock-icon" data-app="intranet"><div class="dock-tooltip">MayoWiki</div><div class="dock-label">MayoWiki</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e6fba"/><rect x="28" y="24" width="64" height="72" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M40 40h40M40 52h35M40 64h28M40 76h32" stroke="white" stroke-width="2" opacity="0.6"/></svg></div>
+        <div class="dock-icon" data-app="wiwa"><div class="dock-tooltip">WiWa</div><div class="dock-label">WiWa</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#6366f1"/><circle cx="42" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><circle cx="78" cy="45" r="12" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/><path d="M58 82c0-12 9-18 20-18s20 6 20 18" fill="none" stroke="white" stroke-width="2.5"/></svg></div>
+        <div class="dock-icon" data-app="mail"><div class="dock-tooltip">MayoMail</div><div class="dock-label">MayoMail</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#1e40af"/><rect x="30" y="38" width="60" height="44" rx="4" fill="none" stroke="white" stroke-width="3"/><path d="M30 42l30 20 30-20" fill="none" stroke="white" stroke-width="3"/></svg></div>
+        <div class="dock-icon" data-app="chat"><div class="dock-tooltip">MayoChat</div><div class="dock-label">MayoChat</div><svg viewBox="0 0 120 120" width="42" height="42"><rect width="120" height="120" rx="26" fill="#2563eb"/><path d="M30 45c0-6 5-10 10-10h40c5 0 10 4 10 10v25c0 6-5 10-10 10H55l-15 12V80H40c-5 0-10-4-10-10z" fill="none" stroke="white" stroke-width="3"/></svg></div>
+      </div>
+
+      <div id="notification-area"></div>
+    </div>`;
+
+    const desktop = area.querySelector("#macos-desktop");
+
+    // ── Inject review styles ──
+    if (!document.getElementById("review-doc-styles")) {
+      const s = document.createElement("style");
+      s.id = "review-doc-styles";
+      s.textContent = `
+        .review-section { padding:10px 14px; margin:4px 0; border-radius:6px; cursor:pointer; border:2px solid transparent; transition:all 0.2s; line-height:1.7; font-size:0.88rem; color:#374151; }
+        .review-section:hover { background:#fef3c7; border-color:#f59e0b; }
+        .review-section.marked { background:#fef2f2; border-color:#ef4444; position:relative; }
+        .review-section.marked::after { content:"\\2718 Verdacht"; position:absolute; right:8px; top:8px; font-size:0.65rem; background:#ef4444; color:white; padding:2px 8px; border-radius:4px; font-weight:700; }
+        .review-section.result-correct { background:#dcfce7; border-color:#22c55e; }
+        .review-section.result-correct::after { content:"\\2714 Goed gezien!"; position:absolute; right:8px; top:8px; font-size:0.65rem; background:#22c55e; color:white; padding:2px 8px; border-radius:4px; font-weight:700; }
+        .review-section.result-missed { background:#fef2f2; border-color:#ef4444; }
+        .review-section.result-missed::after { content:"\\2718 Gemist!"; position:absolute; right:8px; top:8px; font-size:0.65rem; background:#ef4444; color:white; padding:2px 8px; border-radius:4px; font-weight:700; }
+        .review-section.result-safe { background:#f0fdf4; border-color:#bbf7d0; opacity:0.8; }
+        .review-section.result-false-alarm { background:#fffbeb; border-color:#fbbf24; }
+        .review-section.result-false-alarm::after { content:"\\26A0 Vals alarm"; position:absolute; right:8px; top:8px; font-size:0.65rem; background:#f59e0b; color:white; padding:2px 8px; border-radius:4px; font-weight:700; }
+        .review-explanation { margin:4px 0 8px 14px; padding:8px 12px; font-size:0.8rem; border-radius:4px; display:none; line-height:1.5; }
+        .review-explanation.show { display:block; }
+        .review-explanation.hallucination { background:#fef2f2; border-left:3px solid #ef4444; color:#991b1b; }
+        .review-explanation.safe { background:#f0fdf4; border-left:3px solid #22c55e; color:#166534; }
+        .review-score-bar { display:flex; align-items:center; gap:16px; padding:12px 16px; background:#1e293b; border-bottom:1px solid #334155; font-size:0.82rem; color:#e2e8f0; }
+        .review-score-item { display:flex; align-items:center; gap:6px; }
+        .teaching-card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:14px; margin:8px 0; display:flex; gap:12px; align-items:flex-start; }
+        .teaching-card-icon { font-size:1.5rem; flex-shrink:0; }
+        .teaching-card-title { font-weight:700; font-size:0.85rem; color:#111; margin-bottom:4px; }
+        .teaching-card-desc { font-size:0.8rem; color:#6b7280; line-height:1.5; }
+      `;
+      document.head.appendChild(s);
+    }
+
+    // ── Wiki rendering (reuses Dag 1 code pattern) ──
+    function renderWikiNav() {
+      const nav = area.querySelector("#intranet-nav");
+      if (!nav) return;
+      const pages = Object.entries(mergedWiki.pages).filter(([k]) => k !== "home");
+      nav.innerHTML = pages.map(([key, p]) => `<div class="intranet-link${key === currentPage ? " active" : ""}" data-link="${key}">${p.icon || ""} ${p.title}</div>`).join("");
+      nav.querySelectorAll("[data-link]").forEach(link => {
+        link.addEventListener("click", () => { sfxClick(); currentPage = link.dataset.link; renderWikiNav(); renderWikiPage(); });
+      });
+    }
+    function renderWikiPage() {
+      const pageEl = area.querySelector("#intranet-page");
+      if (!pageEl) return;
+      const page = mergedWiki.pages[currentPage] || mergedWiki.pages.home;
+      if (!page) { pageEl.innerHTML = "<p>Pagina niet gevonden</p>"; return; }
+      pageEl.innerHTML = `<div class="wiki-page-title">${page.title}</div>` + (page.content || []).map(c => {
+        if (c.type === "heading") return `<div class="wiki-section-title">${c.text}</div>`;
+        if (c.type === "text") return `<p class="wiki-text">${c.text}</p>`;
+        if (c.type === "banner") return `<div class="wiki-banner">${c.text}</div>`;
+        if (c.type === "info") return `<div class="wiki-info"><span class="wiki-info-label">${c.label}</span><span class="wiki-info-value">${c.value}</span></div>`;
+        if (c.type === "rule") return `<div class="wiki-rule"><span class="wiki-rule-num">${c.num}</span>${c.text}</div>`;
+        if (c.type === "tool") return `<div class="wiki-tool"><div class="wiki-tool-header"><span class="wiki-tool-name">${c.name}</span><span class="wiki-tool-status">${c.status}</span></div><div class="wiki-tool-desc">${c.desc}</div></div>`;
+        if (c.type === "person") return `<div class="wiki-person"><div class="wiki-person-name">${c.name}</div><div class="wiki-person-role">${c.role}</div><div class="wiki-person-note">${c.note}</div></div>`;
+        if (c.type === "do-dont") return `<div class="wiki-dodont"><div class="wiki-do"><div class="wiki-do-title">\u2714 Wel doen</div>${c.dos.map(d2=>`<div class="wiki-do-item">${d2}</div>`).join("")}</div><div class="wiki-dont"><div class="wiki-dont-title">\u2718 Niet doen</div>${c.donts.map(d2=>`<div class="wiki-dont-item">${d2}</div>`).join("")}</div></div>`;
+        if (c.type === "cards") return `<div class="wiki-cards">${c.items.map(i => `<div class="wiki-card" data-link="${i.link}"><span class="wiki-card-icon">${i.icon || ""}</span><span class="wiki-card-title">${i.title}</span></div>`).join("")}</div>`;
+        return "";
+      }).join("");
+      pageEl.querySelectorAll("[data-link]").forEach(card => {
+        card.addEventListener("click", () => { sfxClick(); currentPage = card.dataset.link; renderWikiNav(); renderWikiPage(); });
+      });
+    }
+    renderWikiNav();
+    renderWikiPage();
+
+    // ── Board ──
+    renderBoard(area.querySelector("#board-body"), d, task, false);
+
+    // ── Dock click handlers ──
+    area.querySelectorAll(".dock-icon").forEach(icon => {
+      icon.addEventListener("click", () => {
+        sfxClick();
+        const app = icon.dataset.app;
+        if (app === "intranet") {
+          const w = document.getElementById("window-intranet"); w.style.display = "flex"; w.classList.add("maximized","focused");
+          area.querySelectorAll(".app-window").forEach(ww => { if (ww !== w) ww.classList.remove("focused"); });
+        } else if (app === "board") {
+          const w = document.getElementById("window-board"); w.style.display = "flex"; w.classList.add("maximized","focused");
+          area.querySelectorAll(".app-window").forEach(ww => { if (ww !== w) ww.classList.remove("focused"); });
+        } else if (app === "wiwa") {
+          const w = document.getElementById("window-wiwa"); w.style.display = "flex"; w.classList.add("maximized","focused");
+          area.querySelectorAll(".app-window").forEach(ww => { if (ww !== w) ww.classList.remove("focused"); });
+          if (typeof renderWiWa === "function") renderWiWa(area.querySelector("#wiwa-body"));
+        } else if (app === "chat") {
+          // Dag 2 custom MayoChat
+          let chatWin = document.getElementById("window-app-chat-d2");
+          if (!chatWin) {
+            chatWin = document.createElement("div");
+            chatWin.className = "app-window open";
+            chatWin.id = "window-app-chat-d2";
+            chatWin.style.cssText = "top:35px;left:20px;right:20px;bottom:74px";
+            chatWin.innerHTML = `<div class="app-titlebar"><div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="app-chat-d2"></div><div class="app-titlebar-dot yellow" data-action="minimize" data-window="app-chat-d2"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="app-chat-d2"></div></div><div class="app-titlebar-title">MayoChat</div><div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="app-chat-d2">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="app-chat-d2">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="app-chat-d2">\u2715</div></div></div><div class="app-body" id="chat-d2-body"></div>`;
+            desktop.insertBefore(chatWin, document.getElementById("dock"));
+            chatWin.querySelectorAll("[data-action]").forEach(ctrl => {
+              ctrl.addEventListener("click", (e) => { e.stopPropagation(); const a = ctrl.dataset.action; if(a==="close"){chatWin.style.display="none";chatWin.classList.remove("focused");}else if(a==="minimize"){chatWin.style.display="none";}else if(a==="maximize"){chatWin.classList.toggle("maximized");}});
+            });
+          }
+          const chatBody = chatWin.querySelector("#chat-d2-body");
+          chatBody.innerHTML = buildChatHTML(chatChannels[activeChannel], activeChannel);
+          chatWin.style.display = "flex"; chatWin.classList.add("maximized","focused");
+          area.querySelectorAll(".app-window").forEach(ww => { if (ww !== chatWin) ww.classList.remove("focused"); });
+          // Channel switching
+          chatBody.querySelectorAll(".mc-ch-d2").forEach(ch => {
+            ch.addEventListener("click", () => { activeChannel = ch.dataset.channel; chatBody.innerHTML = buildChatHTML(chatChannels[activeChannel], activeChannel);
+              chatBody.querySelectorAll(".mc-ch-d2").forEach(ch2 => { ch2.addEventListener("click", () => { activeChannel = ch2.dataset.channel; chatBody.innerHTML = buildChatHTML(chatChannels[activeChannel], activeChannel); }); });
+            });
+          });
+        } else if (typeof APP_RENDERERS !== "undefined" && APP_RENDERERS[app]) {
+          let win = document.getElementById("window-app-" + app);
+          if (!win) {
+            const titles = {zaaksysteem:"Zaaksysteem",vergunning:"Vergunningtool",kcc:"KCC Dashboard",sociaal:"Sociaal Domein Hub",mail:"MayoMail",notebooklm:"NotebookLM",gaims:"GAIMS",copilot:"Copilot"};
+            win = document.createElement("div"); win.className = "app-window open"; win.id = "window-app-" + app;
+            win.style.cssText = "top:35px;left:20px;right:20px;bottom:74px";
+            win.innerHTML = `<div class="app-titlebar"><div class="app-titlebar-dots"><div class="app-titlebar-dot red" data-action="close" data-window="app-${app}"></div><div class="app-titlebar-dot yellow" data-action="minimize" data-window="app-${app}"></div><div class="app-titlebar-dot green" data-action="maximize" data-window="app-${app}"></div></div><div class="app-titlebar-title">${titles[app]||app}</div><div class="app-titlebar-controls"><div class="app-titlebar-ctrl" data-action="minimize" data-window="app-${app}">\u2014</div><div class="app-titlebar-ctrl" data-action="maximize" data-window="app-${app}">\u25A1</div><div class="app-titlebar-ctrl close" data-action="close" data-window="app-${app}">\u2715</div></div></div><div class="app-body" id="app-body-${app}"></div>`;
+            desktop.insertBefore(win, document.getElementById("dock"));
+            win.querySelectorAll("[data-action]").forEach(ctrl => {
+              ctrl.addEventListener("click", (e) => { e.stopPropagation(); const a = ctrl.dataset.action; if(a==="close"){win.style.display="none";win.classList.remove("focused");}else if(a==="minimize"){win.style.display="none";}else if(a==="maximize"){win.classList.toggle("maximized");}});
+            });
+            APP_RENDERERS[app](win.querySelector("#app-body-" + app));
+          }
+          win.style.display = "flex"; win.classList.add("maximized","focused");
+          area.querySelectorAll(".app-window").forEach(w => { if(w!==win) w.classList.remove("focused"); });
+        }
+      });
+    });
+
+    // ── Window controls ──
+    area.querySelectorAll("[data-action]").forEach(ctrl => {
+      ctrl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const action = ctrl.dataset.action;
+        const win = document.getElementById("window-" + ctrl.dataset.window);
+        if (!win) return;
+        if (action === "close") { win.style.display = "none"; win.classList.remove("focused"); }
+        else if (action === "minimize") { win.style.display = "none"; }
+        else if (action === "maximize") { win.classList.toggle("maximized"); }
+      });
+    });
+
+    // ── Video segment: Welcome ──
+    const videoSegs = d.videoSegments || {};
+    if (videoSegs.onDesktopOpen) {
+      setTimeout(() => {
+        showDesktopVideoOverlay(videoSegs.onDesktopOpen.src, videoSegs.onDesktopOpen.caption);
+      }, videoSegs.onDesktopOpen.delay || 1500);
+    }
+
+    // ── Task notification (after delay) ──
+    const taskDelay = d.taskPopupDelay || 8000;
+    setTimeout(() => {
+      if (taskShown) return;
+      taskShown = true;
+      // Update board to show the main task
+      renderBoard(area.querySelector("#board-body"), d, task, true);
+      // Show notification
+      const tp = d.taskPopup;
+      const notifArea = document.getElementById("notification-area");
+      const notif = document.createElement("div");
+      notif.className = "macos-notification";
+      notif.style.cursor = "pointer";
+      notif.innerHTML = `
+        <div class="macos-notif-header">
+          <div class="macos-notif-icon" style="background:#0f766e">M</div>
+          <div class="macos-notif-app">MayoChat</div>
+          <div class="macos-notif-time">nu</div>
+        </div>
+        <div class="macos-notif-body">
+          <div class="macos-notif-title">${tp.from} \u2014 ${tp.fromRole}</div>
+          <div class="macos-notif-text">${tp.message.substring(0, 120)}...</div>
+        </div>
+      `;
+      notifArea.appendChild(notif);
+      sfxClick();
+      notif.addEventListener("click", () => {
+        sfxClick();
+        notif.remove();
+        openDocumentReview();
+      });
+      setTimeout(() => { if (notif.parentElement) notif.remove(); }, 60000);
+    }, taskDelay);
+
+    // ── Document Review ──
+    function openDocumentReview() {
+      const reviewWin = document.getElementById("window-review");
+      const reviewBody = document.getElementById("review-body");
+      reviewWin.style.display = "flex";
+      reviewWin.classList.add("maximized", "focused");
+      area.querySelectorAll(".app-window").forEach(w => { if(w!==reviewWin) w.classList.remove("focused"); });
+
+      const totalHallucinations = doc.sections.filter(s => s.hallucination).length;
+      let markedSections = new Set();
+      let reviewDone = false;
+
+      reviewBody.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
+          <div class="review-score-bar">
+            <div style="flex:1">
+              <span style="font-weight:700;color:#f59e0b">\u{1F50D}</span> Hallucinatie-jacht \u2014 Klik op verdachte passages
+            </div>
+            <div class="review-score-item"><span style="color:#ef4444">\u2718</span> Gemarkeerd: <span id="rv-marked">0</span></div>
+            <div class="review-score-item"><span style="color:#22c55e">\u2714</span> Hallucinaties: <span id="rv-total">${totalHallucinations}</span></div>
+            <button id="rv-check-btn" style="background:#2563eb;color:white;border:none;padding:6px 16px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit">Controleer antwoorden</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:24px">
+            <div style="max-width:760px;margin:0 auto">
+              <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+                <div style="padding:20px 24px;background:#1e293b;color:white">
+                  <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:6px">Gemeente Mayostad \u2022 Afdeling Sociaal Domein</div>
+                  <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">${doc.title}</div>
+                  <div style="font-size:0.78rem;color:#94a3b8">Zaak: ${doc.caseNr} \u2022 Datum: ${doc.date} \u2022 Geschreven door: ${doc.author} (${doc.authorRole})</div>
+                </div>
+                <div style="background:#fef3c7;padding:10px 24px;border-bottom:1px solid #fde68a;display:flex;align-items:center;gap:8px;font-size:0.8rem;color:#92400e">
+                  <span style="font-size:1rem">\u26A0\uFE0F</span>
+                  <strong>Let op:</strong> Dit concept is geschreven met ${doc.tool}. De juridisch adviseur heeft fouten geconstateerd. Markeer alle passages die niet kloppen.
+                </div>
+                <div style="padding:20px 24px" id="rv-sections">
+                  ${doc.sections.map((s, i) => `
+                    <div class="review-section" data-idx="${i}" style="position:relative;white-space:pre-line">${s.text}</div>
+                    <div class="review-explanation ${s.hallucination ? "hallucination" : "safe"}" id="rv-expl-${i}">${s.explanation}</div>
+                  `).join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="rv-results" style="display:none"></div>
+        </div>
+      `;
+
+      // Click to mark/unmark sections
+      reviewBody.querySelectorAll(".review-section").forEach(el => {
+        el.addEventListener("click", () => {
+          if (reviewDone) return;
+          sfxClick();
+          const idx = parseInt(el.dataset.idx);
+          if (markedSections.has(idx)) {
+            markedSections.delete(idx);
+            el.classList.remove("marked");
+          } else {
+            markedSections.add(idx);
+            el.classList.add("marked");
+          }
+          reviewBody.querySelector("#rv-marked").textContent = markedSections.size;
+        });
+      });
+
+      // Check answers
+      reviewBody.querySelector("#rv-check-btn").addEventListener("click", () => {
+        if (reviewDone) return;
+        reviewDone = true;
+        sfxClick();
+
+        let correct = 0, missed = 0, falseAlarms = 0;
+
+        doc.sections.forEach((s, i) => {
+          const el = reviewBody.querySelector(`[data-idx="${i}"]`);
+          const expl = reviewBody.querySelector(`#rv-expl-${i}`);
+          el.classList.remove("marked");
+          el.style.cursor = "default";
+
+          if (s.hallucination && markedSections.has(i)) {
+            el.classList.add("result-correct");
+            expl.classList.add("show");
+            correct++;
+          } else if (s.hallucination && !markedSections.has(i)) {
+            el.classList.add("result-missed");
+            expl.classList.add("show");
+            missed++;
+          } else if (!s.hallucination && markedSections.has(i)) {
+            el.classList.add("result-false-alarm");
+            expl.classList.add("show");
+            falseAlarms++;
+          } else {
+            el.classList.add("result-safe");
+          }
+        });
+
+        // Update score bar
+        const scoreBar = reviewBody.querySelector(".review-score-bar");
+        const pct = Math.round((correct / totalHallucinations) * 100);
+        scoreBar.innerHTML = `
+          <div style="flex:1"><span style="font-weight:700;color:${pct >= 80 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#ef4444"}">${pct}%</span> \u2014 ${correct} van ${totalHallucinations} hallucinaties gevonden${falseAlarms > 0 ? `, ${falseAlarms} vals alarm` : ""}</div>
+          <button id="rv-teaching-btn" style="background:#2563eb;color:white;border:none;padding:6px 16px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit">Bekijk leerpunten \u2192</button>
+        `;
+
+        addXP(correct * 80);
+
+        // Teaching points button
+        reviewBody.querySelector("#rv-teaching-btn").addEventListener("click", () => {
+          sfxClick();
+          showTeachingPoints();
+        });
+      });
+    }
+
+    // ── Teaching Points + Cliffhanger ──
+    function showTeachingPoints() {
+      const reviewBody = document.getElementById("review-body");
+      const tp = doc.teachingPoints;
+
+      reviewBody.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;background:#f8f9fa;font-family:-apple-system,'Inter',sans-serif;font-size:13px;overflow-y:auto">
+          <div style="padding:24px;max-width:700px;margin:0 auto;width:100%">
+            <div style="text-align:center;margin-bottom:24px">
+              <div style="font-size:2rem;margin-bottom:8px">\u{1F9E0}</div>
+              <div style="font-size:1.2rem;font-weight:700;color:#111">5 soorten AI-hallucinaties</div>
+              <div style="font-size:0.85rem;color:#6b7280;margin-top:4px">Herken deze patronen en je vangt de meeste fouten</div>
+            </div>
+            ${tp.map(t => `
+              <div class="teaching-card">
+                <div class="teaching-card-icon">${t.icon}</div>
+                <div>
+                  <div class="teaching-card-title">${t.title}</div>
+                  <div class="teaching-card-desc">${t.desc}</div>
+                </div>
+              </div>
+            `).join("")}
+            <div style="margin-top:24px;padding:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;text-align:center">
+              <div style="font-weight:700;color:#1e40af;margin-bottom:6px">Onthoud</div>
+              <div style="font-size:0.88rem;color:#1e3a5f;line-height:1.6">${task.interaction.insight || "AI klinkt overtuigend, maar check altijd de feiten."}</div>
+            </div>
+            <div style="text-align:center;margin-top:20px">
+              <button id="rv-finish-btn" style="background:#2563eb;color:white;border:none;padding:10px 28px;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit">Dag afsluiten \u2192</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Video segment on feedback
+      if (videoSegs.onFeedback) {
+        showDesktopVideoOverlay(videoSegs.onFeedback.src, videoSegs.onFeedback.caption);
+      }
+
+      reviewBody.querySelector("#rv-finish-btn").addEventListener("click", () => {
+        sfxClick();
+        showCliffhanger();
+      });
+    }
+
+    function showCliffhanger() {
+      const ch = d.cliffhanger;
+      if (!ch) { state.totalScore++; showInsightAndNext(area, task); return; }
+
+      const overlay = document.createElement("div");
+      overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.5s ease";
+      overlay.innerHTML = `
+        <div style="background:#1e293b;border-radius:16px;max-width:520px;width:90%;padding:32px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.5)">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:#f59e0b;font-weight:700;margin-bottom:16px">Cliffhanger</div>
+          <div style="display:flex;align-items:center;gap:14px;background:#0f172a;border-radius:10px;padding:16px;margin-bottom:20px;text-align:left">
+            <div style="width:44px;height:44px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.8rem;flex-shrink:0">${ch.avatar}</div>
+            <div>
+              <div style="font-weight:600;color:#e2e8f0;font-size:0.9rem">${ch.from}</div>
+              <div style="font-size:0.7rem;color:#64748b">${ch.fromRole}</div>
+            </div>
+          </div>
+          <div style="font-size:0.95rem;color:#cbd5e1;line-height:1.7;margin-bottom:24px">"${ch.message}"</div>
+          <div style="font-size:0.75rem;color:#64748b;margin-bottom:16px">Wordt vervolgd in Dag 3...</div>
+          <button id="ch-close" style="background:#f59e0b;color:#111;border:none;padding:10px 28px;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit">Dag 2 afronden</button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      overlay.querySelector("#ch-close").addEventListener("click", () => {
+        sfxClick();
+        overlay.remove();
+        state.totalScore++;
+        showInsightAndNext(area, task);
+      });
+    }
+
+    // Allow opening document review from board task click
+    const origRenderBoard = renderBoard;
+    const boardBody = area.querySelector("#board-body");
+    const boardObserver = new MutationObserver(() => {
+      boardBody.querySelectorAll("[data-task-id='SD-051']").forEach(card => {
+        card.addEventListener("click", (e) => {
+          e.stopPropagation();
+          sfxClick();
+          openDocumentReview();
+        });
+      });
+    });
+    boardObserver.observe(boardBody, { childList: true, subtree: true });
   }
 
   function showDesktopNotification(message) {

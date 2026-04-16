@@ -505,94 +505,229 @@ const MISSIONS = [
     ]
   },
 
-  // ── DAG 2 ──────────────────────────────────────────
+  // ── DAG 2: De Hallucinatie ─────────────────────────
   {
-    id: "hallucination-lab",
-    name: "Dag 2: De WMO-brief van Bas",
-    desc: "Bas van het Sociaal Domein heeft ChatGPT een WMO-beschikking laten schrijven. Het ziet er professioneel uit. Maar klopt het?",
+    id: "hallucination-hunt",
+    name: "Dag 2: De Hallucinatie",
+    desc: "Bas heeft een WMO-beschikking met ChatGPT geschreven. Het ziet er professioneel uit... maar klopt het?",
     icon: "\u{1F50D}",
-    color: "var(--red)",
-    colorDim: "var(--red-dim)",
+    color: "var(--orange)",
+    colorDim: "var(--orange-dim)",
     tag: "DAG 2",
-    tagColor: "var(--red)",
+    tagColor: "var(--orange)",
     xp: 600,
-    tool: "claude",
-    storyIntro: "Dinsdagochtend. Bij de koffie komt Bas van het Sociaal Domein naar je toe: 'Gisteren heb ik ChatGPT een WMO-beschikking laten schrijven. Scheelt me een uur! Kun jij even meekijken voordat ik het verstuur?' Hij stuurt het naar je. De brief ziet er professioneel uit. Maar klopt alles wat erin staat?",
+    tool: "magnifier",
+    skipStoryIntro: true,
+    storyIntro: "Dinsdagochtend. Bij de koffie komt Anouk naar je toe: 'Herinner je je Bas van het Sociaal Domein? Hij heeft ChatGPT een WMO-beschikking laten schrijven. De juridisch adviseur heeft hem afgekeurd \u2014 er staan dingen in die niet kloppen. Kun jij de fouten vinden?'",
     tasks: [
       {
         type: "scenario",
-        label: "DE BRIEF VAN BAS",
-        title: "WMO-beschikking controleren",
-        desc: "Bas heeft ChatGPT deze WMO-beschikking laten schrijven voor mevrouw Jansen. Lees de brief en klik op alles wat niet klopt of verdacht is.",
+        label: "CONTROLEREN",
+        title: "De beschikking van Bas",
+        desc: "Controleer de WMO-beschikking die Bas met ChatGPT heeft geschreven. Vind de hallucinaties.",
         interaction: {
-          type: "scan-text",
-          instruction: "Klik op de zinnen die niet kloppen. AI heeft dingen verzonnen die er overtuigend uitzien.",
-          text: [
-            { content: "Geachte mevrouw Jansen-de Groot,", suspicious: false },
-            { content: " Naar aanleiding van uw aanvraag voor hulp bij het huishouden op grond van de Wet maatschappelijke ondersteuning (WMO) delen wij u het volgende mede.", suspicious: false },
-            { content: " Op basis van artikel 2.3.5 lid 4 van de WMO 2015 heeft u recht op 3 uur huishoudelijke hulp per week.", suspicious: true, reason: "Artikel 2.3.5 lid 4 bestaat niet in de WMO 2015! AI verzint wetsartikelen die er overtuigend uitzien. Dit kan leiden tot juridisch ongeldige beschikkingen. ALTIJD checken in de wettenbank." },
-            { content: " Uit het onderzoek blijkt dat u beperkingen ervaart bij het zwaardere huishoudelijke werk.", suspicious: false },
-            { content: " Conform het Besluit maatschappelijke ondersteuning Mayostad 2024 wordt de eigen bijdrage vastgesteld op \u20ac19,50 per vier weken.", suspicious: true, reason: "Dit besluit en dit bedrag zijn verzonnen door AI. De eigen bijdrage wordt bepaald door het CAK op basis van inkomen, niet door de gemeente. Een verkeerd bedrag in een offici\u00eble beschikking is een serieuze fout." },
-            { content: " De hulp wordt geleverd door thuiszorgorganisatie Beter Thuis B.V., gevestigd aan de Molenstraat 42 te Mayostad.", suspicious: true, reason: "Dit bedrijf en adres zijn verzonnen. AI genereert overtuigende namen en adressen die niet bestaan. Controleer altijd of de zorgaanbieder daadwerkelijk een contract heeft met de gemeente." },
-            { content: " U kunt bezwaar maken tegen dit besluit binnen zes weken na de datum van deze brief.", suspicious: false },
-            { content: " Voor vragen kunt u contact opnemen met het WMO-loket via 14 0555.", suspicious: false },
-            { content: " Volgens het recente onderzoek van het SCP (2025) maakt 68% van de WMO-aanvragers gebruik van huishoudelijke hulp.", suspicious: true, reason: "Dit SCP-onderzoek en percentage zijn verzonnen. AI genereert overtuigende statistieken en bronnen. In een offici\u00eble gemeentelijke brief horen alleen geverifieerde feiten." }
-          ]
-        },
-        insight: "AI hallucineert: het verzint wetsartikelen, bedrijfsnamen, bedragen en onderzoeken die er 100% echt uitzien. In een gemeentelijke context is dit extra gevaarlijk \u2014 een verkeerd wetsartikel in een beschikking kan leiden tot juridische problemen. Regel: laat juridische teksten ALTIJD checken door een jurist."
-      },
-      {
-        type: "scenario",
-        label: "PRIVACY CHECK",
-        title: "Wat mag WEL en NIET in ChatGPT?",
-        desc: "Ahmed van Informatiebeveiliging vraagt of je weet welke gegevens je wel en niet in AI-tools mag invoeren. Test jezelf.",
-        interaction: {
-          type: "sort-safe-unsafe",
-          instruction: "Beoordeel elk item: mag dit in ChatGPT of niet?",
-          items: [
-            { text: "'Herschrijf deze tekst in B1-niveau' met een openbare gemeentepagina", safe: true, reason: "Openbare informatie herschrijven is prima. Dit is precies waar AI goed in is." },
-            { text: "BSN-nummer van een inwoner om een brief te personaliseren", safe: false, reason: "BSN is strikt persoonlijk. AI-bedrijven slaan input op. Een BSN in ChatGPT is een datalek en AVG-overtreding!" },
-            { text: "De broncode van het gemeentelijk zaaksysteem", safe: false, reason: "Interne systemen en broncode zijn vertrouwelijk. Dit kan misbruikt worden als het in trainingsdata terechtkomt." },
-            { text: "Medische gegevens van een WMO-aanvrager", safe: false, reason: "Medische gegevens zijn bijzondere persoonsgegevens onder de AVG. Nooit in een AI-tool. De gemeente kan beboet worden." },
-            { text: "Wachtwoord van je gemeentelijke account", safe: false, reason: "Nooit! Je inloggegevens in ChatGPT = potentieel datalek van het hele gemeentelijke netwerk." },
-            { text: "'Vat dit openbare raadsbesluit samen'", safe: true, reason: "Raadsbesluiten zijn openbaar. Samenvatten met AI is prima en bespaart veel tijd." },
-            { text: "Naam + adres + inkomen van een inwoner uit het zaaksysteem", safe: false, reason: "Persoonsgegevens uit het zaaksysteem in AI = AVG-overtreding. Gemeente Mayostad kan aansprakelijk worden gesteld." },
-            { text: "'Schrijf een social media post over het nieuwe speeltuintje'", safe: true, reason: "Openbare gemeentelijke communicatie schrijven met AI is prima!" },
-            { text: "Interne notitie over een lopend juridisch bezwaar", safe: false, reason: "Juridische stukken zijn vertrouwelijk. Als deze in trainingsdata terechtkomen kan dat de zaak schaden." },
-            { text: "'Leg uit wat de Omgevingswet inhoudt in eenvoudige taal'", safe: true, reason: "Openbare wetgeving uitleggen is precies waar AI goed in is. Wel altijd de output checken." }
-          ]
-        },
-        insight: "Vuistregel voor ambtenaren: als het in het BRP, het zaaksysteem of een dossier staat, hoort het NIET in ChatGPT. Openbare informatie (raadsbesluiten, wetgeving, communicatie) mag wel. Bij twijfel: vraag Ahmed van Informatiebeveiliging."
-      },
-      {
-        type: "scenario",
-        label: "EXPERIMENT",
-        title: "Hoe AI jouw bias overneemt",
-        desc: "Moderne AI-assistenten onthouden je gesprekken. Handig? Ja. Maar het kan ook fout gaan. Je gaat zien hoe jouw woorden de AI beïnvloeden.",
-        interaction: {
-          type: "bias-simulator",
-          rounds: [
-            {
-              userInput: "Het weer in Nederland is altijd slecht",
-              aiResponse: "Dat klopt, het weer in Nederland is vaak bewolkt en regenachtig.",
-              aiMemory: "Gebruiker vindt het weer in Nederland slecht."
-            },
-            {
-              userInput: "Zal het morgen regenen?",
-              aiResponse: "Gezien het typisch Nederlandse weer, is de kans op regen groot. Ik raad aan een paraplu mee te nemen.",
-              aiMemory: "Gebruiker verwacht slecht weer. Adviseer altijd paraplu.",
-              problem: "De AI baseert zich op JOUW eerdere uitspraak, niet op echte weerdata. Het 'denkt' dat het altijd slecht weer is omdat JIJ dat zei."
-            },
-            {
-              userInput: "Plan een buitenactiviteit voor dit weekend",
-              aiResponse: "Gezien het weer raad ik een indoor activiteit aan. Misschien een museum of bioscoop? Buiten is het waarschijnlijk te nat.",
-              aiMemory: "Gebruiker woont in NL met slecht weer. Adviseer indoor.",
-              problem: "Nu be\u00efnvloedt jouw bias ALLE adviezen. De AI zal nooit meer een picknick voorstellen, zelfs als het 25\u00b0C en zonnig is."
-            }
+          type: "desktop-then-review",
+          taskPopupDelay: 8000,
+          videoSegments: {
+            onDesktopOpen: { src: "video-dag2-1.mp4", caption: "Goedemorgen! Anouk heeft iets voor je.", delay: 1500 },
+            onFeedback: { src: "video-dag2-3.mp4", caption: "Wat zijn AI-hallucinaties en hoe herken je ze?" }
+          },
+          taskPopup: {
+            from: "Anouk Willems",
+            fromRole: "Vergunningverlener VTH",
+            avatar: "AW",
+            message: "Hoi! Herinner je je Bas van het Sociaal Domein? Hij heeft gisteren een WMO-beschikking geschreven met ChatGPT. De juridisch adviseur heeft hem afgekeurd \u2014 er staan dingen in die niet bestaan. De beschikking zit bij zaak ZK-2026-0398 in het Zaaksysteem. Kun jij de fouten markeren?",
+            urgency: "Vandaag afhandelen"
+          },
+          cliffhanger: {
+            from: "Ahmed Hassan",
+            fromRole: "Informatiebeveiliging (CISO)",
+            avatar: "AH",
+            message: "Er is een AVG-melding binnengekomen. Iemand heeft persoonsgegevens in ChatGPT geplakt. Ik moet uitzoeken wie dat was. Morgen overleg?"
+          },
+          boardTasks: [
+            { id:"VTH-050", title:"Brief Van Dijk versturen", desc:"De brief die je gisteren hebt geschreven is goedgekeurd door Marco. Versturen via zaak-update.", priority:"low", prioLabel:"Afgerond", col:"done", avatar:"https://randomuser.me/api/portraits/men/55.jpg", hint:null, action:null },
+            { id:"SD-051", title:"WMO-beschikking Bas controleren", desc:"Bas van den Berg heeft een WMO-beschikking geschreven met ChatGPT voor mw. Jansen-de Groot (ZK-2026-0398). De juridisch adviseur heeft fouten gevonden. Markeer alle hallucinaties in het document.", priority:"high", prioLabel:"Urgent", col:"todo", avatar:"https://randomuser.me/api/portraits/women/26.jpg", hint:"1. Open het Zaaksysteem en zoek zaak ZK-2026-0398\n2. Open de beschikking en lees aandachtig\n3. Klik op alles wat niet klopt of verdacht is\n4. Let op: wetsartikelen, namen, cijfers, bronnen", action:"review" },
           ],
-          conclusion: "Dit is hoe bias werkt. Bij weer is het onschuldig. Maar stel je voor dat dit gebeurt met vooroordelen over mensen, sollicitanten, of medische adviezen. AI versterkt wat je erin stopt."
-        },
-        insight: "AI-systemen die leren van gebruikers versterken bestaande vooroordelen. Als iedereen hetzelfde zegt, 'leert' de AI dat het waar is. Wees je bewust van wat je een AI vertelt \u2014 het onthoudt en veralgemeniseert."
+          chatChannels: {
+            "# vth": {
+              members: 5,
+              messages: [
+                {user:"Marco Pieterse",time:"08:30",text:"Goed nieuws: de brief aan Van Dijk is gisteren verstuurd. Netjes werk!",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+                {user:"Anouk Willems",time:"08:45",text:"Bas van Sociaal Domein heeft mij een WMO-beschikking gestuurd die hij met ChatGPT heeft geschreven. De juridisch adviseur heeft hem afgekeurd. Er staan wetsartikelen in die niet bestaan...",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
+                {user:"Marco Pieterse",time:"08:48",text:"Dat is precies het risico waar we het over hadden. Kun jij de fouten markeren zodat Bas leert waar hij op moet letten?",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
+              ]
+            },
+            "# ai-pilot": {
+              members: 8,
+              messages: [
+                {user:"Tom Bakker",time:"09:00",text:"Heads-up: er zijn deze week al 3 gevallen waar AI-teksten fouten bevatten die medewerkers bijna niet opmerkten. Wees extra alert!",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
+                {user:"Ahmed Hassan",time:"09:10",text:"AI verzint wetsartikelen, bedrijfsnamen en statistieken. Dit heet 'hallucinatie'. Lees de nieuwe pagina op MayoWiki \u2192 AI Hallucinaties.",avatar:"https://randomuser.me/api/portraits/men/91.jpg"},
+                {user:"Priya Sharma",time:"09:15",text:"Maar hoe herken je een fout als het er zo echt uitziet?",avatar:"https://randomuser.me/api/portraits/women/68.jpg"},
+                {user:"Tom Bakker",time:"09:18",text:"Goede vraag! Vuistregels: hoe specifieker het getal of het artikelnummer, hoe verdachter. Check ALTIJD bronnen.",avatar:"https://randomuser.me/api/portraits/men/22.jpg"},
+              ]
+            },
+            "# sociaal-domein": {
+              members: 6,
+              messages: [
+                {user:"Bas van den Berg",time:"08:15",text:"Ik heb gisteren ChatGPT een WMO-beschikking laten schrijven voor mw. Jansen. Scheelde me een uur! Maar de juridisch adviseur zegt dat er fouten in staan... Ik snap niet welke.",avatar:"https://randomuser.me/api/portraits/men/46.jpg"},
+                {user:"Sandra Mulder",time:"08:20",text:"Oei. Verstuur hem niet! Laat iemand meekijken. Een beschikking met fouten kan juridische gevolgen hebben.",avatar:"https://randomuser.me/api/portraits/women/52.jpg"},
+                {user:"Noor de Jong",time:"08:25",text:"Dit is waar ik bang voor was. AI klinkt z\u00f3 overtuigend dat je niet doorhebt dat het onzin is.",avatar:"https://randomuser.me/api/portraits/women/33.jpg"},
+              ]
+            },
+            "# algemeen": {
+              members: 42,
+              messages: [
+                {user:"HR Gemeente Mayostad",time:"08:00",text:"Herinnering: vandaag taartdag in de kantine! Felicitaties voor Henk (Burgerzaken).",avatar:""},
+                {user:"Facilitaire Zaken",time:"08:30",text:"De lift op de 2e verdieping is tijdelijk buiten gebruik. Reparatie verwacht voor 12:00.",avatar:""},
+              ]
+            },
+            "# grappig": {
+              members: 38,
+              messages: [
+                {user:"Dennis Krul",time:"08:40",text:"Ik vroeg ChatGPT om een rapport over een verdachte parkeerovertreding. Het antwoord begon met 'Op grond van artikel 47b van de Grondwet...' \ud83d\ude02 Dat artikel gaat over belastingen!",avatar:"https://randomuser.me/api/portraits/men/76.jpg"},
+                {user:"Remco van Dam",time:"08:55",text:"Bas heeft volgens mij ChatGPT de hele WMO laten herschrijven. Inclusief artikelen die niet bestaan. Nieuwe sport: welk wetsartikel is echt?",avatar:"https://randomuser.me/api/portraits/men/32.jpg"},
+              ]
+            },
+          },
+          document: {
+            title: "Beschikking Hulp bij het Huishouden",
+            subtitle: "Gemeente Mayostad \u2014 Afdeling Sociaal Domein",
+            caseNr: "ZK-2026-0398",
+            author: "Bas van den Berg",
+            authorRole: "Consulent WMO",
+            tool: "ChatGPT (Team)",
+            date: "15 april 2026",
+            sections: [
+              {
+                id: "aanhef",
+                text: "Geachte mevrouw Jansen-de Groot,",
+                hallucination: false,
+                explanation: "Correcte aanhef. De naam komt uit het zaaksysteem."
+              },
+              {
+                id: "intro",
+                text: "Naar aanleiding van uw aanvraag van 8 maart 2026 voor hulp bij het huishouden, delen wij u het volgende mede.",
+                hallucination: false,
+                explanation: "Correcte inleiding met juiste datum uit het zaaksysteem."
+              },
+              {
+                id: "legal-basis",
+                text: "Op grond van de Wet maatschappelijke ondersteuning 2015 (WMO 2015) is de gemeente verantwoordelijk voor het bieden van maatschappelijke ondersteuning aan inwoners die niet op eigen kracht zelfredzaam zijn.",
+                hallucination: false,
+                explanation: "Dit klopt. De WMO 2015 legt deze verantwoordelijkheid bij gemeenten."
+              },
+              {
+                id: "fake-article",
+                text: "Conform artikel 2.3.5 lid 4 van de WMO 2015 heeft u recht op een maatwerkvoorziening indien uit het onderzoek blijkt dat u niet in staat bent het huishouden zelfstandig te voeren.",
+                hallucination: true,
+                type: "fake-law",
+                explanation: "HALLUCINATIE: Artikel 2.3.5 lid 4 bestaat NIET in de WMO 2015. AI verzint regelmatig wetsartikelen met overtuigende nummering. Altijd checken op wetten.overheid.nl!"
+              },
+              {
+                id: "investigation",
+                text: "Op 12 maart 2026 heeft een consulent van de gemeente bij u thuis een onderzoek uitgevoerd naar uw ondersteuningsbehoefte, conform artikel 2.3.2 WMO 2015.",
+                hallucination: false,
+                explanation: "Correct. Artikel 2.3.2 WMO 2015 beschrijft het onderzoeksproces."
+              },
+              {
+                id: "fake-institution",
+                text: "Het Centraal Indicatieorgaan Zorgverlening (CIZ) heeft op basis van uw medische gegevens vastgesteld dat u in aanmerking komt voor hulp bij het huishouden, categorie HH2 (3 uur per week).",
+                hallucination: true,
+                type: "wrong-institution",
+                explanation: "HALLUCINATIE: Het CIZ doet indicaties voor de Wet langdurige zorg (WLZ), NIET voor de WMO. Bij de WMO doet de gemeente zelf het onderzoek. AI haalt instanties en hun taken door elkaar."
+              },
+              {
+                id: "provision",
+                text: "Wij kennen u een maatwerkvoorziening toe voor hulp bij het huishouden. De ondersteuning wordt geleverd door thuiszorgorganisatie Buurtzorg, voor 3 uur per week.",
+                hallucination: false,
+                explanation: "De toekenning is correct geformuleerd. Buurtzorg is een bestaande zorgaanbieder."
+              },
+              {
+                id: "fake-jurisprudence",
+                text: "Deze toekenning is in lijn met de uitspraak van de Centrale Raad van Beroep van 14 februari 2024 (ECLI:NL:CRVB:2024:847), waarin is bepaald dat gemeenten bij hulp bij het huishouden een minimum van 2,5 uur per week dienen te bieden.",
+                hallucination: true,
+                type: "fake-case",
+                explanation: "HALLUCINATIE: Deze uitspraak bestaat NIET. Het ECLI-nummer is verzonnen. AI genereert overtuigende maar fictieve jurisprudentie. Altijd checken op rechtspraak.nl!"
+              },
+              {
+                id: "duration",
+                text: "De voorziening wordt toegekend voor de duur van 12 maanden, ingaande 1 april 2026. Voor het aflopen van deze termijn ontvangt u bericht over een eventuele verlenging.",
+                hallucination: false,
+                explanation: "Standaard toekenningsduur en procedure. Correct."
+              },
+              {
+                id: "fake-regulation",
+                text: "Op grond van artikel 14 lid 3 van het Besluit maatschappelijke ondersteuning Gemeente Mayostad 2024 bedraagt uw eigen bijdrage \u20ac19,50 per vier weken. Dit wordt ge\u00efnd door het CAK.",
+                hallucination: true,
+                type: "fake-local-law",
+                explanation: "HALLUCINATIE: Dit gemeentelijk besluit met dit specifieke artikel en bedrag bestaat niet. Het CAK int wel eigen bijdragen voor WMO, maar het bedrag wordt op basis van inkomen berekend, niet vastgesteld in een lokaal besluit. AI verzint lokale regelgeving die plausibel klinkt."
+              },
+              {
+                id: "objection",
+                text: "Bent u het niet eens met dit besluit? Dan kunt u binnen zes weken na de datum van deze brief een bezwaarschrift indienen bij het college van burgemeester en wethouders van Gemeente Mayostad.",
+                hallucination: false,
+                explanation: "De bezwaarprocedure is correct beschreven. Zes weken is de juiste termijn conform de Awb."
+              },
+              {
+                id: "fake-statistic",
+                text: "Ter informatie: uit landelijk onderzoek van het Sociaal en Cultureel Planbureau (2024) blijkt dat 78,3% van de WMO-aanvragen voor hulp bij het huishouden binnen vier weken wordt afgehandeld.",
+                hallucination: true,
+                type: "fake-statistic",
+                explanation: "HALLUCINATIE: Dit onderzoek en dit percentage bestaan NIET. AI verzint overtuigende statistieken met precieze percentages. Vuistregel: hoe specifieker het getal (78,3%), hoe verdachter. Altijd de bron opzoeken!"
+              },
+              {
+                id: "closing",
+                text: "Met vriendelijke groet,\n\nnamens het college van burgemeester en wethouders van Gemeente Mayostad,\n\nBas van den Berg\nConsulent WMO",
+                hallucination: false,
+                explanation: "Correcte afsluiting conform de gemeentelijke schrijfwijzer."
+              }
+            ],
+            teachingPoints: [
+              { type: "fake-law", title: "Verzonnen wetsartikelen", desc: "AI verzint artikelnummers die er overtuigend uitzien. Check altijd op wetten.overheid.nl.", icon: "\u2696\uFE0F" },
+              { type: "wrong-institution", title: "Verkeerde instanties", desc: "AI haalt organisaties door elkaar. CIZ doet WLZ, niet WMO. Ken je eigen werkproces.", icon: "\u{1F3DB}\uFE0F" },
+              { type: "fake-case", title: "Nep-jurisprudentie", desc: "ECLI-nummers worden verzonnen. Controleer altijd op rechtspraak.nl.", icon: "\u{1F528}" },
+              { type: "fake-local-law", title: "Verzonnen lokale regels", desc: "AI genereert plausibele gemeentelijke besluiten. Check altijd de echte verordening.", icon: "\u{1F4CB}" },
+              { type: "fake-statistic", title: "Nepstatistieken", desc: "Hoe preciezer het getal (78,3%), hoe verdachter. Zoek altijd de bron.", icon: "\u{1F4CA}" }
+            ]
+          },
+          wiki: {
+            pages: {
+              hallucinaties: {
+                title: "AI Hallucinaties",
+                icon: "",
+                content: [
+                  { type: "heading", text: "Wat zijn AI-hallucinaties?" },
+                  { type: "text", text: "Een AI-hallucinatie is wanneer een AI-systeem informatie genereert die er overtuigend uitziet, maar niet klopt. Het 'verzint' feiten, namen, cijfers of bronnen. Dit is geen bug \u2014 het is hoe taalmodellen werken: ze voorspellen het meest waarschijnlijke volgende woord, niet het meest juiste." },
+                  { type: "heading", text: "Veelvoorkomende hallucinaties" },
+                  { type: "rule", num: "1", text: "Wetsartikelen: AI verzint artikelnummers die er echt uitzien (bijv. 'artikel 2.3.5 lid 4 WMO')" },
+                  { type: "rule", num: "2", text: "Jurisprudentie: Verzonnen uitspraken met overtuigende ECLI-nummers" },
+                  { type: "rule", num: "3", text: "Statistieken: Precieze maar fictieve percentages (bijv. '78,3% van...')" },
+                  { type: "rule", num: "4", text: "Bedrijfsnamen: Niet-bestaande organisaties met realistische namen" },
+                  { type: "rule", num: "5", text: "Bronverwijzingen: Nep-onderzoeken van echte instituten (SCP, CBS, RIVM)" },
+                  { type: "heading", text: "Hoe herken je hallucinaties?" },
+                  { type: "do-dont", dos: [
+                    "Check wetsartikelen op wetten.overheid.nl",
+                    "Zoek ECLI-nummers op rechtspraak.nl",
+                    "Wantrouw precieze statistieken zonder bron",
+                    "Verifieer bedrijfsnamen via KvK of Google",
+                    "Vraag AI om bronnen \u2014 en check die bronnen dan!"
+                  ], donts: [
+                    "Blind vertrouwen omdat het professioneel klinkt",
+                    "Aannemen dat specifieke nummers juist zijn",
+                    "Juridische teksten versturen zonder juristencheck",
+                    "Statistieken overnemen zonder de bron te openen",
+                    "Denken dat AI het 'weet' \u2014 het voorspelt"
+                  ]},
+                  { type: "heading", text: "Waarom is dit gevaarlijk bij de gemeente?" },
+                  { type: "text", text: "Een verkeerd wetsartikel in een beschikking kan leiden tot juridische aansprakelijkheid. Een verzonnen bedrijfsnaam in een contract is een ernstige fout. Een nepstatistiek in een raadsvoorstel ondermijnt het vertrouwen. Bij de gemeente hebben fouten echte gevolgen voor echte mensen." },
+                  { type: "text", text: "Vuistregel: hoe belangrijker het document, hoe grondiger je moet checken. Beschikkingen, contracten en raadsvoorstellen \u2192 altijd laten controleren door een specialist." }
+                ]
+              }
+            }
+          },
+          insight: "AI hallucineert: het verzint wetsartikelen, bedrijfsnamen, statistieken en jurisprudentie die er 100% echt uitzien. In een gemeentelijke context is dit extra gevaarlijk \u2014 een verkeerd wetsartikel in een beschikking kan juridische gevolgen hebben. Regel: controleer ALTIJD bronnen, wetsartikelen en cijfers."
+        }
       }
     ]
   },
