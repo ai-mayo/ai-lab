@@ -66,7 +66,7 @@ Je eerste dag bij VTH. Marco (teamleider) vraagt je een brief te schrijven aan m
 3. **Gebruiker opent MayoBoard** - Ziet de taak met details + hint
 4. **Hint vertelt:** 
    - Stap 1: MayoWiki > Schrijfwijzer (hoe schrijft de gemeente?)
-   - Stap 2: MayoWiki > Lopende Zaken (details Van Dijk)
+   - Stap 2: Vergunningtool (details Van Dijk)
    - Stap 3: Open ChatGPT en schrijf de prompt
 5. **Gebruiker schrijft zelf de prompt in ChatGPT**
 6. **Systeem checkt op elementen:**

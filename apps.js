@@ -349,7 +349,7 @@ const APP_RENDERERS = {
         members: 5,
         messages: [
           {user:"Marco Pieterse",time:"08:50",text:"Er moet vandaag een brief uit naar dhr. Van Dijk over zijn terrasvergunning. Die is vertraagd door een bezwaar van buurman Jansen. Nieuwe collega, kun jij dit oppakken?",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
-          {user:"Anouk Willems",time:"09:05",text:"Welkom! De zaakgegevens staan in MayoWiki onder Lopende Zaken. Als je vragen hebt, loop even langs kamer 2.15.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
+          {user:"Anouk Willems",time:"09:05",text:"Welkom! De zaakgegevens staan in de Vergunningtool (VTH-2026-00347). Als je vragen hebt, loop even langs kamer 2.15.",avatar:"https://randomuser.me/api/portraits/women/26.jpg"},
           {user:"Marco Pieterse",time:"09:10",text:"Gebruik gerust ChatGPT voor de brief, maar check wel de Schrijfwijzer op MayoWiki. En vergeet niet: altijd nakijken wat de AI schrijft!",avatar:"https://randomuser.me/api/portraits/men/55.jpg"},
         ]
       },
@@ -428,16 +428,6 @@ const APP_RENDERERS = {
 
   // ─── MayoMail ───────────────────────────────────────
   mail(container) {
-    const emails = [
-      {from:"Marco Pieterse",subject:"Welkom bij VTH!",preview:"Hoi! Welkom bij de afdeling VTH van Gemeente Mayostad. In de bijlage vind je het inwerkprogramma...",time:"09:00",unread:true},
-      {from:"Tom Bakker",subject:"AI-pilot: handleiding ChatGPT",preview:"Hierbij de handleiding voor het gebruik van ChatGPT binnen de gemeente...",time:"08:45",unread:true},
-      {from:"Ahmed Hassan",subject:"Beveiligingsprotocol AI-tools",preview:"Beste collega, bijgaand het beveiligingsprotocol voor het gebruik van AI...",time:"08:30",unread:true},
-      {from:"HR Gemeente Mayostad",subject:"Arbeidsvoorwaarden en huisregels",preview:"Welkom! In de bijlage vind je je arbeidsovereenkomst en de huisregels...",time:"Gisteren",unread:false},
-      {from:"Facilitaire Zaken",subject:"Parkeervergunning en toegangspas",preview:"Je parkeervergunning en toegangspas liggen klaar bij de receptie...",time:"Gisteren",unread:false},
-      {from:"ICT Servicedesk",subject:"Inloggegevens werkplek",preview:"Hierbij je inloggegevens. Wijzig je wachtwoord bij eerste gebruik...",time:"Gisteren",unread:false},
-      {from:"Sarah Chen",subject:"Schrijfwijzer Gemeente Mayostad",preview:"Hoi! Hier is de link naar onze schrijfwijzer op MayoWiki. Lees deze...",time:"Gisteren",unread:false},
-    ];
-
     container.innerHTML = `
       <div style="flex:1;display:flex;background:#fff;font-family:-apple-system,'Inter',sans-serif;font-size:13px">
         <div style="width:70px;background:#1e40af;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:16px;flex-shrink:0">
@@ -450,32 +440,12 @@ const APP_RENDERERS = {
             <div style="font-weight:700;font-size:0.9rem;color:#111827;margin-bottom:8px">Inbox</div>
             <input placeholder="Zoek in mail..." style="width:100%;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:0.78rem;outline:none;font-family:inherit">
           </div>
-          ${emails.map(e => `
-            <div style="padding:10px 14px;border-bottom:1px solid #f3f4f6;cursor:pointer;${e.unread?"background:#eff6ff;":""}transition:background 0.1s" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='${e.unread?"#eff6ff":""}'">
-              <div style="display:flex;justify-content:space-between;margin-bottom:2px">
-                <span style="font-weight:${e.unread?"600":"400"};font-size:0.82rem;color:#111827">${e.from}</span>
-                <span style="font-size:0.65rem;color:#9ca3af">${e.time}</span>
-              </div>
-              <div style="font-size:0.78rem;font-weight:${e.unread?"600":"400"};color:#374151;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.subject}</div>
-              <div style="font-size:0.72rem;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.preview}</div>
-            </div>
-          `).join("")}
         </div>
-        <div style="flex:1;padding:24px;overflow-y:auto">
-          <div style="font-size:1.1rem;font-weight:700;color:#111827;margin-bottom:4px">Welkom bij VTH!</div>
-          <div style="font-size:0.78rem;color:#6b7280;margin-bottom:16px">Van: Marco Pieterse &lt;m.pieterse@mayostad.nl&gt; \u2022 Vandaag 09:00</div>
-          <div style="font-size:0.88rem;color:#374151;line-height:1.7">
-            <p>Hoi!</p>
-            <p>Welkom bij de afdeling VTH van Gemeente Mayostad! Fijn dat je er bent.</p>
-            <p>Een paar dingen voor je eerste dag:</p>
-            <ul style="margin:8px 0;padding-left:20px">
-              <li>Open MayoWiki en lees je in over de organisatie en de Schrijfwijzer</li>
-              <li>Bekijk je collega's in WiWa</li>
-              <li>Check MayoBoard voor je eerste opdrachten</li>
-              <li>Lees de AI Huisregels \u2014 we doen mee aan de AI-pilot</li>
-            </ul>
-            <p>Ik stuur je straks je eerste echte opdracht via MayoChat. Het gaat om een brief naar een inwoner. Succes!</p>
-            <p>Groet,<br>Marco Pieterse<br><span style="color:#9ca3af">Teamleider VTH \u2022 Gemeente Mayostad</span></p>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto">
+          <div style="text-align:center;color:#9ca3af">
+            <div style="font-size:2.5rem;margin-bottom:12px">\u{2709}\u{FE0F}</div>
+            <div style="font-size:1rem;font-weight:600;color:#6b7280;margin-bottom:4px">Geen nieuwe berichten</div>
+            <div style="font-size:0.82rem">Je inbox is leeg. Gebruik MayoChat voor interne communicatie.</div>
           </div>
         </div>
       </div>`;
